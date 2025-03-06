@@ -1,0 +1,12 @@
+"filename", "language", "C#", "JSON", "comment", "blank", "total"
+"d:\LanguageLearnig\C#\ChatServer\.vs\ChatServer\v17\DocumentLayout.json", "JSON", 0, 68, 0, 0, 68
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatRelationProtocol.cs", "C#", 120, 0, 4, 17, 141
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendRequestProcessor.cs", "C#", 19, 0, 12, 6, 37
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendResponseProcessor.cs", "C#", 30, 0, 16, 8, 54
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\GetUserRequestProcessor.cs", "C#", -2, 0, 7, 1, 6
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LoginRequestProcessor.cs", "C#", -2, 0, 7, 1, 6
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LogoutRequestProcessor.cs", "C#", 0, 0, 7, 0, 7
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\OutlineMessageRequestProcessor.cs", "C#", 4, 0, 10, 5, 19
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\RegisteRequestProcessor.cs", "C#", -2, 0, 10, 1, 9
+"d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\UpdateUserDataProcessor.cs", "C#", -2, 0, 7, 1, 6
+"Total", "-", 165, 68, 80, 40, 353

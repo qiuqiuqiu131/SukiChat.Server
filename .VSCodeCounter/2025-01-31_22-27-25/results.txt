@@ -1,0 +1,294 @@
+Date : 2025-01-31 22:27:25
+Directory : d:\LanguageLearnig\C#\ChatServer
+Total : 186 files,  27212 codes, 1658 comments, 1501 blanks, all 30371 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |         36 |     17,680 |          0 |          0 |     17,680 |
+| C#         |        108 |      8,064 |      1,597 |      1,409 |     11,070 |
+| XML        |         28 |      1,286 |         61 |         78 |      1,425 |
+| Properties |         14 |        182 |          0 |         14 |        196 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                   |        186 |     27,212 |      1,658 |      1,501 |     30,371 |
+| .idea                                                                                                                               |          2 |         12 |          0 |          0 |         12 |
+| .idea\.idea.ChatServer                                                                                                              |          2 |         12 |          0 |          0 |         12 |
+| .idea\.idea.ChatServer\.idea                                                                                                        |          2 |         12 |          0 |          0 |         12 |
+| .vs                                                                                                                                 |          2 |      1,497 |         61 |         54 |      1,612 |
+| .vs\ChatServer                                                                                                                      |          2 |      1,497 |         61 |         54 |      1,612 |
+| .vs\ChatServer\config                                                                                                               |          1 |        907 |         61 |         54 |      1,022 |
+| .vs\ChatServer\v17                                                                                                                  |          1 |        590 |          0 |          0 |        590 |
+| ChatServer.Common                                                                                                                   |         43 |      5,552 |        234 |        543 |      6,329 |
+| ChatServer.Common (Files)                                                                                                           |          2 |         37 |          0 |          7 |         44 |
+| ChatServer.Common\Helper                                                                                                            |          1 |         74 |         31 |         10 |        115 |
+| ChatServer.Common\Protobuf                                                                                                          |          5 |      3,944 |        146 |        489 |      4,579 |
+| ChatServer.Common\bin                                                                                                               |          4 |        355 |          0 |          0 |        355 |
+| ChatServer.Common\bin\Debug                                                                                                         |          4 |        355 |          0 |          0 |        355 |
+| ChatServer.Common\bin\Debug\net6.0                                                                                                  |          3 |        123 |          0 |          0 |        123 |
+| ChatServer.Common\bin\Debug\net8.0                                                                                                  |          1 |        232 |          0 |          0 |        232 |
+| ChatServer.Common\obj                                                                                                               |         31 |      1,142 |         57 |         37 |      1,236 |
+| ChatServer.Common\obj (Files)                                                                                                       |         14 |        991 |          0 |          0 |        991 |
+| ChatServer.Common\obj\Debug                                                                                                         |         17 |        151 |         57 |         37 |        245 |
+| ChatServer.Common\obj\Debug\net6.0                                                                                                  |         13 |        119 |         45 |         29 |        193 |
+| ChatServer.Common\obj\Debug\net8.0                                                                                                  |          4 |         32 |         12 |          8 |         52 |
+| ChatServer.DataBase                                                                                                                 |         48 |      7,096 |      1,073 |        538 |      8,707 |
+| ChatServer.DataBase (Files)                                                                                                         |          2 |         55 |          0 |         12 |         67 |
+| ChatServer.DataBase\DataBase                                                                                                        |         27 |      1,424 |      1,043 |        327 |      2,794 |
+| ChatServer.DataBase\DataBase (Files)                                                                                                |          4 |         82 |         13 |         19 |        114 |
+| ChatServer.DataBase\DataBase\DataEntity                                                                                             |          6 |        175 |          2 |         43 |        220 |
+| ChatServer.DataBase\DataBase\Repository                                                                                             |          6 |         85 |          0 |         12 |         97 |
+| ChatServer.DataBase\DataBase\UnitOfWork                                                                                             |         11 |      1,082 |      1,028 |        253 |      2,363 |
+| ChatServer.DataBase\DataBase\UnitOfWork (Files)                                                                                     |          7 |        929 |        847 |        215 |      1,991 |
+| ChatServer.DataBase\DataBase\UnitOfWork\Collections                                                                                 |          4 |        153 |        181 |         38 |        372 |
+| ChatServer.DataBase\Migrations                                                                                                      |          3 |        699 |          6 |        183 |        888 |
+| ChatServer.DataBase\bin                                                                                                             |          3 |      1,713 |          0 |          0 |      1,713 |
+| ChatServer.DataBase\bin\Debug                                                                                                       |          3 |      1,713 |          0 |          0 |      1,713 |
+| ChatServer.DataBase\bin\Debug\net6.0                                                                                                |          1 |        582 |          0 |          0 |        582 |
+| ChatServer.DataBase\bin\Debug\net8.0                                                                                                |          2 |      1,131 |          0 |          0 |      1,131 |
+| ChatServer.DataBase\obj                                                                                                             |         13 |      3,205 |         24 |         16 |      3,245 |
+| ChatServer.DataBase\obj (Files)                                                                                                     |          5 |      3,141 |          0 |          0 |      3,141 |
+| ChatServer.DataBase\obj\Debug                                                                                                       |          8 |         64 |         24 |         16 |        104 |
+| ChatServer.DataBase\obj\Debug\net6.0                                                                                                |          4 |         32 |         12 |          8 |         52 |
+| ChatServer.DataBase\obj\Debug\net8.0                                                                                                |          4 |         32 |         12 |          8 |         52 |
+| ChatServer.Main                                                                                                                     |         57 |      7,519 |        212 |        278 |      8,009 |
+| ChatServer.Main (Files)                                                                                                             |          4 |        154 |          5 |         21 |        180 |
+| ChatServer.Main\IOServer                                                                                                            |          3 |        216 |         38 |         43 |        297 |
+| ChatServer.Main\IOServer\Manager                                                                                                    |          1 |        103 |         22 |         20 |        145 |
+| ChatServer.Main\IOServer\ServerHandler                                                                                              |          2 |        113 |         16 |         23 |        152 |
+| ChatServer.Main\MessageOperate                                                                                                      |         15 |        767 |         98 |        126 |        991 |
+| ChatServer.Main\MessageOperate (Files)                                                                                              |          4 |        264 |         79 |         51 |        394 |
+| ChatServer.Main\MessageOperate\Processor                                                                                            |          8 |        435 |         18 |         66 |        519 |
+| ChatServer.Main\MessageOperate\Server                                                                                               |          3 |         68 |          1 |          9 |         78 |
+| ChatServer.Main\ServerEntity                                                                                                        |          3 |         85 |          0 |         18 |        103 |
+| ChatServer.Main\Services                                                                                                            |          4 |        215 |         25 |         40 |        280 |
+| ChatServer.Main\Services (Files)                                                                                                    |          3 |        151 |         15 |         32 |        198 |
+| ChatServer.Main\Services\Helper                                                                                                     |          1 |         64 |         10 |          8 |         82 |
+| ChatServer.Main\bin                                                                                                                 |          3 |      1,331 |          0 |          0 |      1,331 |
+| ChatServer.Main\bin\Debug                                                                                                           |          3 |      1,331 |          0 |          0 |      1,331 |
+| ChatServer.Main\bin\Debug\net8.0                                                                                                    |          3 |      1,331 |          0 |          0 |      1,331 |
+| ChatServer.Main\obj                                                                                                                 |         25 |      4,751 |         46 |         30 |      4,827 |
+| ChatServer.Main\obj (Files)                                                                                                         |         11 |      4,629 |          0 |          0 |      4,629 |
+| ChatServer.Main\obj\Debug                                                                                                           |         14 |        122 |         46 |         30 |        198 |
+| ChatServer.Main\obj\Debug\net6.0                                                                                                    |         10 |         90 |         34 |         22 |        146 |
+| ChatServer.Main\obj\Debug\net8.0                                                                                                    |          4 |         32 |         12 |          8 |         52 |
+| ChatServer.Test                                                                                                                     |         14 |      2,548 |         12 |         29 |      2,589 |
+| ChatServer.Test (Files)                                                                                                             |          3 |         90 |          0 |         21 |        111 |
+| ChatServer.Test\bin                                                                                                                 |          2 |        626 |          0 |          0 |        626 |
+| ChatServer.Test\bin\Debug                                                                                                           |          2 |        626 |          0 |          0 |        626 |
+| ChatServer.Test\bin\Debug\net8.0                                                                                                    |          2 |        626 |          0 |          0 |        626 |
+| ChatServer.Test\obj                                                                                                                 |          9 |      1,832 |         12 |          8 |      1,852 |
+| ChatServer.Test\obj (Files)                                                                                                         |          5 |      1,800 |          0 |          0 |      1,800 |
+| ChatServer.Test\obj\Debug                                                                                                           |          4 |         32 |         12 |          8 |         52 |
+| ChatServer.Test\obj\Debug\net8.0                                                                                                    |          4 |         32 |         12 |          8 |         52 |
+| SocketServer                                                                                                                        |         20 |      2,988 |         66 |         59 |      3,113 |
+| SocketServer (Files)                                                                                                                |          2 |         75 |         34 |         21 |        130 |
+| SocketServer\Server                                                                                                                 |          3 |        114 |          8 |         22 |        144 |
+| SocketServer\bin                                                                                                                    |          2 |      1,156 |          0 |          0 |      1,156 |
+| SocketServer\bin\Debug                                                                                                              |          2 |      1,156 |          0 |          0 |      1,156 |
+| SocketServer\bin\Debug\net6.0                                                                                                       |          1 |        604 |          0 |          0 |        604 |
+| SocketServer\bin\Debug\net8.0                                                                                                       |          1 |        552 |          0 |          0 |        552 |
+| SocketServer\obj                                                                                                                    |         13 |      1,643 |         24 |         16 |      1,683 |
+| SocketServer\obj (Files)                                                                                                            |          5 |      1,579 |          0 |          0 |      1,579 |
+| SocketServer\obj\Debug                                                                                                              |          8 |         64 |         24 |         16 |        104 |
+| SocketServer\obj\Debug\net6.0                                                                                                       |          4 |         32 |         12 |          8 |         52 |
+| SocketServer\obj\Debug\net8.0                                                                                                       |          4 |         32 |         12 |          8 |         52 |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                            | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| d:\LanguageLearnig\C#\ChatServer\.idea\.idea.ChatServer\.idea\encodings.xml                                                         | XML        |          4 |          0 |          0 |          4 |
+| d:\LanguageLearnig\C#\ChatServer\.idea\.idea.ChatServer\.idea\indexLayout.xml                                                       | XML        |          8 |          0 |          0 |          8 |
+| d:\LanguageLearnig\C#\ChatServer\.vs\ChatServer\config\applicationhost.config                                                       | XML        |        907 |         61 |         54 |      1,022 |
+| d:\LanguageLearnig\C#\ChatServer\.vs\ChatServer\v17\DocumentLayout.json                                                             | JSON       |        590 |          0 |          0 |        590 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\ChannelExtensions.cs                                                             | C#         |         22 |          0 |          2 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\ChatServer.Common.csproj                                                         | XML        |         15 |          0 |          5 |         20 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Helper\ProtobufHelper.cs                                                         | C#         |         74 |         31 |         10 |        115 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatBaseProtocol.cs                                                     | C#         |        254 |          8 |         42 |        304 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatCommunicateProtocol.cs                                              | C#         |        308 |         10 |         44 |        362 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatLoginProtocol.cs                                                    | C#         |        559 |         25 |         79 |        663 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatRelationProtocol.cs                                                 | C#         |      1,145 |         43 |        126 |      1,314 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatUserProtocol.cs                                                     | C#         |      1,678 |         60 |        198 |      1,936 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\bin\Debug\net6.0\ChatServer.Common.deps.json                                     | JSON       |         41 |          0 |          0 |         41 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\bin\Debug\net6.0\Common.deps.json                                                | JSON       |         41 |          0 |          0 |         41 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\bin\Debug\net6.0\Protobuf_Common.deps.json                                       | JSON       |         41 |          0 |          0 |         41 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\bin\Debug\net8.0\ChatServer.Common.deps.json                                     | JSON       |        232 |          0 |          0 |        232 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\CHCommon.csproj.nuget.dgspec.json                                            | JSON       |         93 |          0 |          0 |         93 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\CHCommon.csproj.nuget.g.props                                                | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\CHCommon.csproj.nuget.g.targets                                              | XML        |          2 |          0 |          0 |          2 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\ChatServer.Common.csproj.nuget.dgspec.json                                   | JSON       |         87 |          0 |          0 |         87 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\ChatServer.Common.csproj.nuget.g.props                                       | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\ChatServer.Common.csproj.nuget.g.targets                                     | XML        |          2 |          0 |          0 |          2 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Common.csproj.nuget.dgspec.json                                              | JSON       |         93 |          0 |          0 |         93 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Common.csproj.nuget.g.props                                                  | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Common.csproj.nuget.g.targets                                                | XML        |          2 |          0 |          0 |          2 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs                  | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\CHCommon.AssemblyInfo.cs                                        | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\CHCommon.GeneratedMSBuildEditorConfig.editorconfig              | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\CHCommon.GlobalUsings.g.cs                                      | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\ChatServer.Common.AssemblyInfo.cs                               | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\ChatServer.Common.GeneratedMSBuildEditorConfig.editorconfig     | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\ChatServer.Common.GlobalUsings.g.cs                             | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Common.AssemblyInfo.cs                                          | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Common.GeneratedMSBuildEditorConfig.editorconfig                | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Common.GlobalUsings.g.cs                                        | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Protobuf_Common.AssemblyInfo.cs                                 | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Protobuf_Common.GeneratedMSBuildEditorConfig.editorconfig       | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net6.0\Protobuf_Common.GlobalUsings.g.cs                               | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs                  | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net8.0\ChatServer.Common.AssemblyInfo.cs                               | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net8.0\ChatServer.Common.GeneratedMSBuildEditorConfig.editorconfig     | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Debug\net8.0\ChatServer.Common.GlobalUsings.g.cs                             | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Protobuf_Common.csproj.nuget.dgspec.json                                     | JSON       |         93 |          0 |          0 |         93 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Protobuf_Common.csproj.nuget.g.props                                         | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\Protobuf_Common.csproj.nuget.g.targets                                       | XML        |          2 |          0 |          0 |          2 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\project.assets.json                                                          | JSON       |        552 |          0 |          0 |        552 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\obj\project.packagespec.json                                                     | JSON       |          1 |          0 |          0 |          1 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\ChatServer.DataBase.csproj                                                     | XML        |         22 |          0 |          5 |         27 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\ChatServerDbContext.cs                                                | C#         |         16 |          9 |          6 |         31 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\ChatServerDbcontextFactory.cs                                         | C#         |         17 |          1 |          6 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataBaseExtension.cs                                                  | C#         |         29 |          3 |          4 |         36 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\ChatPrivate.cs                                             | C#         |         32 |          0 |          6 |         38 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\FriendRelation.cs                                          | C#         |         30 |          0 |          6 |         36 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\FriendRequest.cs                                           | C#         |         33 |          0 |          9 |         42 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\SacurityQuestion.cs                                        | C#         |         28 |          0 |          6 |         34 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\User.cs                                                    | C#         |         26 |          0 |         10 |         36 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DataEntity\UserOnline.cs                                              | C#         |         26 |          2 |          6 |         34 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\DbSettings.cs                                                         | C#         |         20 |          0 |          3 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\ChatPrivateRepository.cs                                   | C#         |         15 |          0 |          2 |         17 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\FriendRelationRepository.cs                                | C#         |         17 |          0 |          2 |         19 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\FriendRequestRepository.cs                                 | C#         |         17 |          0 |          2 |         19 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\SacurityQuestionRepository.cs                              | C#         |         14 |          0 |          2 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\UserOnlineRepository.cs                                    | C#         |         10 |          0 |          2 |         12 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\Repository\UserRepository.cs                                          | C#         |         12 |          0 |          2 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\Collections\IEnumerablePagedListExtensions.cs              | C#         |         11 |         24 |          4 |         39 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\Collections\IPagedList.cs                                  | C#         |         15 |         32 |          4 |         51 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\Collections\IQueryablePageListExtensions.cs                | C#         |         32 |         12 |          5 |         49 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\Collections\PagedList.cs                                   | C#         |         95 |        113 |         25 |        233 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\IRepository.cs                                             | C#         |        122 |        326 |         47 |        495 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\IRepositoryFactory.cs                                      | C#         |          7 |         19 |          3 |         29 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\IUnitOfWork.cs                                             | C#         |         14 |         49 |          8 |         71 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\IUnitOfWorkOfT.cs                                          | C#         |          9 |         14 |          4 |         27 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\Repository.cs                                              | C#         |        606 |        317 |        114 |      1,037 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\UnitOfWork.cs                                              | C#         |        119 |         66 |         27 |        212 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataBase\UnitOfWork\UnitOfWorkServiceCollectionExtensions.cs                   | C#         |         52 |         56 |         12 |        120 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\DataToProtoProfile.cs                                                          | C#         |         33 |          0 |          7 |         40 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\Migrations\20250131110141_init_1.Designer.cs                                   | C#         |        237 |          2 |         80 |        319 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\Migrations\20250131110141_init_1.cs                                            | C#         |        227 |          3 |         23 |        253 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\Migrations\ChatServerDbContextModelSnapshot.cs                                 | C#         |        235 |          1 |         80 |        316 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\bin\Debug\net6.0\ChatServer.DataBase.deps.json                                 | JSON       |        582 |          0 |          0 |        582 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\bin\Debug\net8.0\ChatServer.DataBase.deps.json                                 | JSON       |      1,118 |          0 |          0 |      1,118 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\bin\Debug\net8.0\ChatServer.DataBase.runtimeconfig.json                        | JSON       |         13 |          0 |          0 |         13 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\ChatServer.DataBase.csproj.nuget.dgspec.json                               | JSON       |        188 |          0 |          0 |        188 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\ChatServer.DataBase.csproj.nuget.g.props                                   | XML        |         24 |          0 |          0 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\ChatServer.DataBase.csproj.nuget.g.targets                                 | XML        |          8 |          0 |          0 |          8 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs                | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net6.0\ChatServer.DataBase.AssemblyInfo.cs                           | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net6.0\ChatServer.DataBase.GeneratedMSBuildEditorConfig.editorconfig | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net6.0\ChatServer.DataBase.GlobalUsings.g.cs                         | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs                | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net8.0\ChatServer.DataBase.AssemblyInfo.cs                           | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net8.0\ChatServer.DataBase.GeneratedMSBuildEditorConfig.editorconfig | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\Debug\net8.0\ChatServer.DataBase.GlobalUsings.g.cs                         | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\project.assets.json                                                        | JSON       |      2,920 |          0 |          0 |      2,920 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.DataBase\obj\project.packagespec.json                                                   | JSON       |          1 |          0 |          0 |          1 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\App.cs                                                                             | C#         |         72 |          5 |         15 |         92 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\ChatServer.Main.csproj                                                             | XML        |         29 |          0 |          6 |         35 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\IOServer\Manager\ClientChannelManager.cs                                           | C#         |        103 |         22 |         20 |        145 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\IOServer\ServerHandler\ClientConnectHandler.cs                                     | C#         |         82 |          7 |         16 |        105 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\IOServer\ServerHandler\EchoServerHandler.cs                                        | C#         |         31 |          9 |          7 |         47 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\BusinessServer.cs                                                   | C#         |        135 |         47 |         27 |        209 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\IProcessor.cs                                                       | C#         |         14 |          0 |          2 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendRequestProcessor.cs                                 | C#         |         66 |          5 |         11 |         82 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendResponseProcessor.cs                                | C#         |        111 |          9 |         14 |        134 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\GetUserRequestProcessor.cs                                | C#         |         47 |          1 |          5 |         53 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LoginRequestProcessor.cs                                  | C#         |         41 |          1 |          7 |         49 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LogoutRequestProcessor.cs                                 | C#         |         24 |          0 |          6 |         30 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\OutlineMessageRequestProcessor.cs                         | C#         |         74 |          2 |         12 |         88 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\RegisteRequestProcessor.cs                                | C#         |         36 |          0 |          7 |         43 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\UpdateUserDataProcessor.cs                                | C#         |         36 |          0 |          4 |         40 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\ProtobufDispatcher.cs                                               | C#         |         76 |         16 |         15 |        107 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Server\CommunicateServer.cs                                         | C#         |         24 |          1 |          3 |         28 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Server\EntityServer.cs                                              | C#         |         21 |          0 |          3 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Server\LoginServer.cs                                               | C#         |         23 |          0 |          3 |         26 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\ServiceRegisteExtenstion.cs                                         | C#         |         39 |         16 |          7 |         62 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\Program.cs                                                                         | C#         |         14 |          0 |          0 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\ServerEntity\ClientChannel.cs                                                      | C#         |         29 |          0 |          7 |         36 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\ServerEntity\MessageUnit.cs                                                        | C#         |         29 |          0 |          5 |         34 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\ServerEntity\MessagesContainer.cs                                                  | C#         |         27 |          0 |          6 |         33 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\Services\FriendService.cs                                                          | C#         |         33 |          1 |          5 |         39 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\Services\Helper\CipherHelper.cs                                                    | C#         |         64 |         10 |          8 |         82 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\Services\LoginService.cs                                                           | C#         |         74 |         11 |         17 |        102 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\Services\UserService.cs                                                            | C#         |         44 |          3 |         10 |         57 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\appsettings.json                                                                   | JSON       |         39 |          0 |          0 |         39 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\bin\Debug\net8.0\ChatServer.Main.deps.json                                         | JSON       |      1,279 |          0 |          0 |      1,279 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\bin\Debug\net8.0\ChatServer.Main.runtimeconfig.json                                | JSON       |         13 |          0 |          0 |         13 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\bin\Debug\net8.0\appsettings.json                                                  | JSON       |         39 |          0 |          0 |         39 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Console.csproj.nuget.dgspec.json                                    | JSON       |        444 |          0 |          0 |        444 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Console.csproj.nuget.g.props                                        | XML        |         23 |          0 |          0 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Console.csproj.nuget.g.targets                                      | XML        |         21 |          0 |          0 |         21 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Main.csproj.nuget.dgspec.json                                       | JSON       |        398 |          0 |          0 |        398 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Main.csproj.nuget.g.props                                           | XML        |         23 |          0 |          0 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.Main.csproj.nuget.g.targets                                         | XML        |          9 |          0 |          0 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.csproj.nuget.dgspec.json                                            | JSON       |        444 |          0 |          0 |        444 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.csproj.nuget.g.props                                                | XML        |         23 |          0 |          0 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\ChatServer.csproj.nuget.g.targets                                              | XML        |         21 |          0 |          0 |         21 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs                    | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.AssemblyInfo.cs                                        | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Console.AssemblyInfo.cs                                | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Console.GeneratedMSBuildEditorConfig.editorconfig      | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Console.GlobalUsings.g.cs                              | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.GeneratedMSBuildEditorConfig.editorconfig              | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.GlobalUsings.g.cs                                      | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Main.AssemblyInfo.cs                                   | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Main.GeneratedMSBuildEditorConfig.editorconfig         | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net6.0\ChatServer.Main.GlobalUsings.g.cs                                 | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs                    | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net8.0\ChatServer.Main.AssemblyInfo.cs                                   | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net8.0\ChatServer.Main.GeneratedMSBuildEditorConfig.editorconfig         | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\Debug\net8.0\ChatServer.Main.GlobalUsings.g.cs                                 | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\project.assets.json                                                            | JSON       |      3,222 |          0 |          0 |      3,222 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\obj\project.packagespec.json                                                       | JSON       |          1 |          0 |          0 |          1 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\ChatServer.Test.csproj                                                             | XML        |         12 |          0 |          4 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\EchoClientHandler.cs                                                               | C#         |         29 |          0 |          7 |         36 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\Program.cs                                                                         | C#         |         49 |          0 |         10 |         59 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\bin\Debug\net8.0\ChatServer.Test.deps.json                                         | JSON       |        614 |          0 |          0 |        614 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\bin\Debug\net8.0\ChatServer.Test.runtimeconfig.json                                | JSON       |         12 |          0 |          0 |         12 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\ChatServer.Test.csproj.nuget.dgspec.json                                       | JSON       |        266 |          0 |          0 |        266 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\ChatServer.Test.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\ChatServer.Test.csproj.nuget.g.targets                                         | XML        |          7 |          0 |          0 |          7 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs                    | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\Debug\net8.0\ChatServer.Test.AssemblyInfo.cs                                   | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\Debug\net8.0\ChatServer.Test.GeneratedMSBuildEditorConfig.editorconfig         | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\Debug\net8.0\ChatServer.Test.GlobalUsings.g.cs                                 | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\project.assets.json                                                            | JSON       |      1,510 |          0 |          0 |      1,510 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Test\obj\project.packagespec.json                                                       | JSON       |          1 |          0 |          0 |          1 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\Application.cs                                                                        | C#         |         56 |         34 |         17 |        107 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\Server\ISocketServer.cs                                                               | C#         |         15 |          0 |          2 |         17 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\Server\SocketServer.cs                                                                | C#         |         80 |          8 |         16 |        104 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\Server\SocketServerBuilder.cs                                                         | C#         |         19 |          0 |          4 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\SocketServer.csproj                                                                   | XML        |         19 |          0 |          4 |         23 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\bin\Debug\net6.0\SocketServer.deps.json                                               | JSON       |        604 |          0 |          0 |        604 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\bin\Debug\net8.0\SocketServer.deps.json                                               | JSON       |        552 |          0 |          0 |        552 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs                       | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net6.0\SocketServer.AssemblyInfo.cs                                         | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net6.0\SocketServer.GeneratedMSBuildEditorConfig.editorconfig               | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net6.0\SocketServer.GlobalUsings.g.cs                                       | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs                       | C#         |          3 |          1 |          1 |          5 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net8.0\SocketServer.AssemblyInfo.cs                                         | C#         |          9 |         10 |          5 |         24 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net8.0\SocketServer.GeneratedMSBuildEditorConfig.editorconfig               | Properties |         13 |          0 |          1 |         14 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\Debug\net8.0\SocketServer.GlobalUsings.g.cs                                       | C#         |          7 |          1 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\SocketServer.csproj.nuget.dgspec.json                                             | JSON       |        115 |          0 |          0 |        115 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\SocketServer.csproj.nuget.g.props                                                 | XML        |         16 |          0 |          0 |         16 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\SocketServer.csproj.nuget.g.targets                                               | XML        |          7 |          0 |          0 |          7 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\project.assets.json                                                               | JSON       |      1,440 |          0 |          0 |      1,440 |
+| d:\LanguageLearnig\C#\ChatServer\SocketServer\obj\project.packagespec.json                                                          | JSON       |          1 |          0 |          0 |          1 |
+| Total                                                                                                                               |            |     27,212 |      1,658 |      1,501 |     30,371 |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

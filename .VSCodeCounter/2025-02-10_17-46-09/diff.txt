@@ -1,0 +1,43 @@
+Date : 2025-02-10 17:46:09
+Directory : d:\LanguageLearnig\C#\ChatServer
+Total : 10 files,  233 codes, 80 comments, 40 blanks, all 353 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |          9 |        165 |         80 |         40 |        285 |
+| JSON     |          1 |         68 |          0 |          0 |         68 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                        | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                           |         10 |        233 |         80 |         40 |        353 |
+| .vs                                                                                                         |          1 |         68 |          0 |          0 |         68 |
+| .vs\ChatServer                                                                                              |          1 |         68 |          0 |          0 |         68 |
+| .vs\ChatServer\v17                                                                                          |          1 |         68 |          0 |          0 |         68 |
+| ChatServer.Common                                                                                           |          1 |        120 |          4 |         17 |        141 |
+| ChatServer.Common\Protobuf                                                                                  |          1 |        120 |          4 |         17 |        141 |
+| ChatServer.Main                                                                                             |          8 |         45 |         76 |         23 |        144 |
+| ChatServer.Main\MessageOperate                                                                              |          8 |         45 |         76 |         23 |        144 |
+| ChatServer.Main\MessageOperate\Processor                                                                    |          8 |         45 |         76 |         23 |        144 |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                    | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| d:\LanguageLearnig\C#\ChatServer\.vs\ChatServer\v17\DocumentLayout.json                                     | JSON     |         68 |          0 |          0 |         68 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Common\Protobuf\ChatRelationProtocol.cs                         | C#       |        120 |          4 |         17 |        141 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendRequestProcessor.cs         | C#       |         19 |         12 |          6 |         37 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\FriendResponseProcessor.cs        | C#       |         30 |         16 |          8 |         54 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\GetUserRequestProcessor.cs        | C#       |         -2 |          7 |          1 |          6 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LoginRequestProcessor.cs          | C#       |         -2 |          7 |          1 |          6 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\LogoutRequestProcessor.cs         | C#       |          0 |          7 |          0 |          7 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\OutlineMessageRequestProcessor.cs | C#       |          4 |         10 |          5 |         19 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\RegisteRequestProcessor.cs        | C#       |         -2 |         10 |          1 |          9 |
+| d:\LanguageLearnig\C#\ChatServer\ChatServer.Main\MessageOperate\Processor\UpdateUserDataProcessor.cs        | C#       |         -2 |          7 |          1 |          6 |
+| Total                                                                                                       |          |        233 |         80 |         40 |        353 |
++-------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
