@@ -133,7 +133,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     NewFriendMessage newFriendSource = new NewFriendMessage
                     {
                         RelationTime = request.SolveTime.ToString(),
-                        Group = request.Group,
+                        Grouping = request.Group,
                         FrinedId = request.UserTargetId
                     };
                     await source.WriteAndFlushProtobufAsync(newFriendSource);
@@ -145,7 +145,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     NewFriendMessage newFriendTarget = new NewFriendMessage
                     {
                         RelationTime = request.SolveTime.ToString(),
-                        Group = unit.Message.Group,
+                        Grouping = unit.Message.Group,
                         FrinedId = request.UserFromId
                     };
                     await channel.WriteAndFlushProtobufAsync(newFriendTarget);

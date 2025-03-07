@@ -19,6 +19,7 @@ namespace ChatServer.Main.MessageOperate.Server
             messages.AddMessage<RegisteRequest>()
                 .AddMessage<LoginRequest>()
                 .AddMessage<LogoutRequest>()
+                .AddMessage<CreateGroupRequest>()
                 .AddMessage<OutlineMessageRequest>();
         }
     }

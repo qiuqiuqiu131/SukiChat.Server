@@ -4,6 +4,7 @@ using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
+using ChatServer.Main.Services;
 using DotNetty.Transport.Channels;
 using Google.Protobuf.Collections;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,12 +47,18 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         var friendRequestsTask = GetFriendRequestMessages(unit.Message.Id, time);
         //-- 操作：获取离线后聊天消息 --//
         var friendChatsTask = GetFriendChatMessage(unit.Message.Id, time);
+        //-- 操作：获取离线后的进群消息 --//
+        var enterGroupsTask = GetEnterGroupMessage(unit.Message.Id, time);
+        //-- 操作：获取离线后的群聊消息 --//
+        var groupChatsTask = GetGroupChatMessage(unit.Message.Id, time);
 
-        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask);
+        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,enterGroupsTask,groupChatsTask);
 
         var newFriends = newFriendsTask.Result;
         var friendRequests = friendRequestsTask.Result;
         var friendChats = friendChatsTask.Result;
+        var enterGroups = enterGroupsTask.Result;
+        var groupChats = groupChatsTask.Result;
         #endregion
 
         #region Step 2
@@ -61,6 +68,8 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         response.NewFriends.AddRange(newFriends);
         response.FriendRequests.AddRange(friendRequests);
         response.FriendChats.AddRange(friendChats);
+        response.EnterGroups.AddRange(enterGroups);
+        response.GroupChats.AddRange(groupChats);
 
         if (channel != null)
             await channel.WriteAndFlushProtobufAsync(response);
@@ -103,7 +112,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     //-- 找到离线时间后所有聊天消息 --//
     private async Task<IEnumerable<FriendChatMessage>> GetFriendChatMessage(string userId, DateTime offlineTime)
     {
-        using (var scope = serviceProvider.CreateScope())
+        using (var scope = serviceProvider.CreateScope()) 
         {
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -113,6 +122,47 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return chats.Select(mapper.Map<FriendChatMessage>);
+        }
+    }
+
+    private async Task<IEnumerable<GroupChatMessage>> GetGroupChatMessage(string userId, DateTime offlineTime)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            // 获取所有用户加入的群聊
+            var groupService = scope.ServiceProvider.GetRequiredService<IGroupService>();
+            var groupIds = await groupService.GetGroupsOfUser(userId);
+
+            // 获取所有群聊的消息
+            var chatGroupRepository = unitOfWork.GetRepository<ChatGroup>();
+            var chats = await chatGroupRepository.GetAllAsync(
+                predicate: d => groupIds.Contains(d.GroupId) && d.Time > offlineTime,
+                orderBy: d => d.OrderBy(d => d.Time));
+
+            return chats.Select(mapper.Map<GroupChatMessage>);
+        }
+    }
+
+    /// <summary>
+    ///  获取加入的群聊
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="offlineTime"></param>
+    /// <returns></returns>
+    private async Task<IEnumerable<EnterGroupMessage>> GetEnterGroupMessage(string userId, DateTime offlineTime)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            // 在GroupRelation中找离线时加入的群聊关系
+            var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
+            var relations = await groupRelationRepository.GetAllAsync(
+                predicate: d=> d.UserId.Equals(userId) && d.JoinTime > offlineTime);
+
+            return relations.Select(mapper.Map<EnterGroupMessage>);
         }
     }
 }

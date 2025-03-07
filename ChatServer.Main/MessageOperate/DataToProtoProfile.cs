@@ -39,9 +39,10 @@ namespace ChatServer.Main.MessageOperate
 
             #region NewFriendMessage + FriendRelation
             CreateMap<FriendRelation, NewFriendMessage>()
+                .ForMember(cp => cp.UserId, opt => opt.MapFrom(nfm => nfm.User1Id))
                 .ForMember(cp => cp.FrinedId, opt => opt.MapFrom(nfm => nfm.User2Id))
-                .ForMember(cp => cp.Group, opt => opt.MapFrom(nfm => nfm.Grouping))
-                .ForMember(cp => cp.RelationTime, opt => opt.MapFrom(nfm => nfm.GroupTime.ToString()));
+                .ForMember(cp => cp.RelationTime, opt => opt.MapFrom(nfm => nfm.GroupTime.ToString()))
+                .ForMember(cp => cp.Remark, opt => opt.MapFrom(nfm => nfm.Remark ?? string.Empty));
             #endregion
 
             #region ChatPrivate + FriendChatMessage
@@ -53,6 +54,21 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(cp => cp.Time, opt => opt.MapFrom(fcm => DateTime.Parse(fcm.Time)));
             #endregion
 
+            #region ChatGroup + GroupChatMessage
+            CreateMap<GroupChatMessage, ChatGroup>()
+                .ForMember(cg => cg.Message, opt => opt.MapFrom(gcm => ChatMessageHelper.EncruptChatMessage(gcm.Messages)))
+                .ForMember(cg => cg.Time,opt => opt.MapFrom(gcm =>  DateTime.Parse(gcm.Time)));
+            CreateMap<ChatGroup, GroupChatMessage>()
+                .ForMember(gcm => gcm.Messages, opt => opt.MapFrom(cg => ChatMessageHelper.DecruptChatMessage(cg.Message)))
+                .ForMember(gcm => gcm.Time, opt => opt.MapFrom(cg => cg.Time.ToString()));
+            #endregion
+
+            #region GroupRelation + EnterGroupMessage
+            CreateMap<GroupRelation, EnterGroupMessage>()
+                .ForMember(egm => egm.JoinTime, opt => opt.MapFrom(gr => gr.JoinTime.ToString()))
+                .ForMember(egm => egm.Remark, opt => opt.MapFrom(gr => gr.Remark ?? string.Empty))
+                .ForMember(egm => egm.NickName, opt => opt.MapFrom(gr => gr.NickName ?? string.Empty));
+            #endregion
         }
     }
 }

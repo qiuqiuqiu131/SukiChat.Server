@@ -2,10 +2,6 @@ using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChatServer.Main.Services;
 
@@ -50,6 +46,13 @@ public interface IGroupService
     /// <param name="groupId"></param>
     /// <returns></returns>
     Task<DateTime> MemberLastSpeakTime(string userId, string groupId);
+
+    /// <summary>
+    /// 获取某个用户加入的所有群聊ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    Task<List<string>> GetGroupsOfUser(string userId);
 }
 
 public class GroupService : IGroupService
@@ -179,6 +182,21 @@ public class GroupService : IGroupService
         catch
         {
             return DateTime.MinValue;
+        }
+    }
+
+    public async Task<List<string>> GetGroupsOfUser(string userId)
+    {
+        try
+        {
+            var repository = unitOfWork.GetRepository<GroupRelation>();
+            var result = await repository.GetAll(predicate: d => d.UserId.Equals(userId))
+                .Select(d => d.GroupId).ToListAsync();
+            return result;
+        }
+        catch
+        {
+            return new List<string>();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace ChatServer.Resources.Tools
         /// 接受到文件头
         /// </summary>
         /// <param name="fileHeader"></param>
-        public void ReceiveFileHeader(FileHeader fileHeader)
+        public async Task ReceiveFileHeader(FileHeader fileHeader)
         {
             if (FileUnitDicts.ContainsKey(fileHeader.Time)) return;
 
@@ -40,6 +40,7 @@ namespace ChatServer.Resources.Tools
             if(!fileInfo.Exists)
                 Directory.CreateDirectory(fileInfo.DirectoryName!);
             fileUnit.fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+            await fileUnit.fileStream.FlushAsync();
 
             FileUnitDicts.Add(fileHeader.Time, fileUnit);
         }

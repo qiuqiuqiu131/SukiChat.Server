@@ -58,7 +58,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 var lastSpeakTime = await groupService.MemberLastSpeakTime(member.UserId, member.GroupId);
                 var user = await userService.GetUser(member.UserId);
 
-                var memberMessage = new GroupMember
+                var memberMessage = new GroupMemberMessage
                 {
                     GroupId = member.GroupId,
                     JoinTime = member.JoinTime.ToString(),

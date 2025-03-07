@@ -19,6 +19,7 @@ namespace ChatServer.Main.MessageOperate.Server
             messages.AddMessage<GetUserRequest>()
                 .AddMessage<GroupMessageRequest>()
                 .AddMessage<GroupMembersRequest>()
+                .AddMessage<GroupMemberRequest>()
                 .AddMessage<UpdateUserData>();
         }
     }

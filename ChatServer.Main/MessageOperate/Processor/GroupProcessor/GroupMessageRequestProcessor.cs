@@ -52,7 +52,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
             {
                 Response = new CommonResponse { State = true },
                 GroupId = message.GroupId,
-                Description = group.Description,
+                Description = group.Description ?? string.Empty,
                 CreateTime = group.CreateTime.ToString(),
                 HeadPath = group.HeadPath,
                 MemberCount = count,

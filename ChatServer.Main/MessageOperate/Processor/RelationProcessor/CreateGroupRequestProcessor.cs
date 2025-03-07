@@ -67,27 +67,17 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 return;
             }
 
-            // 验证群名称长度
-            if (string.IsNullOrWhiteSpace(message.GroupName) || message.GroupName.Length > 30)
-            {
-                if (channel != null)
-                {
-                    await channel.WriteAndFlushProtobufAsync(new CreateGroupResponse
-                    {
-                        Response = new CommonResponse { State = false, Message = "群组名称不合法" }
-                    });
-                }
-                return;
-            }
-
+            #region 生成Entity
             // 使用IdGeneratorService生成群组ID
             string groupId = idGeneratorManager.GenerateGroupId();
             var group = new Group
             {
                 Id = groupId,
                 CreateTime = DateTime.Now,
-                Name = message.GroupName
+                HeadPath = "-1"
             };
+
+            string groupName = string.Empty;
 
             // 添加群主关系
             var groupRelation = new GroupRelation
@@ -95,8 +85,10 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 GroupId = groupId,
                 JoinTime = group.CreateTime,
                 Status = 0,
-                UserId = message.UserId
+                UserId = message.UserId,
+                Grouping = "默认分组"
             };
+            groupName += (await userService.GetUser(message.UserId)).Name;
 
             // 添加组员关系
             var friendRelations = new List<GroupRelation>();
@@ -108,16 +100,29 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     {
                         GroupId = groupId,
                         JoinTime = group.CreateTime,
+                        Grouping = "默认分组",
                         Status = 2,
                         UserId = friendId
                     });
+                    groupName += ",";
+                    groupName += (await userService.GetUser(friendId)).Name;
                 }
             }
 
+            if(groupName.Length > 10)
+            {
+                groupName = groupName.Substring(0, 8);
+                groupName += "..";
+            }
+            group.Name = groupName;
+            #endregion
+
+            // 数据库保存
             try
             {
                 var groupRepository = unitOfWork.GetRepository<Group>();
-                groupRepository.Update(group);
+                await groupRepository.InsertAsync(group);
+                await unitOfWork.SaveChangesAsync();
                 var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
                 groupRelationRepository.Update(groupRelation);
                 foreach (var friendRelation in friendRelations)
@@ -141,6 +146,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 await channel.WriteAndFlushProtobufAsync(new CreateGroupResponse
                 {
                     Response = new CommonResponse { State = true },
+                    GroupName = groupName,
                     GroupId = groupId,
                     Time = group.CreateTime.ToString()
                 });
@@ -156,6 +162,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     GroupId = friendRelation.GroupId,
                     UserIdFrom = message.UserId,
                     UserIdTarget = friendRelation.UserId,
+                    Grouping = "默认分组",
                     Time = group.CreateTime.ToString(),
                     Status = 2
                 });

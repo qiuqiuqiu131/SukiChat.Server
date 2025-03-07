@@ -39,7 +39,7 @@ namespace ChatServer.Resources.IOServer.ServerHandler
             if(message.GetType() == typeof(FileHeader))
             {
                 var mess = (FileHeader) message;
-                _fileOperator.ReceiveFileHeader(mess);
+                await _fileOperator.ReceiveFileHeader(mess);
                 FilePackResponse response = new FilePackResponse
                 {
                     Success = true,
@@ -80,7 +80,10 @@ namespace ChatServer.Resources.IOServer.ServerHandler
             };
             
             if(channel.TryGetTarget(out IChannel? cn) && cn != null)
+            {
+                // Console.WriteLine($"FileAllReceived:{result.Item1},{result.Item2}");
                 await cn.WriteAndFlushProtobufAsync(response);
+            }
         }
     }
 }
