@@ -176,8 +176,10 @@ public class GroupService : IGroupService
             var time = await repository.GetFirstOrDefaultAsync(
                 predicate:d => d.GroupId.Equals(groupId) && d.UserFromId.Equals(groupId),
                 orderBy: o => o.OrderByDescending(d => d.Time));
-
-            return time.Time;
+            if(time != null) 
+                return time.Time;
+            else 
+                return DateTime.MinValue;
         }
         catch
         {

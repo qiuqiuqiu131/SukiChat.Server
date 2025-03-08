@@ -50,10 +50,10 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 GroupId = groupRelation.GroupId,
                 JoinTime = groupRelation.JoinTime.ToString(),
                 LastSpeakTime = lastSpeakTime.ToString(),
-                Nickname = groupRelation.NickName,
+                Nickname = groupRelation.NickName ?? user.Name,
                 UserId = groupRelation.UserId,
                 Status = groupRelation.Status,
-                HeadIndex = user.HeadIndex
+                HeadIndex = user.HeadCount == 0 ? -1 : user.HeadIndex
             };
 
             if (channel != null)

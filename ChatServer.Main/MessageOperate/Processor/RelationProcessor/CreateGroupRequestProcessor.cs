@@ -109,9 +109,9 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 }
             }
 
-            if(groupName.Length > 10)
+            if(groupName.Length > 16)
             {
-                groupName = groupName.Substring(0, 8);
+                groupName = groupName.Substring(0, 14);
                 groupName += "..";
             }
             group.Name = groupName;

@@ -63,7 +63,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                     GroupId = member.GroupId,
                     JoinTime = member.JoinTime.ToString(),
                     LastSpeakTime = lastSpeakTime.ToString(),
-                    Nickname = member.NickName,
+                    Nickname = member.NickName ?? string.Empty,
                     UserId = member.UserId,
                     Status = member.Status,
                     HeadIndex = user.HeadIndex
