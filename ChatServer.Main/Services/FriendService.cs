@@ -1,6 +1,7 @@
 ﻿using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace ChatServer.Main.Services
     public interface IFriendService
     {
         public Task<bool> IsFriend(string Id1, string Id2);
+        public Task<List<string>> GetFriendsId(string id);
     }
 
     public class FriendService : IFriendService
@@ -22,6 +24,13 @@ namespace ChatServer.Main.Services
         public FriendService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
+        }
+
+        public async Task<List<string>> GetFriendsId(string id)
+        {
+            var friendRespository = unitOfWork.GetRepository<FriendRelation>();
+            var friendIds = await friendRespository.GetAll(predicate: d => d.User1Id.Equals(id)).Select(d => d.User2Id).ToListAsync();
+            return friendIds;
         }
 
         // 判断是否已经为好友

@@ -11,6 +11,7 @@ using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Manager;
 using ChatServer.Main.Services;
 using DotNetty.Transport.Channels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
 {
@@ -28,21 +29,22 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
     public class CreateGroupRequestProcessor : IProcessor<CreateGroupRequest>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IUserService userService;
         private readonly IFriendService friendService;
+        private readonly IUserService userService;
         private readonly IClientChannelManager channelManager;
         private readonly IIdGeneratorManager idGeneratorManager;
 
         public CreateGroupRequestProcessor(
             IUnitOfWork unitOfWork,
-            IUserService userService,
+            IServiceProvider serviceProvider,
             IFriendService friendService,
+            IUserService userService,
             IClientChannelManager channelManager,
             IIdGeneratorManager idGeneratorManager)
         {
             this.unitOfWork = unitOfWork;
-            this.userService = userService;
             this.friendService = friendService;
+            this.userService = userService;
             this.channelManager = channelManager;
             this.idGeneratorManager = idGeneratorManager;
         }
@@ -54,8 +56,8 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             var message = unit.Message;
 
             // 验证用户是否存在
-            var isUser = userService.IsUserExist(message.UserId);
-            if (isUser == null)
+            var isUser = await userService.IsUserExist(message.UserId);
+            if (!isUser)
             {
                 if (channel != null)
                 {
@@ -88,7 +90,8 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 UserId = message.UserId,
                 Grouping = "默认分组"
             };
-            groupName += (await userService.GetUser(message.UserId)).Name;
+            var user = await userService.GetUser(message.UserId);
+            groupName += user.Name;
 
             // 添加组员关系
             var friendRelations = new List<GroupRelation>();
@@ -104,8 +107,9 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                         Status = 2,
                         UserId = friendId
                     });
+                    var friend = await userService.GetUser(friendId);
                     groupName += ",";
-                    groupName += (await userService.GetUser(friendId)).Name;
+                    groupName += friend.Name;
                 }
             }
 
@@ -155,7 +159,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             // 通知被拉入群者
             foreach (var friendRelation in friendRelations)
             {
-                var friendChannel = channelManager.GetClient(friendRelation.GroupId);
+                var friendChannel = channelManager.GetClient(friendRelation.UserId);
                 if(friendChannel == null) continue;
                 _ = friendChannel.WriteAndFlushProtobufAsync(new PullGroupMessage
                 {
