@@ -22,7 +22,9 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<GroupMemberRequest>()
                 .AddMessage<GroupMemberIdsRequest>()
                 .AddMessage<UpdateUserDataRequest>()
-                .AddMessage<UpdateGroupMessageRequest>();
+                .AddMessage<UpdateGroupMessageRequest>()
+                .AddMessage<UpdateFriendRelationRequest>()
+                .AddMessage<UpdateGroupRelationRequest>();
         }
     }
 }

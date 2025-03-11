@@ -51,7 +51,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 Name = message.Name,
                 Description = message.Description,
                 CreateTime = DateTime.Parse(message.CreateTime),
-                HeadPath = message.HeadPath,
+                HeadIndex = message.HeadIndex,
                 Id = message.GroupId
             };
 

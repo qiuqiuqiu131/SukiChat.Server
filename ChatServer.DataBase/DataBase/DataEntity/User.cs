@@ -15,8 +15,7 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         [Required]
         public bool IsMale { get; set; } = true;
 
-        [Required] 
-        public DateOnly Birth { get; set; }
+        public DateOnly? Birth { get; set; }
 
         [Required]
         [StringLength(50)]

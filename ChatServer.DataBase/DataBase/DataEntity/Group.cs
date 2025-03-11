@@ -24,6 +24,6 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public DateTime CreateTime { get; set; }
 
         [Required]
-        public string HeadPath { get; set; }
+        public int HeadIndex { get; set; } = 1;
     }
 }

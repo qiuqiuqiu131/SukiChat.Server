@@ -44,9 +44,13 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
 
             var groupRepository = unitOfWork.GetRepository<Group>();
             var group = await groupRepository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(message.GroupId));
-            
-            var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
-            int count = await groupRelationRepository.CountAsync(d => d.GroupId.Equals(message.GroupId));
+
+            if (group == null)
+            {
+                if(channel != null)
+                    await channel.WriteAndFlushProtobufAsync(new GroupMessage { Response = new CommonResponse { State = false } });
+                return;
+            }
 
             GroupMessage response = new GroupMessage
             {
@@ -54,8 +58,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 GroupId = message.GroupId,
                 Description = group.Description ?? string.Empty,
                 CreateTime = group.CreateTime.ToString(),
-                HeadPath = group.HeadPath,
-                MemberCount = count,
+                HeadIndex = group.HeadIndex,
                 Name = group.Name
             };
 

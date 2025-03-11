@@ -60,7 +60,6 @@ namespace ChatServer.Main.Services
                 Name = Name,
                 HeadCount = 0,
                 HeadIndex = 0,
-                Introduction = "",
                 Password = encryptPassword,
                 RegisteTime = DateTime.Now };
 

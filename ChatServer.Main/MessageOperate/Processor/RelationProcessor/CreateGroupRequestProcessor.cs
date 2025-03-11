@@ -76,7 +76,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             {
                 Id = groupId,
                 CreateTime = DateTime.Now,
-                HeadPath = "-1"
+                HeadIndex = 1
             };
 
             string groupName = string.Empty;
