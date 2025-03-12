@@ -99,9 +99,8 @@ namespace ChatServer.Main.IOServer.Manager
             // 通知其他在线用户，此用户已经上线
             // 获取好友服务
             var friendService = serviceProvider.GetRequiredService<IFriendService>();
-
-            // 获取所有在线用户
-            var onlineUsers = channels.Where(c => c.isLogined && c.userId != null).ToList();
+            
+            var friendIds = await friendService.GetFriendsId(Id);
 
             // 创建上线消息
             var loginMessage = new FriendLoginMessage
@@ -111,16 +110,11 @@ namespace ChatServer.Main.IOServer.Manager
             };
 
             // 向所有在线的好友发送上线消息
-            foreach (var onlineUser in onlineUsers)
+            foreach (var friendId in friendIds)
             {
-                if (onlineUser.userId == null || onlineUser.userId.Equals(Id)) continue;
-
-                // 判断是否为好友
-                if (await friendService.IsFriend(onlineUser.userId, Id))
-                {
-                    // 发送上线消息
-                    await onlineUser.Channel.WriteAndFlushProtobufAsync(loginMessage);
-                }
+                var friend = GetClient(friendId);
+                if(friend != null)
+                    await friend.WriteAndFlushProtobufAsync(loginMessage);
             }
         }
 

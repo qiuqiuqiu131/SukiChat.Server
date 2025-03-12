@@ -77,11 +77,25 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
             return;
         }
 
+        bool isMember = await groupService.IsGroupMember(message.UserId, message.GroupId);
+        if (isMember)
+        {
+            if(channel != null)
+            {
+                await channel.WriteAndFlushProtobufAsync(new JoinGroupRequestResponseFromServer
+                {
+                    Response = new CommonResponse { State = false, Message = "您已经是此群成员了" }
+                });
+            }
+            return;
+        }
+
         var groupRequest = new GroupRequest
         {
             GroupId = message.GroupId,
             UserFromId = message.UserId,
-            RequestTime = DateTime.Now
+            RequestTime = DateTime.Now,
+            Message = message.Message,
         };
 
         try

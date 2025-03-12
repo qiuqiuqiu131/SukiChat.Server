@@ -90,10 +90,27 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         // 更改数据库，保存记录
         try
         {
+            var now = DateTime.Now;
+
             groupRequest.IsSolved = true;
             groupRequest.IsAccept = message.Accept;
             groupRequest.AcceptByUserId = message.UserId;
-            groupRequest.SolveTime = DateTime.Now;
+            groupRequest.SolveTime = now;
+
+            // 添加群成员,如果已经添加了，那么跳过
+            var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
+            var entity = await groupRelationRepository.GetFirstOrDefaultAsync(predicate: d => d.GroupId.Equals(groupRequest.GroupId) && d.UserId.Equals(groupRequest.UserFromId));
+            if(entity == null)
+            {
+                await groupRelationRepository.InsertAsync(new GroupRelation
+                {
+                    GroupId = groupRequest.GroupId,
+                    UserId = groupRequest.UserFromId,
+                    Grouping = "默认分组",
+                    Status = 2,
+                    JoinTime = now
+                });
+            }
             await unitOfWork.SaveChangesAsync();
         }
         catch
@@ -105,6 +122,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
                     Response = new CommonResponse { State = false, Message = "服务器出错" }
                 });
             }
+            return;
         }
 
         // 成功保存记录
@@ -128,7 +146,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             Response = new CommonResponse { State = true },
             RequestId = groupRequest.Id,
             UserId = groupRequest.AcceptByUserId,
-            Time = groupRequest.SolveTime.ToString()
+            Time = groupRequest.SolveTime.ToString(),
+            Accept = groupRequest.IsAccept
         };
 
         List<string> managerIds = await groupService.GetGroupManagers(groupRequest.GroupId);
@@ -149,6 +168,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         var newMember = new NewMemberJoinMessage
         {
             UserId = groupRequest.UserFromId,
+            GroupId = groupRequest.GroupId,
             Time = groupRequest.SolveTime.ToString()
         };
 

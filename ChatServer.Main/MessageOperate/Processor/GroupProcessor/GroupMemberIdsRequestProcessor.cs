@@ -31,8 +31,8 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
             unit.Channel.TryGetTarget(out var channel);
             var message = unit.Message;
 
-            // 验证是否为本群成员
-            if (!await groupService.IsGroupMember(message.UserId, message.GroupId))
+            // 验证是否为用户
+            if (!await userService.IsUserExist(message.UserId))
             {
                 if (channel != null)
                 {

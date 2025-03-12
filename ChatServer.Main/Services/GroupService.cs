@@ -53,6 +53,13 @@ public interface IGroupService
     /// <param name="userId"></param>
     /// <returns></returns>
     Task<List<string>> GetGroupsOfUser(string userId);
+
+    /// <summary>
+    /// 获取某个用户加入的所有为管理员或者群主的群聊ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    Task<List<string>> GetGroupsOfManager(string userId);
 }
 
 public class GroupService : IGroupService
@@ -154,6 +161,12 @@ public class GroupService : IGroupService
         }
     }
 
+    /// <summary>
+    /// 判断用户是否为群组管理员
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="groupId">群组ID</param>
+    /// <returns>是否为成员</returns>
     public async Task<bool> IsGroupManager(string userId, string groupId)
     {
         try
@@ -168,6 +181,12 @@ public class GroupService : IGroupService
         }
     }
 
+    /// <summary>
+    /// 获取用户在群组中最后一次发送消息的时间
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="groupId"></param>
+    /// <returns></returns>
     public async Task<DateTime> MemberLastSpeakTime(string userId, string groupId)
     {
         try
@@ -187,12 +206,38 @@ public class GroupService : IGroupService
         }
     }
 
+    /// <summary>
+    /// 获取某个用户加入的所有群聊ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<List<string>> GetGroupsOfUser(string userId)
     {
         try
         {
             var repository = unitOfWork.GetRepository<GroupRelation>();
             var result = await repository.GetAll(predicate: d => d.UserId.Equals(userId))
+                .Select(d => d.GroupId).ToListAsync();
+            return result;
+        }
+        catch
+        {
+            return new List<string>();
+        }
+    }
+
+    /// <summary>
+    /// 获取某个用户加入的所有为管理员或者群主的群聊ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<List<string>> GetGroupsOfManager(string userId)
+    {
+        try
+        {
+            var repository = unitOfWork.GetRepository<GroupRelation>();
+            var result = await repository.GetAll(
+                predicate: d => d.UserId.Equals(userId) && (d.Status == 0 || d.Status == 1))
                 .Select(d => d.GroupId).ToListAsync();
             return result;
         }

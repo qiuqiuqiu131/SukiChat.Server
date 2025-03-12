@@ -21,6 +21,8 @@ namespace ChatServer.Main.MessageOperate.Server
         {
             messages.AddMessage<FriendRequestFromClient>()
                 .AddMessage<FriendResponseFromClient>()
+                .AddMessage<JoinGroupRequestFromClient>()
+                .AddMessage<JoinGroupResponseFromClient>()
                 .AddMessage<FriendChatMessage>()
                 .AddMessage<FriendWritingMessage>()
                 .AddMessage<GroupChatMessage>();

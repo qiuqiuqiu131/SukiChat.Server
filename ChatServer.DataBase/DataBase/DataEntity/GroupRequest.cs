@@ -35,6 +35,9 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public DateTime RequestTime { get; set; }
 
         [Required]
+        public string Message { get; set; }
+
+        [Required]
         public bool IsAccept { get; set; } = false;
 
         [Required]

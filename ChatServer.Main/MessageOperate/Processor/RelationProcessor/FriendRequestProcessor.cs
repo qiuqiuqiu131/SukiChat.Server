@@ -24,16 +24,19 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly IUserService userService;
     private readonly IFriendService friendService;
     private readonly IClientChannelManager channelManager;
     private readonly IMapper mapper;
 
     public FriendRequestProcessor(IUnitOfWork unitOfWork,
+        IUserService userService,
         IFriendService friendService,
         IClientChannelManager channelManager,
         IMapper mapper)
     {
         this.unitOfWork = unitOfWork;
+        this.userService = userService;
         this.friendService = friendService;
         this.channelManager = channelManager;
         this.mapper = mapper;
@@ -45,6 +48,18 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
 
 
         #region Step 1
+        //-- 判断：不是用户
+        if(!await userService.IsUserExist(unit.Message.UserTargetId) 
+            || !await userService.IsUserExist(unit.Message.UserFromId))
+        {
+            if (channel != null)
+                await channel.WriteAndFlushProtobufAsync(new FriendRequestFromClientResponse
+                {
+                    Response = new CommonResponse { State = false, Message = "消息源错误" }
+                });
+            return;
+        }
+
         //-- 判断：不能添加自己为好友 --//
         if (unit.Message.UserTargetId.Equals(unit.Message.UserFromId))
         {

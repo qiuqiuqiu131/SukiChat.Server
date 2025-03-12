@@ -39,6 +39,14 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(frm => frm.RequestId,opt => opt.MapFrom(fr => fr.Id));
             #endregion
 
+            #region GroupRequest
+            CreateMap<GroupRequest, GroupRequestMessage>()
+                .ForMember(grm => grm.RequestTime, opt => opt.MapFrom(gr => gr.RequestTime.ToString()))
+                .ForMember(grm => grm.RequestId, opt => opt.MapFrom(gr => gr.Id))
+                .ForMember(grm => grm.AcceptByUserId, opt => opt.MapFrom(gm => gm.AcceptByUserId == null ? string.Empty : gm.AcceptByUserId))
+                .ForMember(grm => grm.SolvedTime, opt => opt.MapFrom(gr => gr.SolveTime == null ? string.Empty: gr.SolveTime.ToString()));
+            #endregion
+
             #region NewFriendMessage + FriendRelation
             CreateMap<FriendRelation, NewFriendMessage>()
                 .ForMember(cp => cp.UserId, opt => opt.MapFrom(nfm => nfm.User1Id))
