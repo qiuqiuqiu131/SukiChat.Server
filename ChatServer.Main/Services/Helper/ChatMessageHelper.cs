@@ -44,6 +44,16 @@ namespace ChatServer.Main.Services.Helper
                         stringBuilder.Append(chatMessage.FileMess.FileType);
                         stringBuilder.Append("1\n\t3\n\t1\n\t");
                         break;
+                    case ChatMessage.ContentOneofCase.SystemMessage:
+                        stringBuilder.Append((int)chatMessage.ContentCase);
+                        foreach(var systemBlock in chatMessage.SystemMessage.Blocks)
+                        {
+                            stringBuilder.Append(systemBlock.Text);
+                            stringBuilder.Append("__");
+                            stringBuilder.Append(systemBlock.Bold?"1":"0");
+                            stringBuilder.Append("5\n\t7\n\t5\n\t");
+                        }
+                        break;
                 }
             }
             return stringBuilder.ToString();
@@ -104,6 +114,21 @@ namespace ChatServer.Main.Services.Helper
                             }
                         };
                         chatMessages.Add(fileMess);
+                        break;
+                    case ChatMessage.ContentOneofCase.SystemMessage:
+                        string[] system_spliter = content.Split("5\n\t7\n\t5\n\t");
+                        SystemMessage systemMessage = new SystemMessage();
+                        foreach( var system in system_spliter)
+                        {
+                            if(string.IsNullOrWhiteSpace(system)) continue;
+                            string[] block_spliter = system.Split("__");
+                            systemMessage.Blocks.Add(new SystemMessageBlock
+                            {
+                                Text = block_spliter[0],
+                                Bold = block_spliter[1].Equals("0") ? false : true
+                            });
+                        }
+                        chatMessages.Add(new ChatMessage { SystemMessage = systemMessage});
                         break;
                 }
             }

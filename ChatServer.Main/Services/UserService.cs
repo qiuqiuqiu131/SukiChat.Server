@@ -1,5 +1,6 @@
 ﻿using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,13 @@ namespace ChatServer.Main.Services
         public Task<User> GetUser(string userId);
     }
 
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IServiceProvider serviceProvider):base(serviceProvider)
         {
-            this.unitOfWork = unitOfWork;
+            unitOfWork = _scopedProvider.ServiceProvider.GetRequiredService<IUnitOfWork>();
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace ChatServer.Main.Services;
@@ -62,14 +63,14 @@ public interface IGroupService
     Task<List<string>> GetGroupsOfManager(string userId);
 }
 
-public class GroupService : IGroupService
+public class GroupService : BaseService,IGroupService
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ILogger logger;
 
-    public GroupService(IUnitOfWork unitOfWork, ILogger logger)
+    public GroupService(IServiceProvider serviceProvider, ILogger logger) : base(serviceProvider)
     {
-        this.unitOfWork = unitOfWork;
+        unitOfWork = _scopedProvider.ServiceProvider.GetRequiredService<IUnitOfWork>();
         this.logger = logger;
     }
 

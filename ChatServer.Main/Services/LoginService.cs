@@ -23,14 +23,14 @@ namespace ChatServer.Main.Services
         Task UserOutline(ClientChannel client);
     }
 
-    public class LoginService : ILoginService
+    public class LoginService : BaseService,ILoginService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ICipherHelper cipherHelper;
 
-        public LoginService(IUnitOfWork unitOfWork, ICipherHelper cipherHelper)
+        public LoginService(IServiceProvider serviceProvider, ICipherHelper cipherHelper):base(serviceProvider)
         {
-            this.unitOfWork = unitOfWork;
+            unitOfWork = _scopedProvider.ServiceProvider.GetRequiredService<IUnitOfWork>();
             this.cipherHelper = cipherHelper;
         }
 

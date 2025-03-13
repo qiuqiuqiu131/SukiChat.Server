@@ -15,11 +15,8 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey(nameof(UserFrom))]
         [StringLength(10)]
         public string UserFromId { get; set; }
-        [Required]
-        public User UserFrom { get; set; }
 
         [Required]
         [ForeignKey(nameof(Group))]

@@ -5,12 +5,15 @@ using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
+using ChatServer.Main.Services.Helper;
 using DotNetty.Transport.Channels;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 
@@ -29,15 +32,15 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponseFromClient>
 {
     private readonly IClientChannelManager clientChannelManager;
-    private readonly IGroupService groupService;
+    private readonly IServiceProvider serviceProvider;
     private readonly IUnitOfWork unitOfWork;
 
     public JoinGroupResponseFromClientProcessor(IClientChannelManager clientChannelManager,
-        IGroupService groupService,
+        IServiceProvider serviceProvider,
         IUnitOfWork unitOfWork)
     {
         this.clientChannelManager = clientChannelManager;
-        this.groupService = groupService;
+        this.serviceProvider = serviceProvider;
         this.unitOfWork = unitOfWork;
     }
 
@@ -74,7 +77,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         }
 
         // 验证用户是否为此群组的Manager
-        var isManager = await groupService.IsGroupManager(message.UserId, groupRequest.GroupId);
+        var groupService1 = serviceProvider.GetRequiredService<IGroupService>();
+        var isManager = await groupService1.IsGroupManager(message.UserId, groupRequest.GroupId);
         if (!isManager)
         {
             if (channel != null)
@@ -87,6 +91,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             return;
         }
 
+        bool isMember = false;
+
         // 更改数据库，保存记录
         try
         {
@@ -96,11 +102,13 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             groupRequest.IsAccept = message.Accept;
             groupRequest.AcceptByUserId = message.UserId;
             groupRequest.SolveTime = now;
+            await unitOfWork.SaveChangesAsync();
+            groupRequestRepository.ChangeEntityState(groupRequest, Microsoft.EntityFrameworkCore.EntityState.Detached);
 
             // 添加群成员,如果已经添加了，那么跳过
             var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
             var entity = await groupRelationRepository.GetFirstOrDefaultAsync(predicate: d => d.GroupId.Equals(groupRequest.GroupId) && d.UserId.Equals(groupRequest.UserFromId));
-            if(entity == null)
+            if (entity == null)
             {
                 await groupRelationRepository.InsertAsync(new GroupRelation
                 {
@@ -111,6 +119,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
                     JoinTime = now
                 });
             }
+            else
+                isMember = true;
             await unitOfWork.SaveChangesAsync();
         }
         catch
@@ -124,6 +134,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             }
             return;
         }
+
+
 
         // 成功保存记录
         // 发送给请求者，发送请求回应
@@ -140,6 +152,8 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             });
         }
 
+
+
         // 发送给管理员，此请求已经被处理
         var response = new JoinGroupResponseResponseFromServer
         {
@@ -149,6 +163,9 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             Time = groupRequest.SolveTime.ToString(),
             Accept = groupRequest.IsAccept
         };
+
+
+        var groupService = serviceProvider.GetRequiredService<IGroupService>();
 
         List<string> managerIds = await groupService.GetGroupManagers(groupRequest.GroupId);
         var managerChannels = managerIds.AsParallel().Select(id =>
@@ -164,6 +181,9 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         }
         managerChannels.Clear();
 
+        if (isMember)
+            return;
+
         // 通知群成员，有新成员加入
         var newMember = new NewMemberJoinMessage
         {
@@ -173,16 +193,57 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         };
 
         List<string> memberIds = await groupService.GetGroupMembers(groupRequest.GroupId);
-        var memberChannels = managerIds.AsParallel().Select(id =>
+        var memberChannels = new List<IChannel>();
+        foreach(var memberId in memberIds)
         {
-            var managerChannel = clientChannelManager.GetClient(id);
-            return new { Id = id, Channel = managerChannel };
-        }).ToList();
+            var client = clientChannelManager.GetClient(memberId);
+            if(client != null)
+                memberChannels.Add(client);
+        }
+
+        foreach (var memberChannel in memberChannels)
+            await memberChannel.WriteAndFlushProtobufAsync(newMember);
+       
+
+
+        // 发送群通知消息
+        var userService = serviceProvider.GetRequiredService<IUserService>();
+        var user = await userService.GetUser(groupRequest.UserFromId);
+        var chatMessage = new GroupChatMessage
+        {
+            GroupId = groupRequest.GroupId,
+            UserFromId = "System",
+            Time = DateTime.Now.ToString(),
+        };
+        chatMessage.Messages.Add(new ChatMessage
+        {
+            SystemMessage = new SystemMessage
+            {
+                Blocks =
+                {
+                    new SystemMessageBlock{Text = user.Name,Bold = true},
+                    new SystemMessageBlock{Text = "加入了群聊"}
+                }
+            }
+        });
+
+        // 保存到数据库
+        ChatGroup chatGroup = new ChatGroup
+        {
+            UserFromId = "System",
+            GroupId = groupRequest.GroupId,
+            Message = ChatMessageHelper.EncruptChatMessage(chatMessage.Messages),
+            Time = DateTime.Now,
+        };
+        var respository = unitOfWork.GetRepository<ChatGroup>();
+        await respository.InsertAsync(chatGroup);
+        await unitOfWork.SaveChangesAsync();
+
+        chatMessage.Id = chatGroup.Id;
 
         foreach (var memberChannel in memberChannels)
         {
-            if (memberChannel.Channel != null)
-                await memberChannel.Channel.WriteAndFlushProtobufAsync(newMember);
+            await memberChannel.WriteAndFlushProtobufAsync(chatMessage);
         }
     }
 }
