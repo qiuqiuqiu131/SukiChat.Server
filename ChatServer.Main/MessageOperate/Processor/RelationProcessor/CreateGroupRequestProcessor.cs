@@ -10,6 +10,7 @@ using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Manager;
 using ChatServer.Main.Services;
+using ChatServer.Main.Services.Helper;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -169,6 +170,76 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     Grouping = "默认分组",
                     Time = group.CreateTime.ToString(),
                     Status = 2
+                });
+            }
+
+
+            // 发送被拉入群的系统消息
+            List<GroupChatMessage> messages = new List<GroupChatMessage>();
+            foreach (var friendId in message.FriendId)
+            {
+                // 构建消息并保存
+                var friend = await userService.GetUser(friendId);
+                var chatMessage = new GroupChatMessage
+                {
+                    GroupId = groupId,
+                    UserFromId = "System",
+                    Time = group.CreateTime.ToString(),
+                };
+
+                chatMessage.Messages.Add(new ChatMessage
+                {
+                    SystemMessage = new SystemMessage
+                    {
+                        Blocks =
+                        {
+                            new SystemMessageBlock{Text = user.Name,Bold = true},
+                            new SystemMessageBlock{Text = "邀请"},
+                            new SystemMessageBlock{Text = friend.Name,Bold = true},
+                            new SystemMessageBlock{Text = "加入群聊"}
+                        }
+                    }
+                });
+
+                // 保存到数据库
+                ChatGroup chatGroup = new ChatGroup
+                {
+                    UserFromId = "System",
+                    GroupId = groupId,
+                    Message = ChatMessageHelper.EncruptChatMessage(chatMessage.Messages),
+                    Time = group.CreateTime,
+                };
+
+                try
+                {
+                    var respository = unitOfWork.GetRepository<ChatGroup>();
+                    await respository.InsertAsync(chatGroup);
+                    await unitOfWork.SaveChangesAsync();
+                }
+                catch { continue; }
+
+                chatMessage.Id = chatGroup.Id;
+
+                messages.Add(chatMessage);
+            }
+
+            _ = Task.Run(async () =>
+            {
+                if (channel != null)
+                    foreach (var charMessage in messages)
+                        await channel.WriteAndFlushProtobufAsync(charMessage);
+            });
+
+            foreach (var friendId in message.FriendId)
+            {
+                var friendChannel = channelManager.GetClient(friendId);
+                if (friendChannel == null) continue;
+                _ = Task.Run(async () =>
+                {
+                    foreach (var chatMessage in messages)
+                    {
+                        await friendChannel.WriteAndFlushProtobufAsync(chatMessage);
+                    }
                 });
             }
         }

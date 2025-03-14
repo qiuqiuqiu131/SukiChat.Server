@@ -46,22 +46,16 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 return;
             }
 
-            var group = new Group
-            {
-                Name = message.Name,
-                Description = message.Description,
-                CreateTime = DateTime.Parse(message.CreateTime),
-                HeadIndex = message.HeadIndex,
-                Id = message.GroupId
-            };
-
-
             bool success = true;
             try
             {
                 var groupRepository = unitOfWork.GetRepository<Group>();
-                groupRepository.Update(group);
+                var group = await groupRepository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(message.GroupId), disableTracking: false);
+                group.Description = message.Description;
+                group.Name = message.Name;
+                group.HeadIndex = message.HeadIndex;
                 await unitOfWork.SaveChangesAsync();
+                groupRepository.ChangeEntityState(group, Microsoft.EntityFrameworkCore.EntityState.Detached);
             }
             catch
             {
@@ -84,9 +78,11 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                     GroupId = message.GroupId,
                 };
 
+                // 通知所有成员，group信息发生变化
                 var memberIds = await groupService.GetGroupMembers(message.GroupId);
                 foreach (var memberId in memberIds)
                 {
+                    if (memberId.Equals(message.UserId)) continue;
                     var member = channelManager.GetClient(memberId);
                     if(member != null)
                     {

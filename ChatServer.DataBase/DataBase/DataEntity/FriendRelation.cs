@@ -40,5 +40,8 @@ namespace ChatServer.DataBase.DataBase.DataEntity
 
         [Required]
         public bool IsTop { get; set; } = false;
+
+        [Required]
+        public int LastChatId { get; set; } = 0;
     }
 }
