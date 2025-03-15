@@ -105,23 +105,26 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             await unitOfWork.SaveChangesAsync();
             groupRequestRepository.ChangeEntityState(groupRequest, Microsoft.EntityFrameworkCore.EntityState.Detached);
 
-            // 添加群成员,如果已经添加了，那么跳过
-            var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
-            var entity = await groupRelationRepository.GetFirstOrDefaultAsync(predicate: d => d.GroupId.Equals(groupRequest.GroupId) && d.UserId.Equals(groupRequest.UserFromId));
-            if (entity == null)
+            if(message.Accept)
             {
-                await groupRelationRepository.InsertAsync(new GroupRelation
+                // 添加群成员,如果已经添加了，那么跳过
+                var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
+                var entity = await groupRelationRepository.GetFirstOrDefaultAsync(predicate: d => d.GroupId.Equals(groupRequest.GroupId) && d.UserId.Equals(groupRequest.UserFromId));
+                if (entity == null)
                 {
-                    GroupId = groupRequest.GroupId,
-                    UserId = groupRequest.UserFromId,
-                    Grouping = "默认分组",
-                    Status = 2,
-                    JoinTime = now
-                });
+                    await groupRelationRepository.InsertAsync(new GroupRelation
+                    {
+                        GroupId = groupRequest.GroupId,
+                        UserId = groupRequest.UserFromId,
+                        Grouping = "默认分组",
+                        Status = 2,
+                        JoinTime = now
+                    });
+                }
+                else
+                    isMember = true;
+                await unitOfWork.SaveChangesAsync();
             }
-            else
-                isMember = true;
-            await unitOfWork.SaveChangesAsync();
         }
         catch
         {
@@ -181,7 +184,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         }
         managerChannels.Clear();
 
-        if (isMember)
+        if (isMember || !message.Accept)
             return;
 
         // 通知群成员，有新成员加入
