@@ -227,7 +227,10 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             {
                 if (channel != null)
                     foreach (var charMessage in messages)
+                    {
                         await channel.WriteAndFlushProtobufAsync(charMessage);
+                        await Task.Delay(100);
+                    }
             });
 
             foreach (var friendId in message.FriendId)
@@ -239,6 +242,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     foreach (var chatMessage in messages)
                     {
                         await friendChannel.WriteAndFlushProtobufAsync(chatMessage);
+                        await Task.Delay(100);
                     }
                 });
             }

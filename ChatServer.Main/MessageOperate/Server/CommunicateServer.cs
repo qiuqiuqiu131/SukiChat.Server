@@ -25,7 +25,9 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<JoinGroupResponseFromClient>()
                 .AddMessage<FriendChatMessage>()
                 .AddMessage<FriendWritingMessage>()
-                .AddMessage<GroupChatMessage>();
+                .AddMessage<GroupChatMessage>()
+                .AddMessage<UpdateFriendLastChatIdRequest>()
+                .AddMessage<UpdateGroupLastChatIdRequest>();
         }
     }
 }
