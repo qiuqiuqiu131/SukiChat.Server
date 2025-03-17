@@ -21,10 +21,16 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<GroupMembersRequest>()
                 .AddMessage<GroupMemberRequest>()
                 .AddMessage<GroupMemberIdsRequest>()
+                // 实体更新
                 .AddMessage<UpdateUserDataRequest>()
                 .AddMessage<UpdateGroupMessageRequest>()
                 .AddMessage<UpdateFriendRelationRequest>()
-                .AddMessage<UpdateGroupRelationRequest>();
+                .AddMessage<UpdateGroupRelationRequest>()
+                // 删除关系
+                .AddMessage<DeleteFriendRequest>()
+                .AddMessage<QuitGroupRequest>()
+                .AddMessage<DisbandGroupRequest>()
+                .AddMessage<RemoveMemberRequest>();
         }
     }
 }

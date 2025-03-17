@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315064316_delete")]
+    partial class delete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,36 +89,6 @@ namespace ChatServer.DataBase.Migrations
                     b.HasIndex("UserTargetId");
 
                     b.ToTable("ChatPrivates");
-                });
-
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.FriendDelete", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId1")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<string>("UserId2")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasIndex("UserId2");
-
-                    b.ToTable("FriendDeletes");
                 });
 
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.FriendRelation", b =>
@@ -237,46 +210,6 @@ namespace ChatServer.DataBase.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.GroupDelete", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DeleteMethod")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GroupId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<string>("OperateUserId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("MemberId");
-
-                    b.HasIndex("OperateUserId");
-
-                    b.ToTable("GroupDeletes");
                 });
 
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.GroupRelation", b =>
@@ -507,25 +440,6 @@ namespace ChatServer.DataBase.Migrations
                     b.Navigation("UserTarget");
                 });
 
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.FriendDelete", b =>
-                {
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "User1")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "User2")
-                        .WithMany()
-                        .HasForeignKey("UserId2")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User1");
-
-                    b.Navigation("User2");
-                });
-
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.FriendRelation", b =>
                 {
                     b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "User1")
@@ -562,33 +476,6 @@ namespace ChatServer.DataBase.Migrations
                     b.Navigation("UserFrom");
 
                     b.Navigation("UserTarget");
-                });
-
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.GroupDelete", b =>
-                {
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "OperateUser")
-                        .WithMany()
-                        .HasForeignKey("OperateUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Member");
-
-                    b.Navigation("OperateUser");
                 });
 
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.GroupRelation", b =>

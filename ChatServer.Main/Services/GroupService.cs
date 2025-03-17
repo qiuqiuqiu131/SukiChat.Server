@@ -15,7 +15,13 @@ public interface IGroupService
     /// <returns>成员ID列表</returns>
     Task<List<string>> GetGroupMembers(string groupId);
 
-    Task<List<string>> GetGroupManagers(string groupId); 
+    /// <summary>
+    /// 获取群组管理员和群主ID
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    Task<List<string>> GetGroupManagers(string groupId);
 
     /// <summary>
     /// 判断用户是否为群组成员
@@ -41,6 +47,14 @@ public interface IGroupService
     Task<bool> IsGroupManager(string userId, string groupId);
 
     /// <summary>
+    /// 判断用户是否为群主
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="groupId">群组ID</param>
+    /// <returns>是否为成员</returns>
+    Task<bool> IsGroupOwner(string userId, string groupId);
+
+    /// <summary>
     /// 获取用户在群组中最后一次发送消息的时间
     /// </summary>
     /// <param name="userId"></param>
@@ -63,7 +77,7 @@ public interface IGroupService
     Task<List<string>> GetGroupsOfManager(string userId);
 }
 
-public class GroupService : BaseService,IGroupService
+public class GroupService : BaseService, IGroupService
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly ILogger logger;
@@ -177,7 +191,27 @@ public class GroupService : BaseService,IGroupService
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "检查用户是否为群组成员失败: {UserId}, {GroupId}", userId, groupId);
+            logger.Error(ex, "检查用户是否为群管理员失败: {UserId}, {GroupId}", userId, groupId);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 判断用户是否为群主
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="groupId">群组ID</param>
+    /// <returns>是否为成员</returns>
+    public async Task<bool> IsGroupOwner(string userId, string groupId)
+    {
+        try
+        {
+            var repository = unitOfWork.GetRepository<GroupRelation>();
+            return await repository.ExistsAsync(d => d.UserId.Equals(userId) && d.GroupId.Equals(groupId) && d.Status == 0);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "检查用户是否为群主失败: {UserId}, {GroupId}", userId, groupId);
             return false;
         }
     }
@@ -194,11 +228,11 @@ public class GroupService : BaseService,IGroupService
         {
             var repository = unitOfWork.GetRepository<ChatGroup>();
             var time = await repository.GetFirstOrDefaultAsync(
-                predicate:d => d.GroupId.Equals(groupId) && d.UserFromId.Equals(groupId),
+                predicate: d => d.GroupId.Equals(groupId) && d.UserFromId.Equals(groupId),
                 orderBy: o => o.OrderByDescending(d => d.Time));
-            if(time != null) 
+            if (time != null)
                 return time.Time;
-            else 
+            else
                 return DateTime.MinValue;
         }
         catch

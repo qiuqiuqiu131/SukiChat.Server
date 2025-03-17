@@ -96,7 +96,11 @@ namespace ChatServer.Main.IOServer.ServerHandler
                         break;
                     }
                     byte[] messageBytes = ProtobufHelper.Serialize(new HeartBeat());
-                    await context.Channel.WriteAndFlushAsync(Unpooled.CopiedBuffer(messageBytes));
+                    try
+                    {
+                        await context.Channel.WriteAndFlushAsync(Unpooled.CopiedBuffer(messageBytes));
+                    }
+                    catch { }
                     break;
             }
         }

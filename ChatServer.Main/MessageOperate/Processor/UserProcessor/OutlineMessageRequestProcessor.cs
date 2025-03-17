@@ -30,7 +30,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     private readonly IMapper mapper;
 
     public OutlineMessageRequestProcessor(IServiceProvider serviceProvider,
-        IUserService userService, 
+        IUserService userService,
         IMapper mapper)
     {
         this.serviceProvider = serviceProvider;
@@ -60,21 +60,27 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         var friendRequestsTask = GetFriendRequestMessages(unit.Message.Id, time);
         //-- 操作：获取离线后聊天消息 --//
         var friendChatsTask = GetFriendChatMessage(unit.Message.Id, time);
+        //-- 操作：获取离线后好友删除消息
+        var friendDeleteTask = GetFriendDeleteMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的进群消息 --//
         var enterGroupsTask = GetEnterGroupMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的群聊消息 --//
         var groupChatsTask = GetGroupChatMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的群聊请求消息 --//
         var groupRequestTask = GetGroupRequestMessage(unit.Message.Id, time);
+        //-- 操作：获取离线后的删除成员消息
+        var groupDeleteTask = GetGroupDeleteMessage(unit.Message.Id, time);
 
-        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,enterGroupsTask,groupChatsTask,groupRequestTask);
+        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,friendDeleteTask, enterGroupsTask, groupChatsTask, groupRequestTask,groupDeleteTask);
 
         var newFriends = newFriendsTask.Result;
         var friendRequests = friendRequestsTask.Result;
         var friendChats = friendChatsTask.Result;
+        var friendDeletes = friendDeleteTask.Result;
         var enterGroups = enterGroupsTask.Result;
         var groupChats = groupChatsTask.Result;
         var groupRequest = groupRequestTask.Result;
+        var groupDelete = groupDeleteTask.Result;
         #endregion
 
         #region Step 2
@@ -84,9 +90,11 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         response.NewFriends.AddRange(newFriends);
         response.FriendRequests.AddRange(friendRequests);
         response.FriendChats.AddRange(friendChats);
+        response.FriendDeletes.AddRange(friendDeletes);
         response.EnterGroups.AddRange(enterGroups);
         response.GroupChats.AddRange(groupChats);
         response.GroupRequests.AddRange(groupRequest);
+        response.GroupDeletes.AddRange(groupDelete);
 
         if (channel != null)
             await channel.WriteAndFlushProtobufAsync(response);
@@ -102,7 +110,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <returns></returns>
     private async Task<IEnumerable<NewFriendMessage>> GetNewFriendMessages(string userId, DateTime offlineTime)
     {
-        using(var scope = serviceProvider.CreateScope())
+        using (var scope = serviceProvider.CreateScope())
         {
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -144,7 +152,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <returns></returns>
     private async Task<IEnumerable<FriendChatMessage>> GetFriendChatMessage(string userId, DateTime offlineTime)
     {
-        using (var scope = serviceProvider.CreateScope()) 
+        using (var scope = serviceProvider.CreateScope())
         {
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -156,6 +164,28 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
             return chats.Select(mapper.Map<FriendChatMessage>);
         }
     }
+
+    /// <summary>
+    /// 找到离线时间后所有好友删除消息
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="offlinetTime"></param>
+    /// <returns></returns>
+    private async Task<IEnumerable<FriendDeleteMessage>> GetFriendDeleteMessage(string userId, DateTime offlinetTime)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            var friendDeleteRepository = unitOfWork.GetRepository<FriendDelete>();
+            var deletes = await friendDeleteRepository.GetAllAsync(
+                predicate: x => (x.UserId1.Equals(userId) || x.UserId2.Equals(userId)) && x.Time > offlinetTime,
+                orderBy: x => x.OrderBy(d => d.Time));
+
+            return deletes.Select(mapper.Map<FriendDeleteMessage>);
+        }
+    }
+
 
     /// <summary>
     /// 获取群聊聊天记录
@@ -198,7 +228,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
             // 在GroupRelation中找离线时加入的群聊关系
             var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
             var relations = await groupRelationRepository.GetAllAsync(
-                predicate: d=> d.UserId.Equals(userId) && d.JoinTime > offlineTime);
+                predicate: d => d.UserId.Equals(userId) && d.JoinTime > offlineTime);
 
             return relations.Select(mapper.Map<EnterGroupMessage>);
         }
@@ -225,6 +255,27 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
                 orderBy: x => x.OrderBy(d => d.RequestTime));
 
             return requests.Select(mapper.Map<GroupRequestMessage>);
+        }
+    }
+
+    /// <summary>
+    /// 找到离线时间后所有好友删除消息
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="offlinetTime"></param>
+    /// <returns></returns>
+    private async Task<IEnumerable<GroupDeleteMessage>> GetGroupDeleteMessage(string userId, DateTime offlinetTime)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            var friendDeleteRepository = unitOfWork.GetRepository<GroupDelete>();
+            var deletes = await friendDeleteRepository.GetAllAsync(
+                predicate: x => (x.OperateUserId.Equals(userId) || x.MemberId.Equals(userId)) && x.Time > offlinetTime,
+                orderBy: x => x.OrderBy(d => d.Time));
+
+            return deletes.Select(mapper.Map<GroupDeleteMessage>);
         }
     }
 }
