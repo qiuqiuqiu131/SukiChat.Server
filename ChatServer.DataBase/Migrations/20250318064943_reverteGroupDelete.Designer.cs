@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318064943_reverteGroupDelete")]
+    partial class reverteGroupDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,9 +231,6 @@ namespace ChatServer.DataBase.Migrations
 
                     b.Property<int>("HeadIndex")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDisband")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()

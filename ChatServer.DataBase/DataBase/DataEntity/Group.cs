@@ -25,5 +25,7 @@ namespace ChatServer.DataBase.DataBase.DataEntity
 
         [Required]
         public int HeadIndex { get; set; } = 1;
+
+        public bool IsDisband { get; set; } = false;
     }
 }

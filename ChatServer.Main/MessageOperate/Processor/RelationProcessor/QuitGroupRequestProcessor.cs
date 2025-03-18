@@ -85,7 +85,6 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
 
                 await groupDeleteRepository.InsertAsync(groupDelete);
                 await unitOfWork.SaveChangesAsync();
-                groupDeleteRepository.ChangeEntityState(groupDelete, Microsoft.EntityFrameworkCore.EntityState.Detached);
                 deleteId = groupDelete.Id;
             }
             catch (Exception ex)
@@ -109,36 +108,21 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     Time = time.ToString()
                 });
 
+            var memberRemoveRequest = new GroupMemeberRemovedMessage
+            {
+                GroupId = message.GroupId,
+                MemberId = message.UserId,
+                Time = DateTime.Now.ToString()
+            };
 
-            //// 向群主和管理员发送通知
-            //try
-            //{
-            //    // 使用GroupService获取群主和管理员列表
-            //    var managerIds = await groupService.GetGroupManagers(message.GroupId);
-
-            //    foreach (var managerId in managerIds)
-            //    {
-            //        if (managerId != message.UserId) // 不发给退出的用户自己
-            //        {
-            //            var managerChannel = clientChannelManager.GetClient(managerId);
-            //            if (managerChannel != null)
-            //            {
-            //                await managerChannel.WriteAndFlushProtobufAsync(new QuitGroupMessage
-            //                {
-            //                    Response = new CommonResponse { State = true },
-            //                    UserId = message.UserId,
-            //                    GroupId = message.GroupId,
-            //                    QuitId = deleteId,
-            //                    Time = time.ToString()
-            //                });
-            //            };
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //    // 通知管理员失败不影响主流程
-            //}
+            var groupMemberIds = await groupService.GetGroupMembers(message.GroupId);
+            foreach (var member in groupMemberIds)
+            {
+                if (member.Equals(message.UserId)) continue;
+                var client = clientChannelManager.GetClient(member);
+                if(client != null)
+                    _ = client.WriteAndFlushProtobufAsync(memberRemoveRequest);
+            }
         }
     }
 }

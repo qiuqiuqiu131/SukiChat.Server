@@ -91,12 +91,16 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     };
 
                     await groupDeleteRepository.InsertAsync(groupDelete);
-                    await unitOfWork.SaveChangesAsync(); // 每次插入后保存，以获取ID
 
                     // 将实体状态更改为Detached，并存储ID以供后续使用
-                    groupDeleteRepository.ChangeEntityState(groupDelete, Microsoft.EntityFrameworkCore.EntityState.Detached);
                     memberDeleteIds[memberId] = groupDelete.Id;
                 }
+
+                var groupReposotory = unitOfWork.GetRepository<Group>();
+                var group = await groupReposotory.GetFirstOrDefaultAsync(predicate:d => d.Id.Equals(message.GroupId),disableTracking:false);
+                group.IsDisband = true;
+
+                await unitOfWork.SaveChangesAsync(); // 每次插入后保存，以获取ID
             }
             catch (Exception ex)
             {
@@ -116,6 +120,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     Response = new CommonResponse { State = true, Message = "成功解散群组" },
                     UserId = message.UserId,
                     GroupId = message.GroupId,
+                    MemberId = message.UserId,
                     DisBandId = memberDeleteIds[message.UserId],
                     Time = time.ToString()
                 });
@@ -136,6 +141,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                                 Response = new CommonResponse { State = true, Message = "您所在的群组已被群主解散" },
                                 UserId = message.UserId, // 群主ID
                                 GroupId = message.GroupId,
+                                MemberId = memberId,
                                 DisBandId = memberDeleteIds[memberId], // 使用该成员对应的删除记录ID
                                 Time = time.ToString()
                             });

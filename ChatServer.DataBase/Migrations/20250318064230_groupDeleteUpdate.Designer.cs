@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318064230_groupDeleteUpdate")]
+    partial class groupDeleteUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,9 +232,6 @@ namespace ChatServer.DataBase.Migrations
                     b.Property<int>("HeadIndex")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDisband")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -272,8 +272,6 @@ namespace ChatServer.DataBase.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("MemberId");
 
@@ -569,12 +567,6 @@ namespace ChatServer.DataBase.Migrations
 
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.GroupDelete", b =>
                 {
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId")
@@ -586,8 +578,6 @@ namespace ChatServer.DataBase.Migrations
                         .HasForeignKey("OperateUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Group");
 
                     b.Navigation("Member");
 

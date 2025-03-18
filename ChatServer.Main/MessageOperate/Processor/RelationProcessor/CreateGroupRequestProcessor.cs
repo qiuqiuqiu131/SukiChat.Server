@@ -162,7 +162,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             {
                 var friendChannel = channelManager.GetClient(friendRelation.UserId);
                 if(friendChannel == null) continue;
-                _ = friendChannel.WriteAndFlushProtobufAsync(new PullGroupMessage
+                await friendChannel.WriteAndFlushProtobufAsync(new PullGroupMessage
                 {
                     GroupId = friendRelation.GroupId,
                     UserIdFrom = message.UserId,
@@ -223,15 +223,14 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 messages.Add(chatMessage);
             }
 
-            _ = Task.Run(async () =>
-            {
-                if (channel != null)
+            await Task.Delay(500);
+
+            if (channel != null)
+                _ = Task.Run(async () =>
+                {
                     foreach (var charMessage in messages)
-                    {
                         await channel.WriteAndFlushProtobufAsync(charMessage);
-                        await Task.Delay(100);
-                    }
-            });
+                });
 
             foreach (var friendId in message.FriendId)
             {
@@ -240,10 +239,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 _ = Task.Run(async () =>
                 {
                     foreach (var chatMessage in messages)
-                    {
                         await friendChannel.WriteAndFlushProtobufAsync(chatMessage);
-                        await Task.Delay(100);
-                    }
                 });
             }
         }
