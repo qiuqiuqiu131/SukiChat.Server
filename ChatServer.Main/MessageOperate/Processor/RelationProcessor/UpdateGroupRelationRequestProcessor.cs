@@ -52,6 +52,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             groupRelation.CantDisturb = message.CantDisturb;
             groupRelation.IsTop = message.IsTop;
             groupRelation.Grouping = message.Grouping;
+            groupRelation.IsChatting = message.IsChatting;
 
             try
             {

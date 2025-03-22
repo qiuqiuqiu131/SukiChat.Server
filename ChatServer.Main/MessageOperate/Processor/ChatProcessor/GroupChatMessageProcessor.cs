@@ -93,6 +93,12 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
             {
                 var repository = unitOfWork.GetRepository<ChatGroup>();
                 await repository.InsertAsync(chatGroup);
+
+                var relationRepository = unitOfWork.GetRepository<GroupRelation>();
+                var relstions = await relationRepository.GetAllAsync(predicate:d => d.GroupId.Equals(message.GroupId),disableTracking:false);
+                foreach (var rel in relstions) 
+                    rel.IsChatting = true;
+
                 await unitOfWork.SaveChangesAsync();
             }
             catch

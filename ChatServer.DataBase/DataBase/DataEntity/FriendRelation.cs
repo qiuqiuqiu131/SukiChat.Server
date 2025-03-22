@@ -43,5 +43,8 @@ namespace ChatServer.DataBase.DataBase.DataEntity
 
         [Required]
         public int LastChatId { get; set; } = 0;
+
+        [Required]
+        public bool IsChatting { get; set; } = true;
     }
 }
