@@ -7,6 +7,7 @@ public class ChatServerDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<UserOnline> UserOnlines { get; set; }
+    public DbSet<UserGroup> UserGroups { get; set; }
 
     public DbSet<ChatPrivate> ChatPrivates { get; set; }
     public DbSet<SacurityQuestion> SacurityQuestions { get; set; }

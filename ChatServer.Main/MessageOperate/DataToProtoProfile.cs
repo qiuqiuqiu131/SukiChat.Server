@@ -94,6 +94,13 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(egm => egm.Remark, opt => opt.MapFrom(gr => gr.Remark ?? string.Empty))
                 .ForMember(egm => egm.NickName, opt => opt.MapFrom(gr => gr.NickName ?? string.Empty));
             #endregion
+
+            #region UserGroup + UserGroupMessage
+            CreateMap<UserGroup, UserGroupMessage>()
+                .ForMember(ugm => ugm.UserId, opt => opt.MapFrom(ug => ug.UserId))
+                .ForMember(ugm => ugm.GroupName, opt => opt.MapFrom(ug => ug.GroupName))
+                .ForMember(ugm => ugm.GroupType, opt => opt.MapFrom(ug => ug.GroupType));
+            #endregion
         }
     }
 }

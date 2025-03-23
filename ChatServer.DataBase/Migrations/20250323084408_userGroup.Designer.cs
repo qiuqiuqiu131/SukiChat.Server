@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323084408_userGroup")]
+    partial class userGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -460,34 +463,6 @@ namespace ChatServer.DataBase.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.UserGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("GroupType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserGroups");
-                });
-
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.UserOnline", b =>
                 {
                     b.Property<int>("Id")
@@ -667,17 +642,6 @@ namespace ChatServer.DataBase.Migrations
                 });
 
             modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.SacurityQuestion", b =>
-                {
-                    b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ChatServer.DataBase.DataBase.DataEntity.UserGroup", b =>
                 {
                     b.HasOne("ChatServer.DataBase.DataBase.DataEntity.User", "User")
                         .WithMany()

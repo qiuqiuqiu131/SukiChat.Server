@@ -21,6 +21,10 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<GroupMembersRequest>()
                 .AddMessage<GroupMemberRequest>()
                 .AddMessage<GroupMemberIdsRequest>()
+                // UserGroup
+                .AddMessage<DeleteUserGroupRequest>()
+                .AddMessage<RenameUserGroupRequest>()
+                .AddMessage<AddUserGroupRequest>()
                 // 实体更新
                 .AddMessage<UpdateUserDataRequest>()
                 .AddMessage<UpdateGroupMessageRequest>()

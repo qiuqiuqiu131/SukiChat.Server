@@ -70,8 +70,10 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         var groupRequestTask = GetGroupRequestMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的删除成员消息
         var groupDeleteTask = GetGroupDeleteMessage(unit.Message.Id, time);
+        //-- 操作：获取用户的分组信息
+        var userGroupTask = GetUserGroupMessage(unit.Message.Id, time);
 
-        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,friendDeleteTask, enterGroupsTask, groupChatsTask, groupRequestTask,groupDeleteTask);
+        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,friendDeleteTask, enterGroupsTask, groupChatsTask, groupRequestTask,groupDeleteTask,userGroupTask);
 
         var newFriends = newFriendsTask.Result;
         var friendRequests = friendRequestsTask.Result;
@@ -81,6 +83,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         var groupChats = groupChatsTask.Result;
         var groupRequest = groupRequestTask.Result;
         var groupDelete = groupDeleteTask.Result;
+        var userGroup = userGroupTask.Result;
         #endregion
 
         #region Step 2
@@ -95,6 +98,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         response.GroupChats.AddRange(groupChats);
         response.GroupRequests.AddRange(groupRequest);
         response.GroupDeletes.AddRange(groupDelete);
+        response.UserGroups.AddRange(userGroup);
 
         if (channel != null)
             await channel.WriteAndFlushProtobufAsync(response);
@@ -276,6 +280,26 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return deletes.Select(mapper.Map<GroupDeleteMessage>);
+        }
+    }
+
+    /// <summary>
+    /// 找到离线时间后所有好友删除消息
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="offlinetTime"></param>
+    /// <returns></returns>
+    private async Task<IEnumerable<UserGroupMessage>> GetUserGroupMessage(string userId, DateTime offlinetTime)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            var userGroupRepository = unitOfWork.GetRepository<UserGroup>();
+            var userGroups = await userGroupRepository.GetAllAsync(
+                predicate: x => (x.UserId.Equals(userId)));
+
+            return userGroups.Select(mapper.Map<UserGroupMessage>);
         }
     }
 }

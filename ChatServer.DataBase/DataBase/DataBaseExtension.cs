@@ -27,6 +27,7 @@ public static class DataBaseExtension
         services.AddCustomRepository<User, UserRepository>();
         services.AddCustomRepository<UserOnline, UserOnlineRepository>();
         services.AddCustomRepository<SacurityQuestion, SacurityQuestionRepository>();
+        services.AddCustomRepository<UserGroup, UserGroupRepository>();
 
         services.AddCustomRepository<ChatPrivate, ChatPrivateRepository>();
         services.AddCustomRepository<FriendRelation, FriendRelationRepository>();
