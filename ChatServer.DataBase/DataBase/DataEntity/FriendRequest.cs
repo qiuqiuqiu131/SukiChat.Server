@@ -27,6 +27,9 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public string Group { get; set; }
 
         [Required]
+        public string Remark { get; set; }
+
+        [Required]
         public DateTime RequestTime { get; set; }
 
         [Required]

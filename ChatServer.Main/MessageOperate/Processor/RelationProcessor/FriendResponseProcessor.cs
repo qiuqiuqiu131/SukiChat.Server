@@ -109,12 +109,14 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     User1Id = request.UserFromId,
                     User2Id = request.UserTargetId,
                     Grouping = request.Group,
+                    Remark = request.Remark,
                     GroupTime = request.SolveTime
                 };
                 FriendRelation relationTarget = new FriendRelation
                 {
                     User1Id = request.UserTargetId,
                     User2Id = request.UserFromId,
+                    Remark = unit.Message.Remark,
                     Grouping = unit.Message.Group,
                     GroupTime = request.SolveTime
                 };
@@ -134,6 +136,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     {
                         RelationTime = request.SolveTime.ToString(),
                         Grouping = request.Group,
+                        Remark = request.Remark,
                         FrinedId = request.UserTargetId,
                         UserId = request.UserFromId,
                     };
@@ -147,6 +150,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     {
                         RelationTime = request.SolveTime.ToString(),
                         Grouping = unit.Message.Group,
+                        Remark = unit.Message.Remark,
                         FrinedId = request.UserFromId,
                         UserId = request.UserTargetId
                     };
