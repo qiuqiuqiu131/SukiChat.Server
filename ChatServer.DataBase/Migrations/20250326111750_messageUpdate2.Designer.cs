@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326111750_messageUpdate2")]
+    partial class messageUpdate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,7 +201,7 @@ namespace ChatServer.DataBase.Migrations
                     b.Property<DateTime>("RequestTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("SolveTime")
+                    b.Property<DateTime>("SolveTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserFromId")

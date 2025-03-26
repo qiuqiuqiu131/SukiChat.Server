@@ -85,7 +85,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     {
                         GroupId = message.GroupId,
                         MemberId = memberId,
-                        DeleteMethod = 0, // 群主解散群聊
+                        DeleteMethod = 2, // 群主解散群聊
                         OperateUserId = message.UserId, // 操作者是群主
                         Time = time
                     };

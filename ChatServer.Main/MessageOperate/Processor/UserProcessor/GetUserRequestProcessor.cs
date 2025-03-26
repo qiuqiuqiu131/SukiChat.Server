@@ -59,6 +59,5 @@ public class GetUserRequestProcessor : IProcessor<GetUserRequest>
         {
             //TODO:返回错误信息
         }
-        unitOfWork.Dispose();
     }
 }

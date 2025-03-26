@@ -18,11 +18,20 @@ namespace ChatServer.Main.MessageOperate
             CreateMap<User,UserMessage>()
                 .ForMember(um => um.RegisterTime,opt => opt.MapFrom(u => u.RegisteTime.ToString()))
                 .ForMember(um => um.Introduction,opt => opt.MapFrom(u => u.Introduction ?? string.Empty))
-                .ForMember(um => um.Birth,opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()));
+                .ForMember(um => um.Birth,opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()))
+                .ForMember(um => um.LastDeleteFriendMessageTime,opt => opt.MapFrom(um => um.LastDeleteFriendMessageTime.ToString()))
+                .ForMember(um => um.LastDeleteGroupMessageTime, opt => opt.MapFrom(um => um.LastDeleteGroupMessageTime.ToString()))
+                .ForMember(um => um.LastReadFriendMessageTime,opt => opt.MapFrom(um => um.LastReadFriendMessageTime.ToString()))
+                .ForMember(um => um.LastReadGroupMessageTime,opt => opt.MapFrom(um => um.LastReadGroupMessageTime.ToString()));
+
             CreateMap<UserMessage, User>()
                 .ForMember(u => u.RegisteTime, opt => opt.MapFrom(um => DateTime.Parse(um.RegisterTime)))
-                .ForMember(u => u.Introduction,opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Introduction)?null:um.Introduction))
-                .ForMember(u => u.Birth, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Birth) ? (DateOnly?)null: DateOnly.Parse(um.Birth)));
+                .ForMember(u => u.Introduction, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Introduction) ? null : um.Introduction))
+                .ForMember(u => u.Birth, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Birth) ? (DateOnly?)null : DateOnly.Parse(um.Birth)))
+                .ForMember(u => u.LastReadFriendMessageTime, opt => opt.MapFrom(um => DateTime.Parse(um.LastReadFriendMessageTime)))
+                .ForMember(u => u.LastReadGroupMessageTime, opt => opt.MapFrom(um => DateTime.Parse(um.LastReadGroupMessageTime)))
+                .ForMember(u => u.LastDeleteFriendMessageTime, opt => opt.MapFrom(um => DateTime.Parse(um.LastDeleteFriendMessageTime)))
+                .ForMember(u => u.LastDeleteGroupMessageTime, opt => opt.MapFrom(um => DateTime.Parse(um.LastDeleteGroupMessageTime)));
             #endregion
 
             #region FriendRequest
@@ -35,7 +44,7 @@ namespace ChatServer.Main.MessageOperate
 
             CreateMap<FriendRequest,FriendRequestMessage>()
                 .ForMember(frm => frm.RequestTime,opt => opt.MapFrom(fr => fr.RequestTime.ToString()))
-                .ForMember(frm => frm.SolvedTime,opt => opt.MapFrom(fr => fr.SolveTime.ToString()))
+                .ForMember(frm => frm.SolvedTime,opt => opt.MapFrom(fr => fr.SolveTime == null ? string.Empty : fr.SolveTime.ToString()))
                 .ForMember(frm => frm.RequestId,opt => opt.MapFrom(fr => fr.Id));
             #endregion
 

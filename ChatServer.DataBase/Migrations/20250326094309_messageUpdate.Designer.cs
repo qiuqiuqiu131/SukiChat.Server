@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326094309_messageUpdate")]
+    partial class messageUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,7 +201,7 @@ namespace ChatServer.DataBase.Migrations
                     b.Property<DateTime>("RequestTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("SolveTime")
+                    b.Property<DateTime>("SolveTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserFromId")
@@ -449,17 +452,17 @@ namespace ChatServer.DataBase.Migrations
                     b.Property<bool>("IsMale")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("LastDeleteFriendMessageTime")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("LastDeleteFriendMessage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("LastDeleteGroupMessageTime")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("LastDeleteGroupMessageCount")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("LastReadFriendMessageTime")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("LastReadFriendMessage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("LastReadGroupMessageTime")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("LastReadGroupMessageCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -28,6 +28,14 @@ namespace ChatServer.DataBase.DataBase.DataEntity
 
         public int HeadCount { get; set; }
 
+        public DateTime LastReadFriendMessageTime { get; set; } = DateTime.MinValue;
+
+        public DateTime LastReadGroupMessageTime { get; set; } = DateTime.MinValue;
+
+        public DateTime LastDeleteFriendMessageTime { get; set; } = DateTime.MinValue;
+
+        public DateTime LastDeleteGroupMessageTime { get; set; } = DateTime.MinValue;
+
         [Required]
         public DateTime RegisteTime {  get; set; }
     }

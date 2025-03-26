@@ -110,7 +110,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     User2Id = request.UserTargetId,
                     Grouping = request.Group,
                     Remark = request.Remark,
-                    GroupTime = request.SolveTime
+                    GroupTime = DateTime.Parse(unit.Message.ResponseTime)
                 };
                 FriendRelation relationTarget = new FriendRelation
                 {
@@ -118,7 +118,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     User2Id = request.UserFromId,
                     Remark = unit.Message.Remark,
                     Grouping = unit.Message.Group,
-                    GroupTime = request.SolveTime
+                    GroupTime = DateTime.Parse(unit.Message.ResponseTime)
                 };
                 await friendRepository.InsertAsync(relationSource);
                 await friendRepository.InsertAsync(relationTarget);

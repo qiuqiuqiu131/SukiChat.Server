@@ -41,7 +41,6 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         [Required]
         public bool IsSolved { get; set; } = false;
 
-        [Required]
-        public DateTime SolveTime { get; set; }
+        public DateTime? SolveTime { get; set; }
     }
 }
