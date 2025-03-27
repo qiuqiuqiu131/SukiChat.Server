@@ -37,8 +37,23 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
             var groupRelation = await groupRelationRepository.GetFirstOrDefaultAsync(
                 predicate: d => d.UserId.Equals(message.MemberId) && d.GroupId.Equals(message.GroupId));
 
+            // 不存在relation，可能为次成员退出了群聊
             if (groupRelation == null)
             {
+                var _user = await userService.GetUser(message.MemberId);
+                var _memberMessage = new GroupMemberMessage
+                {
+                    GroupId = message.GroupId,
+                    JoinTime = string.Empty,
+                    LastSpeakTime = string.Empty,
+                    Nickname = _user.Name,
+                    UserId = _user.Id,
+                    Status = 3,
+                    HeadIndex = _user.HeadCount == 0 ? -1 : _user.HeadIndex
+                };
+
+                if (channel != null)
+                    await channel.WriteAndFlushProtobufAsync(_memberMessage);
                 return;
             }
 

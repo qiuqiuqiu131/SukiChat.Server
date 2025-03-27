@@ -116,7 +116,9 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
                     {
                         GroupId = groupRequest.GroupId,
                         UserId = groupRequest.UserFromId,
-                        Grouping = "默认分组",
+                        Grouping = groupRequest.Grouping,
+                        Remark = string.IsNullOrWhiteSpace(groupRequest.Remark) ? null : groupRequest.Remark,
+                        NickName = string.IsNullOrWhiteSpace(groupRequest.NickName) ? null : groupRequest.NickName,
                         Status = 2,
                         JoinTime = now
                     });

@@ -96,6 +96,9 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
             UserFromId = message.UserId,
             RequestTime = DateTime.Now,
             Message = message.Message,
+            Grouping = message.Grouping,
+            NickName = message.NickName,
+            Remark = message.Remark
         };
 
         try
@@ -133,7 +136,8 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
             RequestId = groupRequest.Id,
             UserId = message.UserId,
             GroupId = message.GroupId,
-            Time = groupRequest.RequestTime.ToString()
+            Time = groupRequest.RequestTime.ToString(),
+            Message = message.Message,
         };
 
         // 寻找此群的管理员和群主

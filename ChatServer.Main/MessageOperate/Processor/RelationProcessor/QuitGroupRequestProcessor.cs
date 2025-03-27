@@ -78,7 +78,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 {
                     GroupId = message.GroupId,
                     MemberId = message.UserId,
-                    DeleteMethod = 2, // 成员主动退出
+                    DeleteMethod = 0, // 成员主动退出
                     OperateUserId = message.UserId, // 操作者就是退出的用户自己
                     Time = time
                 };
