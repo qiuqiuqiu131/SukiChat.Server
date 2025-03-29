@@ -1,6 +1,7 @@
 ﻿using ChatServer.Common.Protobuf;
 using ChatServer.Main.MessageOperate.Processor;
 using ChatServer.Main.ServerEntity;
+using File.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
@@ -27,7 +28,8 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<FriendWritingMessage>()
                 .AddMessage<GroupChatMessage>()
                 .AddMessage<UpdateFriendLastChatIdRequest>()
-                .AddMessage<UpdateGroupLastChatIdRequest>();
+                .AddMessage<UpdateGroupLastChatIdRequest>()
+                .AddMessage<FileRequest>();
         }
     }
 }
