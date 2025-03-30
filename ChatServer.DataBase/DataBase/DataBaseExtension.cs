@@ -30,11 +30,13 @@ public static class DataBaseExtension
         services.AddCustomRepository<UserGroup, UserGroupRepository>();
 
         services.AddCustomRepository<ChatPrivate, ChatPrivateRepository>();
+        services.AddCustomRepository<ChatPrivateDetail, ChatPrivateDetailRepository>();
         services.AddCustomRepository<FriendRelation, FriendRelationRepository>();
         services.AddCustomRepository<FriendRequest, FriendRequestRepository>();
         services.AddCustomRepository<FriendDelete, FriendDeleteRepository>();
 
         services.AddCustomRepository<ChatGroup, ChatGroupRepository>();
+        services.AddCustomRepository<ChatGroupDetail, ChatGroupDetailRepository>();
         services.AddCustomRepository<GroupRelation, GroupRelationRepository>();
         services.AddCustomRepository<GroupRequest, GroupRequestRepository>();
         services.AddCustomRepository<Group, GroupRepository>();

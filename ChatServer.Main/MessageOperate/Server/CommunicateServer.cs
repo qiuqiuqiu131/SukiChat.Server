@@ -29,7 +29,12 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<GroupChatMessage>()
                 .AddMessage<UpdateFriendLastChatIdRequest>()
                 .AddMessage<UpdateGroupLastChatIdRequest>()
-                .AddMessage<FileRequest>();
+                .AddMessage<FileRequest>()
+
+                .AddMessage<ChatGroupDeleteRequest>()
+                .AddMessage<ChatPrivateDeleteRequest>()
+                .AddMessage<ChatGroupRetractRequest>()
+                .AddMessage<ChatPrivateRetractRequest>();
         }
     }
 }

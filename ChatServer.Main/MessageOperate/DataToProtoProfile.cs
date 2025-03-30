@@ -82,19 +82,23 @@ namespace ChatServer.Main.MessageOperate
             #region ChatPrivate + FriendChatMessage
             CreateMap<ChatPrivate, FriendChatMessage>()
                 .ForMember(fcm => fcm.Messages, opt => opt.MapFrom(cp => ChatMessageHelper.DecruptChatMessage(cp.Message)))
-                .ForMember(fcm => fcm.Time, opt => opt.MapFrom(cp => cp.Time.ToString()));
+                .ForMember(fcm => fcm.Time, opt => opt.MapFrom(cp => cp.Time.ToString()))
+                .ForMember(fcm => fcm.RetractTime, opt => opt.MapFrom(cp => cp.RetractTime.ToString()));
             CreateMap<FriendChatMessage, ChatPrivate>()
                 .ForMember(cp => cp.Message, opt => opt.MapFrom(fcm => ChatMessageHelper.EncruptChatMessage(fcm.Messages)))
-                .ForMember(cp => cp.Time, opt => opt.MapFrom(fcm => DateTime.Parse(fcm.Time)));
+                .ForMember(cp => cp.Time, opt => opt.MapFrom(fcm => DateTime.Parse(fcm.Time)))
+                .ForMember(cp => cp.RetractTime, opt => opt.MapFrom(fcm => DateTime.Parse(fcm.RetractTime)));
             #endregion
 
             #region ChatGroup + GroupChatMessage
             CreateMap<GroupChatMessage, ChatGroup>()
                 .ForMember(cg => cg.Message, opt => opt.MapFrom(gcm => ChatMessageHelper.EncruptChatMessage(gcm.Messages)))
-                .ForMember(cg => cg.Time,opt => opt.MapFrom(gcm =>  DateTime.Parse(gcm.Time)));
+                .ForMember(cg => cg.Time, opt => opt.MapFrom(gcm => DateTime.Parse(gcm.Time)))
+                .ForMember(cg => cg.RetractTime, opt => opt.MapFrom(gcm => DateTime.Parse(gcm.RetractTime)));
             CreateMap<ChatGroup, GroupChatMessage>()
                 .ForMember(gcm => gcm.Messages, opt => opt.MapFrom(cg => ChatMessageHelper.DecruptChatMessage(cg.Message)))
-                .ForMember(gcm => gcm.Time, opt => opt.MapFrom(cg => cg.Time.ToString()));
+                .ForMember(gcm => gcm.Time, opt => opt.MapFrom(cg => cg.Time.ToString()))
+                .ForMember(gcm => gcm.RetractTime, opt => opt.MapFrom(cg => cg.RetractTime.ToString()));
             #endregion
 
             #region GroupRelation + EnterGroupMessage
@@ -110,6 +114,10 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(ugm => ugm.GroupName, opt => opt.MapFrom(ug => ug.GroupName))
                 .ForMember(ugm => ugm.GroupType, opt => opt.MapFrom(ug => ug.GroupType));
             #endregion
+
+
+            CreateMap<ChatPrivateDetail, ChatPrivateDetailMessage>();
+            CreateMap<ChatGroupDetail, ChatGroupDetailMessage>();
         }
     }
 }

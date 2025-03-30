@@ -6,6 +6,7 @@ using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,13 +69,8 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             {
                 // 从GroupRelation表中删除所有群组关系
                 var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
-                var relations = await groupRelationRepository.GetAllAsync(
-                    predicate: x => x.GroupId.Equals(message.GroupId));
 
-                foreach (var relation in relations)
-                {
-                    groupRelationRepository.Delete(relation);
-                }
+                await groupRelationRepository.GetAll(predicate: d => d.GroupId.Equals(message.GroupId)).ExecuteDeleteAsync();
 
                 // 为每个成员添加GroupDelete记录并跟踪其ID
                 var groupDeleteRepository = unitOfWork.GetRepository<GroupDelete>();

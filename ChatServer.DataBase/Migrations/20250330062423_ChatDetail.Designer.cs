@@ -4,6 +4,7 @@ using ChatServer.DataBase.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatServer.DataBase.Migrations
 {
     [DbContext(typeof(ChatServerDbContext))]
-    partial class ChatServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330062423_ChatDetail")]
+    partial class ChatDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,15 +38,9 @@ namespace ChatServer.DataBase.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<bool>("IsRetracted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("RetractTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime(6)");
@@ -71,9 +68,6 @@ namespace ChatServer.DataBase.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("UserId", "ChatGroupId");
 
                     b.HasIndex("ChatGroupId");
@@ -89,15 +83,9 @@ namespace ChatServer.DataBase.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsRetracted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("RetractTime")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime(6)");
@@ -131,9 +119,6 @@ namespace ChatServer.DataBase.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("UserId", "ChatPrivateId");
 

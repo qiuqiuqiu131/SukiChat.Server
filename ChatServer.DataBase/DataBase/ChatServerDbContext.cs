@@ -10,12 +10,14 @@ public class ChatServerDbContext : DbContext
     public DbSet<UserGroup> UserGroups { get; set; }
 
     public DbSet<ChatPrivate> ChatPrivates { get; set; }
+    public DbSet<ChatPrivateDetail> ChatPrivateDetails { get; set; }
     public DbSet<SacurityQuestion> SacurityQuestions { get; set; }
     public DbSet<FriendRelation> FriendRelations { get; set; }
     public DbSet<FriendRequest> FriendRequests { get; set; }
     public DbSet<FriendDelete> FriendDeletes { get; set; }
 
     public DbSet<ChatGroup> ChatGroups { get; set; }
+    public DbSet<ChatGroupDetail> ChatGroupDetails { get; set; } 
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupRelation> GroupRelations { get; set; }
     public DbSet<GroupRequest> GroupRequests { get; set; }
