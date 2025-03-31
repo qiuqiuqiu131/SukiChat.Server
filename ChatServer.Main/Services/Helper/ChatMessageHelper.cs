@@ -54,6 +54,13 @@ namespace ChatServer.Main.Services.Helper
                             stringBuilder.Append("5\n\t7\n\t5\n\t");
                         }
                         break;
+                    case ChatMessage.ContentOneofCase.CardMess:
+                        stringBuilder.Append((int)chatMessage.ContentCase);
+                        stringBuilder.Append(chatMessage.CardMess.IsUser?"1":"0");
+                        stringBuilder.Append("__");
+                        stringBuilder.Append(chatMessage.CardMess.Id);
+                        stringBuilder.Append("1\n\t3\n\t1\n\t");
+                        break;
                 }
             }
             return stringBuilder.ToString();
@@ -129,6 +136,18 @@ namespace ChatServer.Main.Services.Helper
                             });
                         }
                         chatMessages.Add(new ChatMessage { SystemMessage = systemMessage});
+                        break;
+                    case ChatMessage.ContentOneofCase.CardMess:
+                        string[] card_spliter = content.Split("__");
+                        var cardMess = new ChatMessage
+                        {
+                            CardMess = new CardMess
+                            {
+                                IsUser = card_spliter[0].Equals("0") ? false : true,
+                                Id = card_spliter[1]
+                            }
+                        };
+                        chatMessages.Add(cardMess);
                         break;
                 }
             }

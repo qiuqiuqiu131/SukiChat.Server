@@ -1,10 +1,12 @@
-﻿using ChatServer.Common;
+﻿using AutoMapper;
+using ChatServer.Common;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
+using ChatServer.Main.Services.Helper;
 using DotNetty.Transport.Channels;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
@@ -25,14 +27,17 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
 {
     private readonly IUnitOfWork unitOfWork;
+    private readonly IMapper mapper;
     private readonly IFriendService friendService;
     private readonly IClientChannelManager clientChannel;
 
     public FriendResponseProcessor(IUnitOfWork unitOfWork,
+        IMapper mapper,
         IFriendService friendService,
         IClientChannelManager clientChannel)
     {
         this.unitOfWork = unitOfWork;
+        this.mapper = mapper;
         this.friendService = friendService;
         this.clientChannel = clientChannel;
     }
@@ -96,11 +101,12 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
 
 
         #region Step 5
-        //-- 判断：如果接收方不是好友，且接收方同意添加好友，则保存好友关系 --//
+        //-- 判断：如果接收方不是好友，且接收方同意添加好友，则保存好友关系并添加聊天消息 --//
         if (unit.Message.Accept && !isFriend)
         {
             // --  Step1 ： 数据库保存 -- //
             bool isSucceed = true;
+            FriendChatMessage? friendChatMessage = null;
             try
             {
                 var friendRepository = unitOfWork.GetRepository<FriendRelation>();
@@ -122,7 +128,25 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                 };
                 await friendRepository.InsertAsync(relationSource);
                 await friendRepository.InsertAsync(relationTarget);
+
+                var chatPrivateRepository = unitOfWork.GetRepository<ChatPrivate>();
+                ChatPrivate chatPrivate = new ChatPrivate
+                {
+                    UserFromId = request.UserTargetId,
+                    UserTargetId = request.UserFromId,
+                    Message = ChatMessageHelper.EncruptChatMessage([new ChatMessage
+                    {
+                        TextMess = new TextMess { Text = "我们已经成为好友了，开始聊天吧！"}
+                    }]),
+                    IsRetracted = false,
+                    Time = DateTime.Now,
+                    RetractTime = DateTime.MinValue
+                };
+                await chatPrivateRepository.InsertAsync(chatPrivate);
+
                 await unitOfWork.SaveChangesAsync();
+
+                friendChatMessage = mapper.Map<FriendChatMessage>(chatPrivate);
             }
             catch { isSucceed = false; }
 
@@ -141,6 +165,12 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                         UserId = request.UserFromId,
                     };
                     await source.WriteAndFlushProtobufAsync(newFriendSource);
+
+                    if (friendChatMessage != null)
+                        _ = Task.Delay(150).ContinueWith(async t =>
+                        {
+                           await source.WriteAndFlushProtobufAsync(friendChatMessage);
+                        });
                 }
 
                 // 接收方消息
@@ -155,6 +185,12 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                         UserId = request.UserTargetId
                     };
                     await channel.WriteAndFlushProtobufAsync(newFriendTarget);
+
+                    if (friendChatMessage != null)
+                        _ = Task.Delay(150).ContinueWith(async t =>
+                        {
+                            await channel.WriteAndFlushProtobufAsync(friendChatMessage);
+                        });
                 }
             }
         }
@@ -187,7 +223,5 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
             await source.WriteAndFlushProtobufAsync(responseFromServer);
         }
         #endregion
-
-        await unitOfWork.SaveChangesAsync();
     }
 }

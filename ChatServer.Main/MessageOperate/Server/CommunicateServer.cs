@@ -34,7 +34,9 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<ChatGroupDeleteRequest>()
                 .AddMessage<ChatPrivateDeleteRequest>()
                 .AddMessage<ChatGroupRetractRequest>()
-                .AddMessage<ChatPrivateRetractRequest>();
+                .AddMessage<ChatPrivateRetractRequest>()
+
+                .AddMessage<ChatShareMessageRequest>();
         }
     }
 }
