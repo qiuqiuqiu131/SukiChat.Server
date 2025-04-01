@@ -43,22 +43,27 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                 return;
             }
 
-            var userGroupRepository = unitOfWork.GetRepository<UserGroup>();
-            var userGroup = await userGroupRepository.GetFirstOrDefaultAsync(
-                predicate: d => d.UserId.Equals(message.UserId) && 
-                d.GroupName.Equals(message.UserGroup.GroupName) && 
-                d.GroupType == message.UserGroup.GroupType,
-                disableTracking:false);
-            if (userGroup == null)
-            {
-                if (channel != null)
-                    await channel.WriteAndFlushProtobufAsync(new RenameUserGroupResponse { Response = new CommonResponse { State = true, Message = "已经被删除了" } });
-                return;
-            }
-
             try
             {
-                userGroup.GroupName = message.NewGroupName;
+                var userGroupRepository = unitOfWork.GetRepository<UserGroup>();
+                var userGroup = await userGroupRepository.GetFirstOrDefaultAsync(
+                    predicate: d => d.UserId.Equals(message.UserId) &&
+                    d.GroupName.Equals(message.UserGroup.GroupName) &&
+                    d.GroupType == message.UserGroup.GroupType,
+                    disableTracking: false);
+
+                if (userGroup != null) 
+                    userGroup.GroupName = message.NewGroupName;
+                else
+                {
+                    var entity = new UserGroup
+                    {
+                        GroupName = message.NewGroupName,
+                        GroupType = message.UserGroup.GroupType,
+                        UserId = message.UserId
+                    };
+                    await userGroupRepository.InsertAsync(entity);
+                }
 
                 // 将此分组的关系设置为默认分组中
                 // 将此分组的关系设置为默认分组中

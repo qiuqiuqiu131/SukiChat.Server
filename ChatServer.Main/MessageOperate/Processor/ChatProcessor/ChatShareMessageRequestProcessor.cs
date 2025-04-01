@@ -7,6 +7,7 @@ using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
 using ChatServer.Main.Services.Helper;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +63,8 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
                     });
             }
 
-            List<FriendChatMessage> friendChats = [];
-            List<GroupChatMessage> chatGroups = [];
+            List<(FriendChatMessage,FriendChatMessage?)> friendChats = [];
+            List<(GroupChatMessage,GroupChatMessage?)> chatGroups = [];
 
 
             string messages = ChatMessageHelper.EncruptChatMessage([message.Messages]);
@@ -96,12 +97,31 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
                             Message = messages
                         };
 
+                        ChatPrivate? senderChatPrivate = null;
+                        if(senderMessage != null && !string.IsNullOrWhiteSpace(senderMessage))
+                        {
+                            senderChatPrivate = new ChatPrivate
+                            {
+                                UserFromId = message.UserId,
+                                UserTargetId = friend,
+                                IsRetracted = false,
+                                RetractTime = DateTime.MinValue,
+                                Time = DateTime.Now,
+                                Message = senderMessage
+                            };
+                        }
+
                         await chatPrivateRepository.InsertAsync(chatPrivate);
+                        if (senderChatPrivate != null)
+                            await chatPrivateRepository.InsertAsync(senderChatPrivate);
                         await unitOfWork.SaveChangesAsync();
 
                         // 添加待发送消息
                         var chatMessage = mapper.Map<FriendChatMessage>(chatPrivate);
-                        friendChats.Add(chatMessage);
+                        FriendChatMessage? senderChatMessage = null;
+                        if (chatMessage != null) 
+                            senderChatMessage = mapper.Map<FriendChatMessage>(senderChatPrivate);
+                        friendChats.Add((chatMessage!,senderChatMessage));
                     }
                     catch { continue; }
                 }
@@ -127,11 +147,30 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
                             Message = messages
                         };
 
+                        ChatGroup? senderChatGroup = null;
+                        if (senderMessage != null && !string.IsNullOrWhiteSpace(senderMessage))
+                        {
+                            senderChatGroup = new ChatGroup
+                            {
+                                UserFromId = message.UserId,
+                                GroupId = group,
+                                IsRetracted = false,
+                                RetractTime = DateTime.MinValue,
+                                Time = DateTime.Now,
+                                Message = senderMessage
+                            };
+                        }
+
                         await chatGroupRepository.InsertAsync(chatGroup);
+                        if (senderChatGroup != null)
+                            await chatGroupRepository.InsertAsync(senderChatGroup);
                         await unitOfWork.SaveChangesAsync();
 
                         var groupMessage = mapper.Map<GroupChatMessage>(chatGroup);
-                        chatGroups.Add(groupMessage);
+                        GroupChatMessage? senderGroupMessage = null;
+                        if(senderChatGroup != null)
+                            senderGroupMessage = mapper.Map<GroupChatMessage>(senderChatGroup);
+                        chatGroups.Add((groupMessage!,senderGroupMessage));
                     }
                     catch { continue; }
                 }
@@ -140,28 +179,62 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
             // -- 发送好友消息 -- // 
             foreach(var friendChat in  friendChats)
             {
-                if(channel != null)
-                    await channel.WriteAndFlushProtobufAsync(friendChat);
+                if (channel != null)
+                {
+                    await channel.WriteAndFlushProtobufAsync(friendChat.Item1);
+                    if (friendChat.Item2 != null)
+                    {
+                        await Task.Delay(50);
+                        await channel.WriteAndFlushProtobufAsync(friendChat.Item2);
+                    }
+                }
 
-                var friend = clientChannelManager.GetClient(friendChat.UserTargetId);
+                var friend = clientChannelManager.GetClient(friendChat.Item1.UserTargetId);
                 if (friend != null)
-                    _ = friend.WriteAndFlushProtobufAsync(friendChat);
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        await friend.WriteAndFlushProtobufAsync(friendChat.Item1);
+                        if (friendChat.Item2 != null)
+                        {
+                            await Task.Delay(50);
+                            await friend.WriteAndFlushProtobufAsync(friendChat.Item2);
+                        }
+                    });
+                }
             }
 
             // -- 发送群聊消息 -- //
             foreach(var groupChat in chatGroups)
             {
-                if(channel != null)
-                    await channel.WriteAndFlushProtobufAsync(groupChat);
+                if (channel != null)
+                {
+                    await channel.WriteAndFlushProtobufAsync(groupChat.Item1);
+                    if (groupChat.Item2 != null)
+                    {
+                        await Task.Delay(50);
+                        await channel.WriteAndFlushProtobufAsync(groupChat.Item2);
+                    }
+                }
 
-                var memberIds = await groupService.GetGroupMembers(groupChat.GroupId);
+                var memberIds = await groupService.GetGroupMembers(groupChat.Item1.GroupId);
                 foreach (var memberId in memberIds)
                 {
                     if(memberId == message.UserId) continue;
 
                     var member = clientChannelManager.GetClient(memberId);
                     if (member != null)
-                       _ = member.WriteAndFlushProtobufAsync(groupChat);
+                    {
+                        _ = Task.Run(async () =>
+                        {
+                            await member.WriteAndFlushProtobufAsync(groupChat.Item1);
+                            if (groupChat.Item2 != null)
+                            {
+                                await Task.Delay(50);
+                                await member.WriteAndFlushProtobufAsync(groupChat.Item2);
+                            }
+                        });
+                    }
                 }
             }
 
