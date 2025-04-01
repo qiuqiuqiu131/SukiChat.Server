@@ -18,7 +18,7 @@ namespace ChatServer.Main.Services
 {
     public interface ILoginService
     {
-        Task<bool> Registe(string Name, string Password);
+        Task<(bool,string?)> Registe(string Name, string Password);
         Task<string?> Login(string Id, string Password);
         Task UserOutline(ClientChannel client);
     }
@@ -48,10 +48,10 @@ namespace ChatServer.Main.Services
             return Id;
         }
 
-        public async Task<bool> Registe(string Name, string Password)
+        public async Task<(bool,string?)> Registe(string Name, string Password)
         {
             if (Password.Length < 6 || Password.Length > 18 || string.IsNullOrEmpty(Name))
-                return false;
+                return (false, null);
 
             string encryptPassword = cipherHelper.Encrypt(Password);
             int count = encryptPassword.Length;
@@ -70,9 +70,9 @@ namespace ChatServer.Main.Services
                 var result = await userRepository.InsertAsync(user);
                 var saveResult = await unitOfWork.SaveChangesAsync();
                 if (saveResult > 0)
-                    return true;
+                    return (true,user.Id);
                 else
-                    return false;
+                    return (false,null) ;
             }
             catch (Exception e)
             {

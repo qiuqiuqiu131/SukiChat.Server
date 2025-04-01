@@ -38,14 +38,18 @@ public class RegisteRequestProcessor : IProcessor<RegisteRequest>
         if (channel == null) return;
 
         var message = unit.Message;
-        bool result = await loginHelper.Registe(message.Name, message.Password);
+        var (status,id) = await loginHelper.Registe(message.Name, message.Password);
 
-        var response = new CommonResponse { State = result };
-        if (result)
+        var response = new CommonResponse { State = status };
+        if (status)
             response.Message = "注册成功";
         else
             response.Message = "注册失败";
 
-        await channel.WriteAndFlushProtobufAsync(response);
+        await channel.WriteAndFlushProtobufAsync(new RegisteResponse
+        {
+            Response = response,
+            Id = id
+        });
     }
 }

@@ -18,7 +18,7 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public DateOnly? Birth { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(18)]
         public string Password { get; set; }
 
         [StringLength(100)]
