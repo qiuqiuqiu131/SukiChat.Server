@@ -20,15 +20,12 @@ public class LoginRequestProcessor : IProcessor<LoginRequest>
 {
     private readonly ILoginService loginService;
     private readonly IClientChannelManager clientChannelManager;
-    private readonly IUserService userService;
 
     public LoginRequestProcessor(ILoginService loginService,
-        IClientChannelManager clientChannelManager,
-        IUserService userService)
+        IClientChannelManager clientChannelManager)
     {
         this.loginService = loginService;
         this.clientChannelManager = clientChannelManager;
-        this.userService = userService;
     }
 
     public async Task Process(MessageUnit<LoginRequest> unit)

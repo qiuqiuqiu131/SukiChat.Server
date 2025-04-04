@@ -48,15 +48,30 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
     {
         unit.Channel.TryGetTarget(out var channel);
 
+        var message = unit.Message;
+
         bool success = true;
         try
         {
+            UserDetailMessage userMess = message.User;
+            var password = cipherHelper.Encrypt(userMess.Password);
+
             var repository = unitOfWork.GetRepository<User>();
-            UserMessage userMess = unit.Message.User;
-            User user = mapper.Map<User>(userMess);
-            user.Password = cipherHelper.Encrypt(userMess.Password);
-            repository.Update(user);
-            await unitOfWork.SaveChangesAsync();
+            var result = await repository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(userMess.Id) && d.Password.Equals(password));
+            if(result != null)
+            {
+                User user = mapper.Map<User>(userMess);
+                user.Password = password;
+                repository.Update(user);
+                await unitOfWork.SaveChangesAsync();
+            }
+            else
+            {
+                await channel.WriteAndFlushProtobufAsync(new UpdateUserDataResponse
+                {
+                    Response = new CommonResponse { State = false }
+                });
+            }
         }
         catch
         {
@@ -65,7 +80,7 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
 
         if(channel != null)
         {
-            await channel.WriteAndFlushProtobufAsync(new UpdateUserData 
+            await channel.WriteAndFlushProtobufAsync(new UpdateUserDataResponse 
             { 
                 Response = new CommonResponse { State = success },
                 UserId = unit.Message.UserId,
@@ -74,8 +89,9 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
 
         if(success)
         {
-            var message = new UpdateUserData
+            var response = new UpdateUserDataResponse
             {
+                Response = new CommonResponse { State = success },
                 UserId = unit.Message.UserId,
             };
 
@@ -85,7 +101,7 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
             {
                 var friend = channelManager.GetClient(friendId);
                 if(friend != null)
-                    _ = friend.WriteAndFlushProtobufAsync(message);
+                    _ = friend.WriteAndFlushProtobufAsync(response);
             }
         }
     }

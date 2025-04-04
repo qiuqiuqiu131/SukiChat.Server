@@ -49,15 +49,21 @@ public class GetUserRequestProcessor : IProcessor<GetUserRequest>
         var user = await userRepository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(unit.Message.Id));
         if (user != null)
         {
-            user.Password = cipherHelper.Decrypt(user.Password);
             UserMessage userMessage = mapper.Map<UserMessage>(user);
             //查看用户是否在线
             userMessage.IsOnline = clientChannelManager.ClientOnline(user.Id);
-            await channel.WriteAndFlushProtobufAsync(userMessage);
+            await channel.WriteAndFlushProtobufAsync(new GetUserResponse
+            {
+                Response = new CommonResponse { State = true },
+                User = userMessage
+            });
         }
         else
         {
-            //TODO:返回错误信息
+            await channel.WriteAndFlushProtobufAsync(new GetUserResponse
+            {
+                Response = new CommonResponse { State = false }
+            });
         }
     }
 }

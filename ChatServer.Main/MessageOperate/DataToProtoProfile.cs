@@ -15,7 +15,21 @@ namespace ChatServer.Main.MessageOperate
         public DataToProtoProfile()
         {
             #region User + UserMessage
-            CreateMap<User,UserMessage>()
+
+            CreateMap<User, UserMessage>()
+                .ForMember(um => um.RegisterTime, opt => opt.MapFrom(u => u.RegisteTime.ToString()))
+                .ForMember(um => um.Introduction, opt => opt.MapFrom(u => u.Introduction ?? string.Empty))
+                .ForMember(um => um.Birth, opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()));
+
+            CreateMap<UserMessage, User>()
+                .ForMember(u => u.RegisteTime, opt => opt.MapFrom(um => DateTime.Parse(um.RegisterTime)))
+                .ForMember(u => u.Introduction, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Introduction) ? null : um.Introduction))
+                .ForMember(u => u.Birth, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Birth) ? (DateOnly?)null : DateOnly.Parse(um.Birth)));
+
+            #endregion
+
+            #region User + UserDetailMessage
+            CreateMap<User,UserDetailMessage>()
                 .ForMember(um => um.RegisterTime,opt => opt.MapFrom(u => u.RegisteTime.ToString()))
                 .ForMember(um => um.Introduction,opt => opt.MapFrom(u => u.Introduction ?? string.Empty))
                 .ForMember(um => um.Birth,opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()))
@@ -24,7 +38,7 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(um => um.LastReadFriendMessageTime,opt => opt.MapFrom(um => um.LastReadFriendMessageTime.ToString()))
                 .ForMember(um => um.LastReadGroupMessageTime,opt => opt.MapFrom(um => um.LastReadGroupMessageTime.ToString()));
 
-            CreateMap<UserMessage, User>()
+            CreateMap<UserDetailMessage, User>()
                 .ForMember(u => u.RegisteTime, opt => opt.MapFrom(um => DateTime.Parse(um.RegisterTime)))
                 .ForMember(u => u.Introduction, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Introduction) ? null : um.Introduction))
                 .ForMember(u => u.Birth, opt => opt.MapFrom(um => string.IsNullOrEmpty(um.Birth) ? (DateOnly?)null : DateOnly.Parse(um.Birth)))
