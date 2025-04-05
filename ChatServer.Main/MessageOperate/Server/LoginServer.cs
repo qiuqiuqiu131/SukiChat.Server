@@ -21,6 +21,8 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<LogoutRequest>()
                 .AddMessage<CreateGroupRequest>()
                 .AddMessage<GetUserDetailMessageRequest>()
+                .AddMessage<ResetPasswordRequest>()
+                .AddMessage<ForgetPasswordRequest>()
                 .AddMessage<OutlineMessageRequest>();
         }
     }

@@ -18,7 +18,7 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public DateOnly? Birth { get; set; }
 
         [Required]
-        [StringLength(18)]
+        [StringLength(30)]
         public string Password { get; set; }
 
         [StringLength(100)]
@@ -38,5 +38,9 @@ namespace ChatServer.DataBase.DataBase.DataEntity
 
         [Required]
         public DateTime RegisteTime {  get; set; }
+
+        public string? PhoneNumber { get; set; }
+
+        public string? EmailNumber { get; set; }
     }
 }
