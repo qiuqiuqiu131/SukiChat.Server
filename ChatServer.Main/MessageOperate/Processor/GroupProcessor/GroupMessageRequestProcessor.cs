@@ -58,6 +58,8 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 GroupId = message.GroupId,
                 Description = group.Description ?? string.Empty,
                 CreateTime = group.CreateTime.ToString(),
+                IsDisband = group.IsDisband,
+                IsCustomHead = group.IsCustomHead,
                 HeadIndex = group.HeadIndex,
                 Name = group.Name
             };

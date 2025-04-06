@@ -71,13 +71,15 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             }
 
             #region 生成Entity
+            var rand = new Random();
+
             // 使用IdGeneratorService生成群组ID
             string groupId = idGeneratorManager.GenerateGroupId();
             var group = new Group
             {
                 Id = groupId,
                 CreateTime = DateTime.Now,
-                HeadIndex = 1
+                HeadIndex = rand.Next(1,10)
             };
 
             string groupName = string.Empty;

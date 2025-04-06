@@ -274,7 +274,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var friendDeleteRepository = unitOfWork.GetRepository<GroupDelete>();
             var deletes = await friendDeleteRepository.GetAllAsync(
-                predicate: x => (x.OperateUserId.Equals(userId) || x.MemberId.Equals(userId)) && x.Time > offlinetTime,
+                predicate: x =>  x.MemberId.Equals(userId) && x.Time > offlinetTime,
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return deletes.Select(mapper.Map<GroupDeleteMessage>);

@@ -86,7 +86,8 @@ namespace ChatServer.Main.MessageOperate
             CreateMap<GroupDelete, GroupDeleteMessage>()
                 .ForMember(gdm => gdm.DeleteId, opt => opt.MapFrom(gd => gd.Id))
                 .ForMember(gdm => gdm.Time, opt => opt.MapFrom(gd => gd.Time.ToString()))
-                .ForMember(gdm => gdm.Method, opt => opt.MapFrom(gd => gd.DeleteMethod));
+                .ForMember(gdm => gdm.Method, opt => opt.MapFrom(gd => gd.DeleteMethod))
+                .ForMember(gdm => gdm.OperateId, opt => opt.MapFrom(gd => gd.OperateUserId));
             #endregion
 
             #region NewFriendMessage + FriendRelation

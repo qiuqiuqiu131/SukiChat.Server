@@ -87,6 +87,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     };
 
                     await groupDeleteRepository.InsertAsync(groupDelete);
+                    await unitOfWork.SaveChangesAsync();
 
                     // 将实体状态更改为Detached，并存储ID以供后续使用
                     memberDeleteIds[memberId] = groupDelete.Id;

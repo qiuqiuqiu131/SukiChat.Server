@@ -53,7 +53,6 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 var group = await groupRepository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(message.GroupId), disableTracking: false);
                 group.Description = message.Description;
                 group.Name = message.Name;
-                group.HeadIndex = message.HeadIndex;
                 await unitOfWork.SaveChangesAsync();
                 groupRepository.ChangeEntityState(group, Microsoft.EntityFrameworkCore.EntityState.Detached);
             }
