@@ -46,6 +46,7 @@ public class LoginRequestProcessor : IProcessor<LoginRequest>
         else
             response.Message = "登录失败";
 
-        await channel.WriteAndFlushProtobufAsync(response);
+        await channel.WriteAndFlushProtobufAsync(new LoginResponse { 
+            Response = response, Id = message.Id});
     }
 }

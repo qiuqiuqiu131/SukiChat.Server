@@ -13,6 +13,7 @@ using ChatServer.Main.Services.Helper;
 using ChatServer.Main.Entity;
 using Microsoft.Extensions.DependencyInjection;
 using static System.Formats.Asn1.AsnWriter;
+using ChatServer.Main.Manager;
 
 namespace ChatServer.Main.Services
 {
@@ -34,20 +35,6 @@ namespace ChatServer.Main.Services
             this.cipherHelper = cipherHelper;
         }
 
-        /// <summary>
-        /// 生成用户ID
-        /// </summary>
-        /// <returns></returns>
-        private string GenerateID()
-        {
-            var userRepository = unitOfWork.GetRepository<User>();
-
-            int count = userRepository.Count() + 2024000001;
-            string Id = count.ToString("D10");
-
-            return Id;
-        }
-
         public async Task<(bool,string?)> Registe(string Name, string Password)
         {
             if (Password.Length < 6 || Password.Length > 18 || string.IsNullOrEmpty(Name))
@@ -56,7 +43,9 @@ namespace ChatServer.Main.Services
             string encryptPassword = cipherHelper.Encrypt(Password);
             int count = encryptPassword.Length;
 
-            User user = new User { Id = GenerateID(),
+            var idGeneratorManager = _scopedProvider.ServiceProvider.GetRequiredService<IIdGeneratorManager>();
+
+            User user = new User { Id = idGeneratorManager.GenerateUserId(),
                 Name = Name,
                 HeadCount = 0,
                 HeadIndex = 0,

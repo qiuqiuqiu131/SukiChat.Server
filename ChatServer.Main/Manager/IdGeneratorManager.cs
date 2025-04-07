@@ -38,8 +38,8 @@ namespace ChatServer.Main.Manager
 
         private const int UserIdLength = 10;
         private const int GroupIdLength = 10;
-        private const string UserIdPrefix = "U";
-        private const string GroupIdPrefix = "G";
+        private const string UserIdPrefix = "";
+        private const string GroupIdPrefix = "";
 
         /// <summary>
         /// 构造函数
@@ -62,7 +62,7 @@ namespace ChatServer.Main.Manager
                 string userId;
                 do
                 {
-                    string numericPart = GenerateRandomNumericString(UserIdLength - 1);
+                    string numericPart = GenerateRandomNumericString(UserIdLength - UserIdPrefix.Length);
                     userId = $"{UserIdPrefix}{numericPart}";
                 } while (_usedUserIds.Contains(userId));
 
@@ -82,7 +82,7 @@ namespace ChatServer.Main.Manager
                 string groupId;
                 do
                 {
-                    string numericPart = GenerateRandomNumericString(GroupIdLength - 1);
+                    string numericPart = GenerateRandomNumericString(GroupIdLength - GroupIdPrefix.Length);
                     groupId = $"{GroupIdPrefix}{numericPart}";
                 } while (_usedGroupIds.Contains(groupId));
 

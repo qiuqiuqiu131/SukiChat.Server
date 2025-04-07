@@ -56,6 +56,11 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
 
                 messageDetail = mapper.Map<UserDetailMessage>(user);
                 messageDetail.Password = message.Password;
+
+                var loginRepository = unitOfWork.GetRepository<UserOnline>();
+                var online = await loginRepository.GetFirstOrDefaultAsync(predicate:d => d.UserId.Equals(user.Id));
+                if (online == null)
+                    messageDetail.IsFirstLogin = true;
             }
             catch
             {
