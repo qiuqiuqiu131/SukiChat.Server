@@ -1,0 +1,9 @@
+﻿{
+  "Robot": {
+    "ID": "1310000001",
+    "Name": "Suki 机器人",
+    "Password": "123456abcdef",
+    "Introduction": "我是Suki机器人，欢迎使用 Suki Chat 聊天系统！",
+    "IsMale": true
+  }
+}

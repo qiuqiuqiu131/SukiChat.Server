@@ -14,6 +14,7 @@ using ChatServer.Main.Entity;
 using Microsoft.Extensions.DependencyInjection;
 using static System.Formats.Asn1.AsnWriter;
 using ChatServer.Main.Manager;
+using Microsoft.Extensions.Configuration;
 
 namespace ChatServer.Main.Services
 {
@@ -35,7 +36,13 @@ namespace ChatServer.Main.Services
             this.cipherHelper = cipherHelper;
         }
 
-        public async Task<(bool,string?)> Registe(string Name, string Password)
+        /// <summary>
+        /// 自动添加机器人
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Password"></param>
+        /// <returns></returns>
+        public async Task<(bool, string?)> Registe(string Name, string Password)
         {
             if (Password.Length < 6 || Password.Length > 18 || string.IsNullOrEmpty(Name))
                 return (false, null);
@@ -45,28 +52,61 @@ namespace ChatServer.Main.Services
 
             var idGeneratorManager = _scopedProvider.ServiceProvider.GetRequiredService<IIdGeneratorManager>();
 
-            User user = new User { Id = idGeneratorManager.GenerateUserId(),
+            User user = new User
+            {
+                Id = idGeneratorManager.GenerateUserId(),
                 Name = Name,
                 HeadCount = 0,
                 HeadIndex = 0,
                 Password = encryptPassword,
-                RegisteTime = DateTime.Now };
+                RegisteTime = DateTime.Now
+            };
 
             var userRepository = unitOfWork.GetRepository<User>();
 
             try
             {
                 var result = await userRepository.InsertAsync(user);
-                var saveResult = await unitOfWork.SaveChangesAsync();
-                if (saveResult > 0)
-                    return (true,user.Id);
-                else
-                    return (false,null) ;
+                await unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 return await Registe(Name, Password);
             }
+
+            // -- 自动添加机器人 --//
+            var configuration = _scopedProvider.ServiceProvider.GetRequiredService<IConfigurationRoot>();
+            var robotId = configuration.GetValue("Robot:Id","1310000001");
+            var robot = await userRepository.GetFirstOrDefaultAsync(predicate: d => d.Id.Equals(robotId));
+
+            // 创建机器人
+            if (robot != null)
+            {
+                try
+                {
+                    var friendRelationRepository = unitOfWork.GetRepository<FriendRelation>();
+                    var friendRelation1 = new FriendRelation
+                    {
+                        User1Id = user.Id,
+                        User2Id = robotId,
+                        Grouping = "默认分组",
+                        GroupTime = DateTime.Now
+                    };
+                    var friendRelation2 = new FriendRelation
+                    {
+                        User1Id = robotId,
+                        User2Id = user.Id,
+                        Grouping = "默认分组",
+                        GroupTime = DateTime.Now
+                    };
+                    await friendRelationRepository.InsertAsync(friendRelation1);
+                    await friendRelationRepository.InsertAsync(friendRelation2);
+                    await unitOfWork.SaveChangesAsync();
+                }
+                catch { }
+            }
+
+            return (true, user.Id);
         }
 
         /// <summary>

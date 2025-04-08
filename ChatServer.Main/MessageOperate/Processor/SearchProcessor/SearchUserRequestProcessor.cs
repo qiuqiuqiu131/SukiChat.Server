@@ -39,9 +39,9 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
 
             var userRepository = unitOfWork.GetRepository<User>();
             var ids = await userRepository.GetAll()
-                .Where(d => d.Introduction != null && (d.Introduction.Contains(message.Content) && message.Content.Length >= 2 || d.Name.Equals(message.Content))
-                    || d.Name.Equals(message.Content)
-                    || d.Name.Contains(message.Content) && message.Content.Length >= 2
+                .Where(d => d.Introduction != null && (d.Introduction.Contains(message.Content) && message.Content.Length >= 2 || d.Introduction.Equals(message.Content))
+                    || d.Name.ToLower().Equals(message.Content.ToLower())
+                    || d.Name.ToLower().Contains(message.Content.ToLower()) && message.Content.Length >= 2
                     || d.Id.Equals(message.Content))
                 .Select(d => d.Id).ToListAsync();
 

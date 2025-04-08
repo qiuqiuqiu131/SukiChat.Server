@@ -18,7 +18,7 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
         private readonly IUserService userService;
         private readonly IUnitOfWork unitOfWork;
 
-        public SearchGroupRequestProcessor(IUserService userService,IUnitOfWork unitOfWork)
+        public SearchGroupRequestProcessor(IUserService userService, IUnitOfWork unitOfWork)
         {
             this.userService = userService;
             this.unitOfWork = unitOfWork;
@@ -39,8 +39,8 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
 
             var groupRepository = unitOfWork.GetRepository<Group>();
             var ids = await groupRepository.GetAll()
-                .Where(d => (d.Name.Contains(message.Content) && message.Content.Length >= 2
-                    || d.Name.Equals(message.Content)
+                .Where(d => (d.Name.ToLower().Contains(message.Content.ToLower()) && message.Content.Length >= 2
+                    || d.Name.ToLower().Equals(message.Content.ToLower())
                     || d.Description != null && (d.Description.Contains(message.Content) && message.Content.Length >= 2 || d.Description.Equals(message.Content))
                     || d.Id.Equals(message.Content)) && d.IsDisband == false)
                 .Select(d => d.Id).ToListAsync();

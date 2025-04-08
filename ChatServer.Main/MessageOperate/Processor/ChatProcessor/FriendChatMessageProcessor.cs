@@ -58,10 +58,12 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
 
                 var relationRepository = unitOfWork.GetRepository<FriendRelation>();
                 var relation1 = await relationRepository.GetFirstOrDefaultAsync(predicate:d => d.User1Id.Equals(message.UserFromId) && d.User2Id.Equals(message.UserTargetId),disableTracking:false);
-                relation1.IsChatting = true;
+                if(relation1 != null)
+                    relation1.IsChatting = true;
 
                 var relation2 = await relationRepository.GetFirstOrDefaultAsync(predicate:d => d.User1Id.Equals(message.UserTargetId) && d.User2Id.Equals(message.UserFromId),disableTracking:false);
-                relation2.IsChatting = true;
+                if(relation2 != null)
+                    relation2.IsChatting = true;
 
                 await unitOfWork.SaveChangesAsync();
             }

@@ -29,6 +29,7 @@ namespace ChatServer.Main.IOServer.Manager
     {
         private readonly IServiceProvider serviceProvider;
 
+        private readonly object _channelsLock = new object();
         private List<ClientChannel> channels = [];
 
         public ClientChannelManager(IServiceProvider serviceProvider)
@@ -42,9 +43,12 @@ namespace ChatServer.Main.IOServer.Manager
         /// <param name="channel"></param>
         public void AddClient(IChannel channel)
         {
-            int index = channels.FindIndex(c => Equals(c.Channel, channel));
-            if (index == -1)
-                channels.Add(new ClientChannel(channel));
+            lock (_channelsLock)
+            {
+                int index = channels.FindIndex(c => Equals(c.Channel, channel));
+                if (index == -1)
+                    channels.Add(new ClientChannel(channel));
+            }
         }
 
         /// <summary>
@@ -56,10 +60,12 @@ namespace ChatServer.Main.IOServer.Manager
             if (channel == null) return;
 
             ClientLogout(channel);
-
-            int index = channels.FindIndex(c => Equals(c.Channel, channel));
-            if (index != -1)
-                channels.RemoveAt(index);
+            lock (_channelsLock)
+            {
+                int index = channels.FindIndex(c => Equals(c.Channel, channel));
+                if (index != -1)
+                    channels.RemoveAt(index);
+            }
         }
 
         /// <summary>
@@ -69,8 +75,15 @@ namespace ChatServer.Main.IOServer.Manager
         /// <param name="Id"></param>
         public async void ClientLogin(IChannel channel, string Id)
         {
-            // 先检查此id是否已经登录
-            var client_loged = channels.Find(c => c.userId != null && c.userId.Equals(Id));
+            ClientChannel? client_loged;
+            ClientChannel? client;
+
+            // 使用锁获取所需的引用
+            lock (_channelsLock)
+            {
+                client_loged = channels.Find(c => c.userId != null && c.userId.Equals(Id));
+                client = channels.Find(c => Equals(c.Channel, channel));
+            }
 
             if (client_loged != null && client_loged.Channel != channel)
             {
@@ -86,20 +99,20 @@ namespace ChatServer.Main.IOServer.Manager
                 await client_loged.Channel.WriteAndFlushProtobufAsync(logoutCommand);
             }
 
-            var client = channels.Find(c => Equals(c.Channel, channel));
             if (client != null)
                 client.Login(Id);
             else
             {
                 var clientChannel = new ClientChannel(channel);
                 clientChannel.Login(Id);
-                channels.Add(clientChannel);
+                lock (_channelsLock)
+                    channels.Add(clientChannel);
             }
 
             // 通知其他在线用户，此用户已经上线
             // 获取好友服务
             var friendService = serviceProvider.GetRequiredService<IFriendService>();
-            
+
             var friendIds = await friendService.GetFriendsId(Id);
 
             // 创建上线消息
@@ -113,9 +126,10 @@ namespace ChatServer.Main.IOServer.Manager
             foreach (var friendId in friendIds)
             {
                 var friend = GetClient(friendId);
-                if(friend != null)
+                if (friend != null)
                     await friend.WriteAndFlushProtobufAsync(loginMessage);
             }
+
         }
 
         /// <summary>
@@ -124,57 +138,67 @@ namespace ChatServer.Main.IOServer.Manager
         /// <param name="channel"></param>
         public async void ClientLogout(IChannel channel)
         {
-            var client = channels.FirstOrDefault(c => Equals(channel, c.Channel));
+            ClientChannel? client;
+            List<ClientChannel> onlineUsers;
 
-            if (client == null)
+            // 使用锁获取所需的引用
+            lock (_channelsLock)
             {
-                var clientChannel = new ClientChannel(channel);
-                channels.Add(clientChannel);
-            }
-            else
-            {
-                if (!client.isLogined) return;
-                var loginService = serviceProvider.GetRequiredService<ILoginService>();
-                await loginService.UserOutline(client);
+                client = channels.FirstOrDefault(c => Equals(channel, c.Channel));
 
-                // 通知其他在线用户，此用户已经下线
-                // 获取好友服务
-                var friendService = serviceProvider.GetRequiredService<IFriendService>();
-
-                // 获取所有在线用户
-                var onlineUsers = channels.Where(c => c.isLogined && c.userId != null).ToList();
-
-                // 创建下线消息
-                var logoutMessage = new FriendLogoutMessage
+                if (client == null)
                 {
-                    FriendId = client.userId,
-                    LogoutTime = DateTime.Now.ToString()
-                };
-
-                // 向所有在线的好友发送下线消息
-                foreach (var onlineUser in onlineUsers)
-                {
-                    if (onlineUser.userId == null || onlineUser.userId.Equals(client.userId)) continue;
-                    // 判断是否为好友
-                    if (await friendService.IsFriend(onlineUser.userId, client.userId!))
-                    {
-                        // 发送下线消息
-                        await onlineUser.Channel.WriteAndFlushProtobufAsync(logoutMessage);
-                    }
+                    var clientChannel = new ClientChannel(channel);
+                    channels.Add(clientChannel);
+                    return; // 没有登录，直接返回
                 }
 
-                client.Logout();
+                if (!client.isLogined) return;
+
+                // 获取所有在线用户的副本
+                onlineUsers = channels.Where(c => c.isLogined && c.userId != null).ToList();
             }
+
+            // 剩余处理逻辑移到锁外部执行，避免长时间持有锁
+            var loginService = serviceProvider.GetRequiredService<ILoginService>();
+            await loginService.UserOutline(client);
+
+            // 通知其他在线用户，此用户已经下线
+            // 获取好友服务
+            var friendService = serviceProvider.GetRequiredService<IFriendService>();
+
+            // 创建下线消息
+            var logoutMessage = new FriendLogoutMessage
+            {
+                FriendId = client.userId,
+                LogoutTime = DateTime.Now.ToString()
+            };
+
+            // 向所有在线的好友发送下线消息
+            foreach (var onlineUser in onlineUsers)
+            {
+                if (onlineUser.userId == null || onlineUser.userId.Equals(client.userId)) continue;
+                // 判断是否为好友
+                if (await friendService.IsFriend(onlineUser.userId, client.userId!))
+                {
+                    // 发送下线消息
+                    await onlineUser.Channel.WriteAndFlushProtobufAsync(logoutMessage);
+                }
+            }
+
+            client.Logout();
         }
 
         public bool ClientOnline(string userId)
         {
-            return channels.Exists(c => c.userId != null && c.userId.Equals(userId));
+            lock (_channelsLock)
+                return channels.Exists(c => c.userId != null && c.userId.Equals(userId));
         }
 
         public IChannel? GetClient(string userId)
         {
-            return channels.FirstOrDefault(c => c.userId != null && c.userId.Equals(userId))?.Channel;
+            lock (_channelsLock)
+                return channels.FirstOrDefault(c => c.userId != null && c.userId.Equals(userId))?.Channel;
         }
     }
 }

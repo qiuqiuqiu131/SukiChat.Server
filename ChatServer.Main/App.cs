@@ -24,6 +24,7 @@ internal class App : Application
     protected override void InitConfigurations(IConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        configurationBuilder.AddJsonFile("robotsettings.json", optional: true, reloadOnChange: true);
     }
 
     protected override void RegisterServicesExtens(IServiceCollection services)

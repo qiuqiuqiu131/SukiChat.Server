@@ -34,6 +34,6 @@ namespace ChatServer.DataBase.DataBase.DataEntity
         public bool IsRetracted { get; set; } = false;
 
         [Required]
-        public DateTime RetractTime { get; set; } = DateTime.MaxValue;
+        public DateTime RetractTime { get; set; } = DateTime.MinValue;
     }
 }

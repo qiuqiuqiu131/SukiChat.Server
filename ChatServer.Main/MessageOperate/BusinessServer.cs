@@ -138,7 +138,6 @@ namespace ChatServer.Main.MessageOperate
             foreach (var unit in queue.GetConsumingEnumerable())
             {
                 semaphore.Wait();
-
                 Task.Run(async () =>
                 {
                     try

@@ -38,7 +38,7 @@ namespace ChatServer.Main.Manager
 
         private const int UserIdLength = 10;
         private const int GroupIdLength = 10;
-        private const string UserIdPrefix = "";
+        private const string UserIdPrefix = "2025";
         private const string GroupIdPrefix = "";
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace ChatServer.Main.Manager
                 {
                     string numericPart = GenerateRandomNumericString(GroupIdLength - GroupIdPrefix.Length);
                     groupId = $"{GroupIdPrefix}{numericPart}";
-                } while (_usedGroupIds.Contains(groupId));
+                } while (_usedGroupIds.Contains(groupId) || groupId.StartsWith("0"));
 
                 _usedGroupIds.Add(groupId);
                 return groupId;

@@ -2,9 +2,11 @@
 using ChatServer.Common.Protobuf;
 using ChatServer.Common.Tool;
 using ChatServer.Main.Entity;
+using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +28,16 @@ namespace ChatServer.Main.MessageOperate.Processor.LoginProcessor;
 public class RegisteRequestProcessor : IProcessor<RegisteRequest>
 {
     private readonly ILoginService loginHelper;
+    private readonly IClientChannelManager clientChannelManager;
+    private readonly IConfigurationRoot configurationRoot;
 
-    public RegisteRequestProcessor(ILoginService loginHelper)
+    public RegisteRequestProcessor(ILoginService loginHelper,
+        IClientChannelManager clientChannelManager,
+        IConfigurationRoot configurationRoot)
     {
         this.loginHelper = loginHelper;
+        this.clientChannelManager = clientChannelManager;
+        this.configurationRoot = configurationRoot;
     }
 
     public async Task Process(MessageUnit<RegisteRequest> unit)
@@ -51,5 +59,19 @@ public class RegisteRequestProcessor : IProcessor<RegisteRequest>
             Response = response,
             Id = id
         });
+
+        if(status)
+        {
+            var robotId = configurationRoot.GetValue("Robot:Id", "1310000001");
+            var robot = clientChannelManager.GetClient(robotId);
+            if(robot == null) return;
+
+            var newFriendMessage = new NewFriendMessage
+            {
+                UserId = id,
+                Grouping = "默认分组",
+            };
+            await robot.WriteAndFlushProtobufAsync(newFriendMessage);
+        }
     }
 }
