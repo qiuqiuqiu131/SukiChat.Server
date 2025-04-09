@@ -31,16 +31,16 @@ namespace ChatServer.Main.Services.Helper
                     case ChatMessage.ContentOneofCase.ImageMess:
                         stringBuilder.Append((int)chatMessage.ContentCase);
                         stringBuilder.Append(chatMessage.ImageMess.FilePath);
-                        stringBuilder.Append("__");
+                        stringBuilder.Append("_____");
                         stringBuilder.Append(chatMessage.ImageMess.FileSize);
                         stringBuilder.Append("1\n\t3\n\t1\n\t");
                         break;
                     case ChatMessage.ContentOneofCase.FileMess:
                         stringBuilder.Append((int)chatMessage.ContentCase);
                         stringBuilder.Append(chatMessage.FileMess.FileName);
-                        stringBuilder.Append("__");
+                        stringBuilder.Append("_____");
                         stringBuilder.Append(chatMessage.FileMess.FileSize);
-                        stringBuilder.Append("__");
+                        stringBuilder.Append("_____");
                         stringBuilder.Append(chatMessage.FileMess.FileType);
                         stringBuilder.Append("1\n\t3\n\t1\n\t");
                         break;
@@ -49,7 +49,7 @@ namespace ChatServer.Main.Services.Helper
                         foreach(var systemBlock in chatMessage.SystemMessage.Blocks)
                         {
                             stringBuilder.Append(systemBlock.Text);
-                            stringBuilder.Append("__");
+                            stringBuilder.Append("_____");
                             stringBuilder.Append(systemBlock.Bold?"1":"0");
                             stringBuilder.Append("5\n\t7\n\t5\n\t");
                         }
@@ -57,8 +57,15 @@ namespace ChatServer.Main.Services.Helper
                     case ChatMessage.ContentOneofCase.CardMess:
                         stringBuilder.Append((int)chatMessage.ContentCase);
                         stringBuilder.Append(chatMessage.CardMess.IsUser?"1":"0");
-                        stringBuilder.Append("__");
+                        stringBuilder.Append("_____");
                         stringBuilder.Append(chatMessage.CardMess.Id);
+                        stringBuilder.Append("1\n\t3\n\t1\n\t");
+                        break;
+                    case ChatMessage.ContentOneofCase.VoiceMess:
+                        stringBuilder.Append((int)chatMessage.ContentCase);
+                        stringBuilder.Append(chatMessage.VoiceMess.FilePath);
+                        stringBuilder.Append("_____");
+                        stringBuilder.Append(chatMessage.VoiceMess.FileSize);
                         stringBuilder.Append("1\n\t3\n\t1\n\t");
                         break;
                 }
@@ -98,7 +105,7 @@ namespace ChatServer.Main.Services.Helper
                         chatMessages.Add(textMess);
                         break;
                     case ChatMessage.ContentOneofCase.ImageMess:
-                        string[] image_spliter = content.Split("__");
+                        string[] image_spliter = content.Split("_____");
                         var imageMess = new ChatMessage
                         {
                             ImageMess = new ImageMess
@@ -110,7 +117,7 @@ namespace ChatServer.Main.Services.Helper
                         chatMessages.Add(imageMess);
                         break;
                     case ChatMessage.ContentOneofCase.FileMess:
-                        string[] file_spliter = content.Split("__");
+                        string[] file_spliter = content.Split("_____");
                         var fileMess = new ChatMessage
                         {
                             FileMess = new FileMess
@@ -128,7 +135,7 @@ namespace ChatServer.Main.Services.Helper
                         foreach( var system in system_spliter)
                         {
                             if(string.IsNullOrWhiteSpace(system)) continue;
-                            string[] block_spliter = system.Split("__");
+                            string[] block_spliter = system.Split("_____");
                             systemMessage.Blocks.Add(new SystemMessageBlock
                             {
                                 Text = block_spliter[0],
@@ -138,7 +145,7 @@ namespace ChatServer.Main.Services.Helper
                         chatMessages.Add(new ChatMessage { SystemMessage = systemMessage});
                         break;
                     case ChatMessage.ContentOneofCase.CardMess:
-                        string[] card_spliter = content.Split("__");
+                        string[] card_spliter = content.Split("_____");
                         var cardMess = new ChatMessage
                         {
                             CardMess = new CardMess
@@ -148,6 +155,18 @@ namespace ChatServer.Main.Services.Helper
                             }
                         };
                         chatMessages.Add(cardMess);
+                        break;
+                    case ChatMessage.ContentOneofCase.VoiceMess:
+                        string[] voice_spliter = content.Split("_____");
+                        var voiceMess = new ChatMessage
+                        {
+                            VoiceMess = new VoiceMess
+                            {
+                                FilePath = voice_spliter[0],
+                                FileSize = int.Parse(voice_spliter[1])
+                            }
+                        };
+                        chatMessages.Add(voiceMess);
                         break;
                 }
             }

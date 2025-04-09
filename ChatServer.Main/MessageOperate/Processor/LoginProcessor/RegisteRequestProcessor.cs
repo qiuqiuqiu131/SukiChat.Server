@@ -68,7 +68,8 @@ public class RegisteRequestProcessor : IProcessor<RegisteRequest>
 
             var newFriendMessage = new NewFriendMessage
             {
-                UserId = id,
+                UserId = robotId,
+                FrinedId = id,
                 Grouping = "默认分组",
             };
             await robot.WriteAndFlushProtobufAsync(newFriendMessage);
