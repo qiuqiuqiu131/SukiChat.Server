@@ -118,7 +118,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var friendRelationRepository = unitOfWork.GetRepository<FriendRelation>();
             var relations = await friendRelationRepository.GetAllAsync(
-                predicate: x => x.User1Id.Equals(userId) && x.GroupTime > offlineTime,
+                predicate: x => x.User1Id.Equals(userId),
                 orderBy: x => x.OrderBy(d => d.GroupTime));
 
             return relations.Select(mapper.Map<NewFriendMessage>);

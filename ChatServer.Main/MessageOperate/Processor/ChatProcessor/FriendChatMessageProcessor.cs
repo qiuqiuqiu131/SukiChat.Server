@@ -100,6 +100,12 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
             {
                 await targetChannel.WriteAndFlushProtobufAsync(message);
             }
+
+            // 如果为语音消息，在发送给发送方
+            if(message.Messages.Count == 1 && message.Messages[0].ContentCase == ChatMessage.ContentOneofCase.CallMess)
+            {
+                await channel.WriteAndFlushProtobufAsync(message);
+            }
         }
     }
 }

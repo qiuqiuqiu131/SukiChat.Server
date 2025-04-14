@@ -68,6 +68,15 @@ namespace ChatServer.Main.Services.Helper
                         stringBuilder.Append(chatMessage.VoiceMess.FileSize);
                         stringBuilder.Append("1\n\t3\n\t1\n\t");
                         break;
+                    case ChatMessage.ContentOneofCase.CallMess:
+                        stringBuilder.Append((int)chatMessage.ContentCase);
+                        stringBuilder.Append(chatMessage.CallMess.Failed ? "1" : "0");
+                        stringBuilder.Append("_____");
+                        stringBuilder.Append(chatMessage.CallMess.IsTelephone ? "1" : "0");
+                        stringBuilder.Append("_____");
+                        stringBuilder.Append(chatMessage.CallMess.CallTime.ToString());
+                        stringBuilder.Append("1\n\t3\n\t1\n\t");
+                        break;
                 }
             }
             return stringBuilder.ToString();
@@ -167,6 +176,19 @@ namespace ChatServer.Main.Services.Helper
                             }
                         };
                         chatMessages.Add(voiceMess);
+                        break;
+                    case ChatMessage.ContentOneofCase.CallMess:
+                        string[] call_spliter = content.Split("_____");
+                        var callMess = new ChatMessage
+                        {
+                            CallMess = new CallMess
+                            {
+                                Failed = call_spliter[0].Equals("0") ? false : true,
+                                IsTelephone = call_spliter[1].Equals("0") ? false : true,
+                                CallTime = int.Parse(call_spliter[2])
+                            }
+                        };
+                        chatMessages.Add(callMess);
                         break;
                 }
             }
