@@ -36,6 +36,8 @@ public class LoginRequestProcessor : IProcessor<LoginRequest>
         var message = unit.Message;
         string? userName = await loginService.Login(message.Id, message.Password);
 
+        //Console.WriteLine($"用户登录：{message.Id},{message.Password}");
+
         var response = new CommonResponse { State = userName != null };
         if (userName != null)
         {
