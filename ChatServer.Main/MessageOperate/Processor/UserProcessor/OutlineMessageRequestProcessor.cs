@@ -41,6 +41,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     public async Task Process(MessageUnit<OutlineMessageRequest> unit)
     {
         unit.Channel.TryGetTarget(out IChannel? channel);
+        var message = unit.Message;
 
         if (!await userService.IsUserExist(unit.Message.Id))
         {
@@ -51,25 +52,27 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
             return;
         }
 
+        var user = await userService.GetUser(message.Id);
+
         DateTime time = DateTime.Parse(unit.Message.LastLogoutTime);
 
         #region Step 1
         //-- 操作：获取离线后新朋友消息 --//
         var newFriendsTask = GetNewFriendMessages(unit.Message.Id, time);
         //-- 操作：获取离线后好友请求消息 --//
-        var friendRequestsTask = GetFriendRequestMessages(unit.Message.Id, time);
+        var friendRequestsTask = GetFriendRequestMessages(unit.Message.Id, time, user.LastDeleteFriendMessageTime);
+        //-- 操作：获取离线后好友删除消息
+        var friendDeletesTask = GetFriendDeleteMessage(unit.Message.Id, time, user.LastDeleteFriendMessageTime);
         //-- 操作：获取离线后聊天消息 --//
         var friendChatsTask = GetFriendChatMessage(unit.Message.Id, time);
-        //-- 操作：获取离线后好友删除消息
-        var friendDeletesTask = GetFriendDeleteMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的进群消息 --//
         var enterGroupsTask = GetEnterGroupMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的群聊消息 --//
         var groupChatsTask = GetGroupChatMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的群聊请求消息 --//
-        var groupRequestsTask = GetGroupRequestMessage(unit.Message.Id, time);
+        var groupRequestsTask = GetGroupRequestMessage(unit.Message.Id, time, user.LastDeleteGroupMessageTime);
         //-- 操作：获取离线后的删除成员消息 --//
-        var groupDeletesTask = GetGroupDeleteMessage(unit.Message.Id, time);
+        var groupDeletesTask = GetGroupDeleteMessage(unit.Message.Id, time, user.LastDeleteGroupMessageTime);
         //-- 操作：获取用户的分组信息 --//
         var userGroupsTask = GetUserGroupMessage(unit.Message.Id, time);
         //-- 操作：获取用户对好友聊天消息的操作 --//
@@ -131,7 +134,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <param name="userId"></param>
     /// <param name="offlineTime"></param>
     /// <returns></returns>
-    private async Task<IEnumerable<FriendRequestMessage>> GetFriendRequestMessages(string userId, DateTime offlineTime)
+    private async Task<IEnumerable<FriendRequestMessage>> GetFriendRequestMessages(string userId, DateTime offlineTime,DateTime lastDeleteTime)
     {
         using (var scope = serviceProvider.CreateScope())
         {
@@ -139,7 +142,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var friendRequestRepository = unitOfWork.GetRepository<FriendRequest>();
             var requests = await friendRequestRepository.GetAllAsync(
-                predicate: x => (x.UserTargetId.Equals(userId) || x.UserFromId.Equals(userId)) && (x.RequestTime > offlineTime || x.IsSolved && x.SolveTime > offlineTime),
+                predicate: x => (x.UserTargetId.Equals(userId) || x.UserFromId.Equals(userId)) && (x.RequestTime > offlineTime && x.RequestTime > lastDeleteTime || x.IsSolved && x.SolveTime > offlineTime && x.SolveTime > lastDeleteTime),
                 orderBy: x => x.OrderBy(d => d.RequestTime));
 
             return requests.Select(mapper.Map<FriendRequestMessage>);
@@ -173,7 +176,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <param name="userId"></param>
     /// <param name="offlinetTime"></param>
     /// <returns></returns>
-    private async Task<IEnumerable<FriendDeleteMessage>> GetFriendDeleteMessage(string userId, DateTime offlinetTime)
+    private async Task<IEnumerable<FriendDeleteMessage>> GetFriendDeleteMessage(string userId, DateTime offlinetTime, DateTime lastDeleteTime)
     {
         using (var scope = serviceProvider.CreateScope())
         {
@@ -181,7 +184,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var friendDeleteRepository = unitOfWork.GetRepository<FriendDelete>();
             var deletes = await friendDeleteRepository.GetAllAsync(
-                predicate: x => (x.UserId1.Equals(userId) || x.UserId2.Equals(userId)) && x.Time > offlinetTime,
+                predicate: x => (x.UserId1.Equals(userId) || x.UserId2.Equals(userId)) && x.Time > offlinetTime && x.Time > lastDeleteTime,
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return deletes.Select(mapper.Map<FriendDeleteMessage>);
@@ -242,7 +245,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <param name="userId"></param>
     /// <param name="offlineTime"></param>
     /// <returns></returns>
-    private async Task<IEnumerable<GroupRequestMessage>> GetGroupRequestMessage(string userId, DateTime offlineTime)
+    private async Task<IEnumerable<GroupRequestMessage>> GetGroupRequestMessage(string userId, DateTime offlineTime, DateTime lastDeleteTime)
     {
         using (var scope = serviceProvider.CreateScope())
         {
@@ -253,7 +256,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var groupRequestRepository = unitOfWork.GetRepository<GroupRequest>();
             var requests = await groupRequestRepository.GetAllAsync(
-                predicate: x => (groupIds.Contains(x.GroupId) || x.UserFromId.Equals(userId)) && (x.RequestTime > offlineTime || x.IsSolved && x.SolveTime > offlineTime),
+                predicate: x => (groupIds.Contains(x.GroupId) || x.UserFromId.Equals(userId)) && (x.RequestTime > offlineTime && x.RequestTime > lastDeleteTime || x.IsSolved && x.SolveTime > offlineTime && x.SolveTime > lastDeleteTime),
                 orderBy: x => x.OrderBy(d => d.RequestTime));
 
             return requests.Select(mapper.Map<GroupRequestMessage>);
@@ -266,7 +269,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     /// <param name="userId"></param>
     /// <param name="offlinetTime"></param>
     /// <returns></returns>
-    private async Task<IEnumerable<GroupDeleteMessage>> GetGroupDeleteMessage(string userId, DateTime offlinetTime)
+    private async Task<IEnumerable<GroupDeleteMessage>> GetGroupDeleteMessage(string userId, DateTime offlinetTime, DateTime lastDeleteTime)
     {
         using (var scope = serviceProvider.CreateScope())
         {
@@ -274,7 +277,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
 
             var friendDeleteRepository = unitOfWork.GetRepository<GroupDelete>();
             var deletes = await friendDeleteRepository.GetAllAsync(
-                predicate: x =>  x.MemberId.Equals(userId) && x.Time > offlinetTime,
+                predicate: x =>  x.MemberId.Equals(userId) && x.Time > offlinetTime && x.Time > lastDeleteTime,
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return deletes.Select(mapper.Map<GroupDeleteMessage>);

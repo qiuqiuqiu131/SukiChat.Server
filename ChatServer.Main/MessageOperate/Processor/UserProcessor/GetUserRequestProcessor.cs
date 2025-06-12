@@ -27,17 +27,14 @@ public class GetUserRequestProcessor : IProcessor<GetUserRequest>
     private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
     private readonly IClientChannelManager clientChannelManager;
-    private readonly ICipherHelper cipherHelper;
 
     public GetUserRequestProcessor(IUnitOfWork unitOfWork,
         IMapper mapper,
-        IClientChannelManager clientChannelManager,
-        ICipherHelper cipherHelper)
+        IClientChannelManager clientChannelManager)
     {
         this.unitOfWork = unitOfWork;
         this.mapper = mapper;
         this.clientChannelManager = clientChannelManager;
-        this.cipherHelper = cipherHelper;
     }
 
     public async Task Process(MessageUnit<GetUserRequest> unit)
@@ -62,7 +59,7 @@ public class GetUserRequestProcessor : IProcessor<GetUserRequest>
         {
             await channel.WriteAndFlushProtobufAsync(new GetUserResponse
             {
-                Response = new CommonResponse { State = false }
+                Response = new CommonResponse { State = false, Message = "用户不存在" }
             });
         }
     }

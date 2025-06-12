@@ -74,6 +74,15 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(grm => grm.SolvedTime, opt => opt.MapFrom(gr => gr.SolveTime == null ? string.Empty: gr.SolveTime.ToString()));
             #endregion
 
+            #region Group + GroupMessage
+
+            CreateMap<Group, GroupMessage>()
+                .ForMember(gm => gm.CreateTime, opt => opt.MapFrom(g => g.CreateTime.ToString()))
+                .ForMember(gm => gm.Description, opt => opt.MapFrom(g => g.Description ?? string.Empty))
+                .ForMember(gm => gm.GroupId, opt => opt.MapFrom(g => g.Id));
+
+            #endregion
+
             #region FriendDelete + FriendDeleteMessage
             CreateMap<FriendDelete, FriendDeleteMessage>()
                 .ForMember(fdm => fdm.Time, opt => opt.MapFrom(fd => fd.Time.ToString()))

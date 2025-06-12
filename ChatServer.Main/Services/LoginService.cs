@@ -57,7 +57,7 @@ namespace ChatServer.Main.Services
                 Id = idGeneratorManager.GenerateUserId(),
                 Name = Name,
                 HeadCount = 0,
-                HeadIndex = 0,
+                HeadIndex = -1,
                 Password = encryptPassword,
                 RegisteTime = DateTime.Now
             };

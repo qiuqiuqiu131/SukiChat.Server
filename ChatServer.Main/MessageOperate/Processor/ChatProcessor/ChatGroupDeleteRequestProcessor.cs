@@ -12,17 +12,8 @@ using System.Threading.Tasks;
 
 namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
 {
-    class ChatGroupDeleteRequestProcessor : IProcessor<ChatGroupDeleteRequest>
+    class ChatGroupDeleteRequestProcessor(IUnitOfWork unitOfWork, IUserService userService) : IProcessor<ChatGroupDeleteRequest>
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IUserService userService;
-
-        public ChatGroupDeleteRequestProcessor(IUnitOfWork unitOfWork,IUserService userService)
-        {
-            this.unitOfWork = unitOfWork;
-            this.userService = userService;
-        }
-
         public async Task Process(MessageUnit<ChatGroupDeleteRequest> unit)
         {
             unit.Channel.TryGetTarget(out var channel);

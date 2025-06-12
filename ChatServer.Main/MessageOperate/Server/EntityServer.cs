@@ -17,8 +17,10 @@ namespace ChatServer.Main.MessageOperate.Server
         protected override void RegisteMessages(MessagesContainer messages)
         {
             messages.AddMessage<GetUserRequest>()
+                .AddMessage<GetUserListRequest>()
                 .AddMessage<GroupMessageRequest>()
-                .AddMessage<GroupMembersRequest>()
+                .AddMessage<GroupMessageListRequest>()
+                .AddMessage<GroupMemberListRequest>()
                 .AddMessage<GroupMemberRequest>()
                 .AddMessage<GroupMemberIdsRequest>()
                 .AddMessage<ResetHeadImageRequest>()

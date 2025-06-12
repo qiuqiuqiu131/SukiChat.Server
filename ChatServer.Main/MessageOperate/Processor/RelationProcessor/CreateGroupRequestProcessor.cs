@@ -176,7 +176,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             }
 
 
-            // 发送被拉入群的系统消息
+            // 发送被拉入群的系统消息， TODO： 可批量化处理
             List<GroupChatMessage> messages = new List<GroupChatMessage>();
             foreach (var friendId in message.FriendId)
             {
@@ -227,22 +227,27 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
 
             await Task.Delay(500);
 
-            if (channel != null)
-                _ = Task.Run(async () =>
-                {
-                    foreach (var charMessage in messages)
-                        await channel.WriteAndFlushProtobufAsync(charMessage);
-                });
+            // 构建群聊消息列表
+            var chatMessageList = new GroupChatMessageList
+            {
+                GroupId = groupId,
+                Messages = { messages },
+                Time = DateTime.Now.ToString()
+            };
 
+            // 发送消息
+            if(channel != null)
+            {
+                chatMessageList.UserId = message.UserId;
+                await channel.WriteAndFlushProtobufAsync(chatMessageList);
+            }
             foreach (var friendId in message.FriendId)
             {
                 var friendChannel = channelManager.GetClient(friendId);
                 if (friendChannel == null) continue;
-                _ = Task.Run(async () =>
-                {
-                    foreach (var chatMessage in messages)
-                        await friendChannel.WriteAndFlushProtobufAsync(chatMessage);
-                });
+                
+                chatMessageList.UserId = friendId;
+                await friendChannel.WriteAndFlushProtobufAsync(chatMessageList);
             }
         }
     }
