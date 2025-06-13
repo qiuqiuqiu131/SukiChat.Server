@@ -45,9 +45,10 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
     public async Task Process(MessageUnit<FriendRequestFromClient> unit)
     {
         unit.Channel.TryGetTarget(out IChannel? channel);
+        var message = unit.Message;
 
 
-        #region Step 1
+
         //-- 判断：不是用户
         if(!await userService.IsUserExist(unit.Message.UserTargetId) 
             || !await userService.IsUserExist(unit.Message.UserFromId))
@@ -61,7 +62,7 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
         }
 
         //-- 判断：不能添加自己为好友 --//
-        if (unit.Message.UserTargetId.Equals(unit.Message.UserFromId))
+        if (message.UserTargetId == message.UserFromId)
         {
             if (channel != null)
                 await channel.WriteAndFlushProtobufAsync(new FriendRequestFromClientResponse
@@ -70,12 +71,9 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
                 });
             return;
         }
-        #endregion
 
-
-        #region Step 2
         //-- 判断：不能向已经成为好友的对象发送好友请求 --//
-        if (await friendService.IsFriend(unit.Message.UserTargetId, unit.Message.UserFromId))
+        if (await friendService.IsFriend(message.UserTargetId, message.UserFromId))
         {
             if (channel != null)
                 await channel.WriteAndFlushProtobufAsync(new FriendRequestFromClientResponse
@@ -84,20 +82,26 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
                 });
             return;
         }
-        #endregion
 
 
-        #region Step 3
-        //-- 执行：将好友请求保存到数据库 --//
-        var repository = unitOfWork.GetRepository<FriendRequest>();
         var request = mapper.Map<FriendRequest>(unit.Message);
-        await repository.InsertAsync(request);
-        #endregion
 
+        try
+        {
+            //-- 执行：将好友请求保存到数据库 --//
+            var repository = unitOfWork.GetRepository<FriendRequest>();
 
-        #region Step 4
-        //-- 判断：数据库操作是否成功 --//
-        if (await unitOfWork.SaveChangesAsync() <= 0)
+            // 如果存在相同的好友请求，则覆盖之前相同的好友请求
+            var entity = await repository.GetFirstOrDefaultAsync(
+                predicate: d => d.UserFromId == message.UserFromId && d.UserTargetId == message.UserTargetId && !d.IsSolved,
+                orderBy: o => o.OrderByDescending(d => d.RequestTime), disableTracking: true);
+            if (entity != null)
+                request.Id = entity.Id;
+
+            repository.Update(request);
+            await unitOfWork.SaveChangesAsync();
+        }
+        catch(Exception e)
         {
             if (channel != null)
                 await channel.WriteAndFlushProtobufAsync(new FriendRequestFromClientResponse
@@ -106,28 +110,23 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
                 });
             return;
         }
-        #endregion
 
 
-        #region Step 5
         //-- 执行：发送好友请求成功的响应 To：发送方 --//
         if (channel != null)
             await channel.WriteAndFlushProtobufAsync(new FriendRequestFromClientResponse
             {
-                Response = new CommonResponse { State = true, Message = "添加好友成功" },
+                Response = new CommonResponse { State = true, Message = "添加好友请求发送成功" },
                 RequestId = request.Id,
                 RequestTime = request.RequestTime.ToString(),
-                Request = unit.Message
+                Request = message
             });
-        #endregion
 
 
-        #region Step 6
         //-- 执行：发送好友请求 To：请求方 --//
         var targetOnline = channelManager.GetClient(unit.Message.UserTargetId);
         if (targetOnline == null) return;
         FriendRequestFromServer requestMess = mapper.Map<FriendRequestFromServer>(request);
         await targetOnline.WriteAndFlushProtobufAsync(requestMess);
-        #endregion
     }
 }

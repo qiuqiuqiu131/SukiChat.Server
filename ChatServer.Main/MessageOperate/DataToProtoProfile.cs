@@ -143,6 +143,13 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(ugm => ugm.GroupType, opt => opt.MapFrom(ug => ug.GroupType));
             #endregion
 
+            #region JoinGroupRequestFromClient + GroupRequest
+
+            CreateMap<JoinGroupRequestFromClient, GroupRequest>()
+                .ForMember(gr => gr.UserFromId, opt => opt.MapFrom(g => g.UserId))
+                .ForMember(gr => gr.RequestTime, opt => opt.Ignore());
+
+            #endregion
 
             CreateMap<ChatPrivateDetail, ChatPrivateDetailMessage>();
             CreateMap<ChatGroupDetail, ChatGroupDetailMessage>();

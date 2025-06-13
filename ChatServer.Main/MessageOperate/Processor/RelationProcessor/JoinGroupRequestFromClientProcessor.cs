@@ -1,4 +1,5 @@
-﻿using ChatServer.Common;
+﻿using AutoMapper;
+using ChatServer.Common;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -6,11 +7,6 @@ using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
 using DotNetty.Transport.Channels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 
@@ -30,16 +26,19 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IUserService userService;
+    private readonly IMapper mapper;
     private readonly IGroupService groupService;
     private readonly IClientChannelManager clientChannelManager;
 
     public JoinGroupRequestFromClientProcessor(IUnitOfWork unitOfWork,
         IUserService userService,
+        IMapper mapper,
         IGroupService groupService,
         IClientChannelManager clientChannelManager)
     {
         this.unitOfWork = unitOfWork;
         this.userService = userService;
+        this.mapper = mapper;
         this.groupService = groupService;
         this.clientChannelManager = clientChannelManager;
     }
@@ -90,20 +89,17 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
             return;
         }
 
-        var groupRequest = new GroupRequest
-        {
-            GroupId = message.GroupId,
-            UserFromId = message.UserId,
-            RequestTime = DateTime.Now,
-            Message = message.Message,
-            Grouping = message.Grouping,
-            NickName = message.NickName,
-            Remark = message.Remark
-        };
+        var groupRequest = mapper.Map<GroupRequest>(message);
+        groupRequest.RequestTime = DateTime.Now;
 
         try
         {
             var groupReuqestRepository = unitOfWork.GetRepository<GroupRequest>();
+            var entity = await groupReuqestRepository.GetFirstOrDefaultAsync(
+                predicate: d => d.GroupId == message.GroupId && d.UserFromId == message.UserId && !d.IsSolved,
+                orderBy: o => o.OrderByDescending(d => d.RequestTime),disableTracking:true);
+            if(entity != null)
+                groupRequest.Id = entity.Id;
             groupReuqestRepository.Update(groupRequest);
             await unitOfWork.SaveChangesAsync();
         }
