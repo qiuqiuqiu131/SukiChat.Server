@@ -31,7 +31,6 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
         public async Task Process(MessageUnit<GetUserDetailMessageRequest> unit)
         {
             unit.Channel.TryGetTarget(out var channel);
-
             var message = unit.Message;
 
             UserDetailMessage? messageDetail = null;
