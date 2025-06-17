@@ -129,6 +129,14 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(gcm => gcm.RetractTime, opt => opt.MapFrom(cg => cg.RetractTime.ToString()));
             #endregion
 
+            #region ChatPrivateDetailMessage + ChatPrivateDetail
+            CreateMap<ChatPrivateDetail, ChatPrivateDetailMessage>().ReverseMap();
+            #endregion
+
+            #region ChatGroupDetailMessage + ChatGroupDetail
+            CreateMap<ChatGroupDetail, ChatGroupDetailMessage>().ReverseMap();
+            #endregion
+
             #region GroupRelation + EnterGroupMessage
             CreateMap<GroupRelation, EnterGroupMessage>()
                 .ForMember(egm => egm.JoinTime, opt => opt.MapFrom(gr => gr.JoinTime.ToString()))
@@ -150,9 +158,6 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(gr => gr.RequestTime, opt => opt.Ignore());
 
             #endregion
-
-            CreateMap<ChatPrivateDetail, ChatPrivateDetailMessage>();
-            CreateMap<ChatGroupDetail, ChatGroupDetailMessage>();
         }
     }
 }

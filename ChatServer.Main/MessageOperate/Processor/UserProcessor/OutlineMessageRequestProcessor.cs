@@ -6,13 +6,7 @@ using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.Services;
 using DotNetty.Transport.Channels;
-using Google.Protobuf.Collections;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatServer.Main.MessageOperate.Processor.UserProcessor;
 
@@ -47,7 +41,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         {
             if (channel != null)
             {
-                await channel.WriteAndFlushProtobufAsync(new OutlineMessageResponse { Id = unit.Message.Id });
+                await channel.WriteAndFlushProtobufAsync(new OutlineMessageResponse { Response = new CommonResponse { State = false } });
             }
             return;
         }
@@ -63,25 +57,16 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         var friendRequestsTask = GetFriendRequestMessages(unit.Message.Id, time, user.LastDeleteFriendMessageTime);
         //-- 操作：获取离线后好友删除消息
         var friendDeletesTask = GetFriendDeleteMessage(unit.Message.Id, time, user.LastDeleteFriendMessageTime);
-        //-- 操作：获取离线后聊天消息 --//
-        var friendChatsTask = GetFriendChatMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的进群消息 --//
         var enterGroupsTask = GetEnterGroupMessage(unit.Message.Id, time);
-        //-- 操作：获取离线后的群聊消息 --//
-        var groupChatsTask = GetGroupChatMessage(unit.Message.Id, time);
         //-- 操作：获取离线后的群聊请求消息 --//
         var groupRequestsTask = GetGroupRequestMessage(unit.Message.Id, time, user.LastDeleteGroupMessageTime);
         //-- 操作：获取离线后的删除成员消息 --//
         var groupDeletesTask = GetGroupDeleteMessage(unit.Message.Id, time, user.LastDeleteGroupMessageTime);
         //-- 操作：获取用户的分组信息 --//
         var userGroupsTask = GetUserGroupMessage(unit.Message.Id, time);
-        //-- 操作：获取用户对好友聊天消息的操作 --//
-        var chatPrivateDetailsTask = GetChatPrivateDetailMessage(unit.Message.Id, time);
-        //-- 操作：获取用户对群聊聊天消息的操作 --//
-        var chatGroupDetailsTask = GetChatGroupDetailMessage(unit.Message.Id, time);
 
-        await Task.WhenAll(newFriendsTask, friendRequestsTask, friendChatsTask,friendDeletesTask, enterGroupsTask, groupChatsTask, groupRequestsTask,groupDeletesTask,userGroupsTask,
-            chatPrivateDetailsTask,chatGroupDetailsTask);
+        await Task.WhenAll(newFriendsTask, friendRequestsTask,friendDeletesTask, enterGroupsTask, groupRequestsTask,groupDeletesTask,userGroupsTask);
 
         #endregion
 
@@ -91,15 +76,12 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
         response.Id = unit.Message.Id;
         response.NewFriends.AddRange(newFriendsTask.Result);
         response.FriendRequests.AddRange(friendRequestsTask.Result);
-        response.FriendChats.AddRange(friendChatsTask.Result);
         response.FriendDeletes.AddRange(friendDeletesTask.Result);
         response.EnterGroups.AddRange(enterGroupsTask.Result);
-        response.GroupChats.AddRange(groupChatsTask.Result);
         response.GroupRequests.AddRange(groupRequestsTask.Result);
         response.GroupDeletes.AddRange(groupDeletesTask.Result);
         response.UserGroups.AddRange(userGroupsTask.Result);
-        response.ChatGroupDetails.AddRange(chatGroupDetailsTask.Result);
-        response.ChatPrivateDetails.AddRange(chatPrivateDetailsTask.Result);
+        response.Response = new CommonResponse { State = true };
 
         if (channel != null)
             await channel.WriteAndFlushProtobufAsync(response);
@@ -150,27 +132,6 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
     }
 
     /// <summary>
-    /// 找到离线时间后所有聊天消息
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="offlineTime"></param>
-    /// <returns></returns>
-    private async Task<IEnumerable<FriendChatMessage>> GetFriendChatMessage(string userId, DateTime offlineTime)
-    {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            var chatPrivateRepository = unitOfWork.GetRepository<ChatPrivate>();
-            var chats = await chatPrivateRepository.GetAllAsync(
-                predicate: x => (x.UserFromId.Equals(userId) || x.UserTargetId.Equals(userId)) && (x.Time > offlineTime || x.RetractTime > offlineTime),
-                orderBy: x => x.OrderBy(d => d.Time));
-
-            return chats.Select(mapper.Map<FriendChatMessage>);
-        }
-    }
-
-    /// <summary>
     /// 找到离线时间后所有好友删除消息
     /// </summary>
     /// <param name="userId"></param>
@@ -188,33 +149,6 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
                 orderBy: x => x.OrderBy(d => d.Time));
 
             return deletes.Select(mapper.Map<FriendDeleteMessage>);
-        }
-    }
-
-
-    /// <summary>
-    /// 获取群聊聊天记录
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="offlineTime"></param>
-    /// <returns></returns>
-    private async Task<IEnumerable<GroupChatMessage>> GetGroupChatMessage(string userId, DateTime offlineTime)
-    {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            // 获取所有用户加入的群聊
-            var groupService = scope.ServiceProvider.GetRequiredService<IGroupService>();
-            var groupIds = await groupService.GetGroupsOfUser(userId);
-
-            // 获取所有群聊的消息
-            var chatGroupRepository = unitOfWork.GetRepository<ChatGroup>();
-            var chats = await chatGroupRepository.GetAllAsync(
-                predicate: d => groupIds.Contains(d.GroupId) && (d.Time > offlineTime || d.RetractTime > offlineTime),
-                orderBy: d => d.OrderBy(d => d.Time));
-
-            return chats.Select(mapper.Map<GroupChatMessage>);
         }
     }
 
@@ -301,34 +235,6 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
                 predicate: x => (x.UserId.Equals(userId)));
 
             return userGroups.Select(mapper.Map<UserGroupMessage>);
-        }
-    }
-
-    private async Task<IEnumerable<ChatGroupDetailMessage>> GetChatGroupDetailMessage(string userId, DateTime offlinetTime)
-    {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            var chatGroupDetailRepository = unitOfWork.GetRepository<ChatGroupDetail>();
-            var chatGroupDetails = await chatGroupDetailRepository.GetAllAsync(
-                predicate: x => x.UserId.Equals(userId) && x.Time > offlinetTime);
-
-            return chatGroupDetails.Select(mapper.Map<ChatGroupDetailMessage>);
-        }
-    }
-
-    private async Task<IEnumerable<ChatPrivateDetailMessage>> GetChatPrivateDetailMessage(string userId, DateTime offlineTime)
-    {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            var chatPrivateDetailRepository = unitOfWork.GetRepository<ChatPrivateDetail>();
-            var chatPrivateDetails = await chatPrivateDetailRepository.GetAllAsync(
-                predicate: x => x.UserId.Equals(userId) && x.Time > offlineTime);
-
-            return chatPrivateDetails.Select(mapper.Map<ChatPrivateDetailMessage>);
         }
     }
 }

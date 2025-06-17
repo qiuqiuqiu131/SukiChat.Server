@@ -59,7 +59,7 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                     PageCount = chatList.PageSize,
                     PageIndex = chatList.PageIndex,
                     UserId = message.UserId,
-                    Messages = { mapper.Map<List<FriendChatMessage>>(chatList) }
+                    Messages = { mapper.Map<List<FriendChatMessage>>(chatList.Items) }
                 };
 
                 if (channel != null)

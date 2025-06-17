@@ -17,7 +17,14 @@ namespace ChatServer.Common
         {
             byte[] bytes = ProtobufHelper.Serialize(message);
             IByteBuffer buffer = Unpooled.CopiedBuffer(bytes);
-            await channel.WriteAndFlushAsync(buffer);
+            try
+            {
+                await channel.WriteAndFlushAsync(buffer);
+            }
+            catch
+            {
+                Console.WriteLine($"连接：{channel.Id} 失效，消息发送失败");
+            }
         }
     }
 }
