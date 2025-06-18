@@ -5,6 +5,7 @@ using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.Services;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,14 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
         private readonly IUnitOfWork unitOfWork;
         private readonly IUserService userService;
         private readonly IMapper mapper;
+        private readonly ILogger logger;
 
-        public GetFriendChatListRequestProcessor(IUnitOfWork unitOfWork, IUserService userService, IMapper mapper)
+        public GetFriendChatListRequestProcessor(IUnitOfWork unitOfWork, IUserService userService, IMapper mapper, ILogger logger)
         {
             this.unitOfWork = unitOfWork;
             this.userService = userService;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task Process(MessageUnit<GetFriendChatListRequest> unit)
@@ -48,7 +51,7 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                 var chatRepository = unitOfWork.GetRepository<ChatPrivate>();
                 var chatList = await chatRepository.GetPagedListAsync(
                     predicate: d => (d.UserFromId == message.UserId || d.UserTargetId == message.UserId) && (d.Time > lastLoginTime || d.IsRetracted && d.RetractTime > lastLoginTime),
-                    orderBy: o => o.OrderByDescending(d => d.Time),
+                    orderBy: o => o.OrderByDescending(d => d.Id).ThenBy(d => d.Time),
                     pageIndex: message.PageIndex,
                     pageSize: message.PageCount);
 
@@ -61,6 +64,8 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                     UserId = message.UserId,
                     Messages = { mapper.Map<List<FriendChatMessage>>(chatList.Items) }
                 };
+
+                logger.Information($"Friend Chat Message Request -> User Id: {response.UserId}, Page Index: {response.PageIndex}, Total Page: {chatList.TotalPages}, Total Count: {chatList.TotalCount}");
 
                 if (channel != null)
                     await channel.WriteAndFlushProtobufAsync(response);

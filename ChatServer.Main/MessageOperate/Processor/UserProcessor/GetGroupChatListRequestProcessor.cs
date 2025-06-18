@@ -52,7 +52,7 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                 var groupRepository = unitOfWork.GetRepository<ChatGroup>();
                 var chatList = await groupRepository.GetPagedListAsync(
                     predicate: d => groupList.Contains(d.GroupId) && (d.Time > lastLoginTime || d.IsRetracted && d.RetractTime > lastLoginTime),
-                    orderBy: o => o.OrderByDescending(d => d.Time),
+                    orderBy: o => o.OrderByDescending(d => d.Id).ThenBy(d => d.Time),
                     pageIndex: message.PageIndex,
                     pageSize: message.PageCount);
 
