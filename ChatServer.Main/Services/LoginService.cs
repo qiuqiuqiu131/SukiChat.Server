@@ -20,7 +20,7 @@ namespace ChatServer.Main.Services
 {
     public interface ILoginService
     {
-        Task<(bool,string?)> Registe(string Name, string Password);
+        Task<(bool,string?)> Registe(string Name, string Password,string email,string phone);
         Task<string?> Login(string Id, string Password);
         Task UserOutline(ClientChannel client);
     }
@@ -42,7 +42,7 @@ namespace ChatServer.Main.Services
         /// <param name="Name"></param>
         /// <param name="Password"></param>
         /// <returns></returns>
-        public async Task<(bool, string?)> Registe(string Name, string Password)
+        public async Task<(bool, string?)> Registe(string Name, string Password, string Email, string Phone)
         {
             if (Password.Length < 6 || Password.Length > 18 || string.IsNullOrEmpty(Name))
                 return (false, null);
@@ -59,7 +59,9 @@ namespace ChatServer.Main.Services
                 HeadCount = 0,
                 HeadIndex = -1,
                 Password = encryptPassword,
-                RegisteTime = DateTime.Now
+                RegisteTime = DateTime.Now,
+                PhoneNumber = string.IsNullOrWhiteSpace(Phone) ? null : Phone,
+                EmailNumber = string.IsNullOrWhiteSpace(Email) ? null : Email,
             };
 
             var userRepository = unitOfWork.GetRepository<User>();
@@ -71,7 +73,7 @@ namespace ChatServer.Main.Services
             }
             catch (Exception e)
             {
-                return await Registe(Name, Password);
+                return await Registe(Name, Password,Email,Phone);
             }
 
             // -- 自动添加机器人 --//

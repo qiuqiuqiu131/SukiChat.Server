@@ -38,17 +38,10 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
             var message = unit.Message;
             var userRepository = unitOfWork.GetRepository<User>();
 
-            // 参数验证
-            if (!IsValidRequest(message))
-            {
-                await SendErrorResponse(channel, "输入不正确");
-                return;
-            }
-
             try
             {
-                // 查找并更新用户
-                var user = await FindUserByCredentials(message, userRepository);
+                var user = await userRepository.GetFirstOrDefaultAsync(predicate: d => d.Id == message.UserId && d.Password == message.PassKey,disableTracking:false);
+
                 if (user == null)
                 {
                     await SendErrorResponse(channel, "无法匹配账号");
@@ -71,58 +64,6 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
             {
                 await SendErrorResponse(channel, "服务器错误");
             }
-        }
-
-        private async Task<User?> FindUserByCredentials(ForgetPasswordRequest message, IRepository<User> userRepository)
-        {
-            // 通过ID和电话号码查找用户
-            if (!string.IsNullOrWhiteSpace(message.Id) && !string.IsNullOrWhiteSpace(message.PhoneNumber))
-            {
-                return await userRepository.GetFirstOrDefaultAsync(
-                    predicate: d => d.Id.Equals(message.Id) &&
-                                    d.PhoneNumber != null &&
-                                    d.PhoneNumber.Equals(message.PhoneNumber),
-                    disableTracking: false);
-            }
-
-            // 通过ID和邮箱查找用户
-            if (!string.IsNullOrWhiteSpace(message.Id) && !string.IsNullOrWhiteSpace(message.EmailNumber))
-            {
-                return await userRepository.GetFirstOrDefaultAsync(
-                    predicate: d => d.Id.Equals(message.Id) &&
-                                    d.EmailNumber != null &&
-                                    d.EmailNumber.Equals(message.EmailNumber),
-                    disableTracking: false);
-            }
-
-            // 通过电话和邮箱组合查找用户（不依赖ID）
-            if (!string.IsNullOrWhiteSpace(message.PhoneNumber) && !string.IsNullOrWhiteSpace(message.EmailNumber))
-            {
-                return await userRepository.GetFirstOrDefaultAsync(
-                    predicate: d => d.PhoneNumber != null &&
-                                    d.PhoneNumber.Equals(message.PhoneNumber) &&
-                                    d.EmailNumber != null &&
-                                    d.EmailNumber.Equals(message.EmailNumber),
-                    disableTracking: false);
-            }
-
-            return null;
-        }
-
-        private bool IsValidRequest(ForgetPasswordRequest message)
-        {
-            // 密码必须存在
-            if (string.IsNullOrWhiteSpace(message.Password))
-            {
-                return false;
-            }
-
-            // 必须满足以下验证条件之一：
-            // 1. ID + 电话号码
-            // 2. ID + 邮箱
-            // 3. 电话号码 + 邮箱
-            return (!string.IsNullOrWhiteSpace(message.Id) && (!string.IsNullOrWhiteSpace(message.PhoneNumber) || !string.IsNullOrWhiteSpace(message.EmailNumber))) ||
-                   (!string.IsNullOrWhiteSpace(message.PhoneNumber) && !string.IsNullOrWhiteSpace(message.EmailNumber));
         }
 
         private async Task SendErrorResponse(IChannel channel, string errorMessage)

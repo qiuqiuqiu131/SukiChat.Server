@@ -22,6 +22,7 @@ namespace ChatServer.Main.MessageOperate.Server
                 .AddMessage<CreateGroupRequest>()
                 .AddMessage<GetUserDetailMessageRequest>()
                 .AddMessage<ResetPasswordRequest>()
+                .AddMessage<PasswordAuthenticateRequest>()
                 .AddMessage<UpdatePhoneNumberRequest>()
                 .AddMessage<UpdateEmailNumberRequest>()
                 .AddMessage<ForgetPasswordRequest>()

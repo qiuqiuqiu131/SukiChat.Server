@@ -65,8 +65,6 @@ namespace ChatServer.Main.MessageOperate.Processor.UserProcessor
                     Messages = { mapper.Map<List<FriendChatMessage>>(chatList.Items) }
                 };
 
-                logger.Information($"Friend Chat Message Request -> User Id: {response.UserId}, Page Index: {response.PageIndex}, Total Page: {chatList.TotalPages}, Total Count: {chatList.TotalCount}");
-
                 if (channel != null)
                     await channel.WriteAndFlushProtobufAsync(response);
             }

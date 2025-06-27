@@ -46,7 +46,7 @@ public class RegisteRequestProcessor : IProcessor<RegisteRequest>
         if (channel == null) return;
 
         var message = unit.Message;
-        var (status,id) = await loginHelper.Registe(message.Name, message.Password);
+        var (status,id) = await loginHelper.Registe(message.Name, message.Password,message.Email,message.Phone);
 
         var response = new CommonResponse { State = status };
         if (status)
