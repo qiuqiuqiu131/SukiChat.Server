@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+message HeartBeat
+{
+}
+
+message CommonResponse
+{
+    bool state=1;
+    string message=2; 
+}

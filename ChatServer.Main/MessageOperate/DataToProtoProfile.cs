@@ -141,6 +141,7 @@ namespace ChatServer.Main.MessageOperate
             CreateMap<GroupRelation, EnterGroupMessage>()
                 .ForMember(egm => egm.JoinTime, opt => opt.MapFrom(gr => gr.JoinTime.ToString()))
                 .ForMember(egm => egm.Remark, opt => opt.MapFrom(gr => gr.Remark ?? string.Empty))
+                .ForMember(egm => egm.Status, opt => opt.MapFrom(gr => gr.Status.ToString()))
                 .ForMember(egm => egm.NickName, opt => opt.MapFrom(gr => gr.NickName ?? string.Empty));
             #endregion
 

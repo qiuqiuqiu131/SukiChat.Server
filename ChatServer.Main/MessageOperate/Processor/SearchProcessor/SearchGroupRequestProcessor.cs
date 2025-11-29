@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToolGood.Words.Pinyin;
 
 namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
 {
@@ -38,12 +39,37 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
             }
 
             var groupRepository = unitOfWork.GetRepository<Group>();
-            var ids = await groupRepository.GetAll()
-                .Where(d => (d.Name.ToLower().Contains(message.Content.ToLower()) && message.Content.Length >= 2
-                    || d.Name.ToLower().Equals(message.Content.ToLower())
-                    || d.Description != null && (d.Description.Contains(message.Content) && message.Content.Length >= 2 || d.Description.Equals(message.Content))
-                    || d.Id.Equals(message.Content)) && d.IsDisband == false)
-                .Select(d => d.Id).ToListAsync();
+            var searchContentLower = message.Content.ToLower();
+
+            // 获取所有未解散的群组进行内存过滤(包含拼音匹配)
+            var allGroups = await groupRepository.GetAll()
+                .Where(d => d.IsDisband == false)
+                .Select(d => new { d.Id, d.Name, d.Description })
+                .ToListAsync();
+
+            var ids = allGroups.Where(d =>
+            {
+                // 原有的直接匹配逻辑
+                if (d.Id.Equals(message.Content)) return true;
+                if (d.Name.ToLower().Equals(searchContentLower)) return true;
+                if (d.Name.ToLower().Contains(searchContentLower) && message.Content.Length >= 2) return true;
+                if (d.Description != null && d.Description.Contains(message.Content) && message.Content.Length >= 2) return true;
+                if (d.Description != null && d.Description.Equals(message.Content)) return true;
+
+                // 拼音匹配逻辑
+                if (message.Content.Length >= 2)
+                {
+                    var namePinyin = WordsHelper.GetPinyin(d.Name).ToLower().Replace(" ", "");
+                    var nameFirstPinyin = WordsHelper.GetFirstPinyin(d.Name).ToLower();
+
+                    // 全拼匹配
+                    if (namePinyin.Contains(searchContentLower)) return true;
+                    // 首字母匹配
+                    if (nameFirstPinyin.Contains(searchContentLower)) return true;
+                }
+
+                return false;
+            }).Select(d => d.Id).ToList();
 
             var response = new SearchGroupResponse { Response = new CommonResponse { State = true } };
             response.Ids.AddRange(ids);

@@ -1,0 +1,44 @@
+syntax = "proto3";
+package File.Protobuf;
+
+
+// 文件请求
+message FileRequest{
+    string path = 1;
+    string fileName = 2;
+    string type = 3;
+}
+
+// 文件头
+message FileHeader{
+    bool exist = 1;
+    string fileName = 2;
+    string path = 3;
+    string type = 4;
+    string time = 5;
+    int32 totleSize = 6;
+    int32 totleCount = 7;
+}
+
+// 文件分片
+message FilePack{
+    string fileName = 1;
+    string time = 2;
+    int32 packIndex = 3;
+    int32 packSize = 4;
+    bytes data = 5;
+}
+
+message FilePackResponse {
+    bool success = 1;
+    string fileName = 2;
+    int32 packIndex = 3;
+    int32 packSize = 4;
+    string time = 5;
+}
+
+// 文件接受响应
+message FileResponse {
+    bool success = 1;
+    string fileName = 2;
+}

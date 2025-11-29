@@ -167,7 +167,7 @@ public class OutlineMessageRequestProcessor : IProcessor<OutlineMessageRequest>
             // 在GroupRelation中找离线时加入的群聊关系
             var groupRelationRepository = unitOfWork.GetRepository<GroupRelation>();
             var relations = await groupRelationRepository.GetAllAsync(
-                predicate: d => d.UserId.Equals(userId) && d.JoinTime > offlineTime);
+                predicate: d => d.UserId.Equals(userId));
 
             return relations.Select(mapper.Map<EnterGroupMessage>);
         }

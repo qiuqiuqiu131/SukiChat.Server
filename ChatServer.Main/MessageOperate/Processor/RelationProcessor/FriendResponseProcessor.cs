@@ -8,6 +8,7 @@ using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
 using ChatServer.Main.Services.Helper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 
@@ -139,7 +140,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                         TextMess = new TextMess { Text = "我们已经成为好友了，开始聊天吧！"}
                     }]),
                     IsRetracted = false,
-                    Time = DateTime.Now,
+                    Time = DateTime.Now+TimeSpan.FromSeconds(1),
                     RetractTime = DateTime.MinValue
                 };
                 await chatPrivateRepository.InsertAsync(chatPrivate);
@@ -167,7 +168,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     await source.WriteAndFlushProtobufAsync(newFriendSource);
 
                     if (friendChatMessage != null)
-                        _ = Task.Delay(150).ContinueWith(async t =>
+                        _ = Task.Delay(200).ContinueWith(async t =>
                         {
                            await source.WriteAndFlushProtobufAsync(friendChatMessage);
                         });
@@ -187,7 +188,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                     await channel.WriteAndFlushProtobufAsync(newFriendTarget);
 
                     if (friendChatMessage != null)
-                        _ = Task.Delay(150).ContinueWith(async t =>
+                        _ = Task.Delay(200).ContinueWith(async t =>
                         {
                             await channel.WriteAndFlushProtobufAsync(friendChatMessage);
                         });

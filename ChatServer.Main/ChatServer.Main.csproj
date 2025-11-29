@@ -18,6 +18,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
+    <PackageReference Include="ToolGood.Words.Pinyin" Version="3.1.0.3" />
   </ItemGroup>
 
   <ItemGroup>

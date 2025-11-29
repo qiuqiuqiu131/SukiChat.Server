@@ -1,0 +1,56 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatBaseProtocol.proto";
+
+// 客户登录请求
+message LoginRequest
+{
+	string id=1;
+	string password=2;
+}
+
+// 客户登录响应
+message LoginResponse {
+    CommonResponse response=1;
+    string id=2;
+}
+
+// 客户注册响应
+message RegisteRequest
+{
+    string name=1;
+    string password=2;
+    string email=3;
+    string phone=4;
+}
+
+message RegisteResponse {
+    CommonResponse response=1;
+    string id=2;
+}
+
+// 客户登出请求
+message LogoutRequest
+{
+    string id=1;
+}
+
+// 客户登出命令 服务器发出,强制客户端登出
+message LogoutCommand
+{
+    string id=1;
+    string message=2;
+}
+
+// 服务器发出 通知好友某用户登录
+message FriendLoginMessage {
+    string friendId=1;
+    string loginTime=2;
+}
+
+// 服务器发出 通知好友某用户登出
+message FriendLogoutMessage {
+    string friendId=1;
+    string logoutTime=2;
+}

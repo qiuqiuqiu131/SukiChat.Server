@@ -1,0 +1,68 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatBaseProtocol.proto";
+
+// 信令消息类型
+enum SignalingType {
+    OFFER = 0;
+    ANSWER = 1;
+    ICE_CANDIDATE = 2;
+    RENOGITIATE = 3;
+}
+  
+// ICE 候选信息
+message IceCandidate {
+    string candidate = 1;
+    string sdpMid = 2;
+    int32 sdpMLineIndex = 3;
+}
+  
+// 信令消息
+message SignalingMessage {
+    SignalingType type = 1;
+    string from = 2;       // 发送方ID
+    string to = 3;         // 接收方ID
+    string sdp = 4;        // 用于OFFER/ANSWER的SDP
+    IceCandidate ice = 5;  // ICE候选
+}
+
+enum CallType{
+    TELEPHONE = 0; // 电话呼叫
+    VIDEO = 1;     // 视频呼叫
+}
+  
+// 呼叫请求
+message CallRequest {
+    string caller = 1;     // 呼叫方ID
+    string callee = 2;     // 被呼叫方ID
+    CallType type = 3;       // 呼叫类型
+}
+  
+// 呼叫响应
+message CallResponse {
+    CommonResponse response = 1;
+    string caller = 2;     // 呼叫方ID
+    string callee = 3;     // 被呼叫方ID
+    bool accept = 4;       // 是否接受呼叫
+}
+  
+// 挂断消息
+message HangUp {
+    string from = 1;       // 发起挂断的用户
+    string to = 2;         // 对方用户
+}
+
+// 视频状态改变消息
+message VideoStateChanged{
+    string userId = 1;     // 用户ID
+    string targetId = 2;   // 对方用户ID
+    bool isOpen = 3;      // 是否打开视频
+}
+
+// 音频状态改变消息
+message AudioStateChanged{
+    string userId = 1;     // 用户ID
+    string targetId = 2;   // 对方用户ID
+    bool isOpen = 3;      // 是否打开音频
+}

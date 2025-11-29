@@ -51,6 +51,7 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
         var message = unit.Message;
 
         bool success = true;
+        string errorMessage = string.Empty;
         try
         {
             UserDetailMessage userMess = message.User;
@@ -73,8 +74,9 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
                 });
             }
         }
-        catch
+        catch(Exception e)
         {
+            errorMessage = e.Message + "\nSource:" + e.StackTrace + "\nSource:" + e.Source;
             success = false;
         }
 
@@ -82,7 +84,7 @@ public class UpdateUserDataRequestProcessor : IProcessor<UpdateUserDataRequest>
         {
             await channel.WriteAndFlushProtobufAsync(new UpdateUserDataResponse 
             { 
-                Response = new CommonResponse { State = success },
+                Response = new CommonResponse { State = success, Message = errorMessage },
                 UserId = unit.Message.UserId,
             });
         }

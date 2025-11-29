@@ -14,10 +14,12 @@ namespace ChatServer.Main.IOServer.ServerHandler
     public class EchoServerHandler : SimpleChannelInboundHandler<IMessage>
     {
         private readonly IProtobufDispatcher dispatcher;
+        private readonly ILogger logger;
 
-        public EchoServerHandler(IProtobufDispatcher dispatcher) : base()
+        public EchoServerHandler(IProtobufDispatcher dispatcher, ILogger logger) : base()
         {
             this.dispatcher = dispatcher;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace ChatServer.Main.IOServer.ServerHandler
             if (message != null)
             {
                 // 通过ProtobufDispatcher分发消息
+                logger.Information("Received message type: " + message.GetType().ToString());
                 dispatcher.SendMessage(context.Channel, message);
             }
 

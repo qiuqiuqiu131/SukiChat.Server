@@ -1,0 +1,292 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatBaseProtocol.proto";
+
+// 客户端发送--好友聊天消息
+message FriendChatMessage{
+    string userFromId=1;
+    string userTargetId=2;
+    string time=3;
+    repeated ChatMessage messages=4;
+    int32 id=5;
+    bool IsRetracted=6;
+    string retractTime=7;
+}
+
+// 服务端返回--通知客户端好友聊天消息发送成功
+message FriendChatMessageResponse {
+    CommonResponse response=1;
+    int32 id=2;
+    string time=3;
+}
+
+// 客户端发送--群聊消息
+message GroupChatMessage{
+    string userFromId=1;
+    string groupId=2;
+    string time=3;
+    repeated ChatMessage messages=4;
+    int32 id=5;
+    bool IsRetracted=6;
+    string retractTime=7;
+}
+
+// 服务端返回--通知客户端群聊消息发送成功
+message GroupChatMessageResponse {
+    CommonResponse response=1;
+    int32 id=2;
+    string time=3;
+}
+
+// -- 批量聊天消息 -- //
+message FriendChatMessageList{
+    string userId=1; // 用户ID
+    string friendId=2;
+    repeated FriendChatMessage messages=3;
+    string time=4;
+}
+
+message GroupChatMessageList{
+    string userId=1; // 用户ID
+    string groupId=2;
+    repeated GroupChatMessage messages=3;
+    string time=4;
+}
+
+// 好友正在输入通知
+message FriendWritingMessage {
+    string userFromId=1;
+    string userTargetId=2;
+    bool isWriting=3;
+}
+
+// -- 聊天消息体 -- // 
+
+// 聊天消息体
+message ChatMessage{
+    oneof content{
+        TextMess textMess=1;
+        ImageMess imageMess=2;
+        FileMess fileMess=3;
+        SystemMessage systemMessage=4;
+        CardMess cardMess=5;
+        VoiceMess voiceMess=6;
+        CallMess CallMess=7;
+    }
+}
+
+// 文字消息
+message TextMess {
+    string text=1;
+}
+
+// 图片消息
+message ImageMess {
+    string filePath=1;
+    int32 fileSize=2;
+}
+
+// 语音消息
+message VoiceMess{
+    string filePath=1;
+    int32 fileSize=2;
+}
+
+// 通话消息
+message CallMess{
+    bool failed=1; // 是否接通
+    bool isTelephone=2; // 是否是语音电话
+    int32 callTime=3; // 通话时长,单位：秒
+}
+
+// 文件消息
+message FileMess {
+    string fileName=1;
+    int32 fileSize=2;
+    string fileType=3;
+}
+
+// 名片消息
+message CardMess{
+    bool isUser=1;
+    string id=2;
+}
+
+// 系统消息
+message SystemMessage{
+    repeated SystemMessageBlock blocks=1;
+}
+
+message SystemMessageBlock{
+    string text=1;
+    bool bold=2;
+}
+
+//-- 更新好友消息最后阅读记录 --//
+
+message UpdateFriendLastChatIdRequest{
+    string userId=1;
+    string friendId=2;
+    int32 lastChatId=3;
+}
+
+message UpdateGroupLastChatIdRequest{
+    string userId=1;
+    string groupId=2;
+    int32 lastChatId=3;
+}
+
+message UpdateFriendLastChatIdResponse{
+    CommonResponse response=1;
+}
+
+message UpdateGroupLastChatIdResponse{
+    CommonResponse response=1;
+}
+
+// -- 删除消息体 -- //
+message ChatGroupDetailMessage{
+    string userId=1;
+    int32 chatGroupId=2;
+    bool isDeleted=3;
+}
+
+message ChatPrivateDetailMessage{
+    string userId=1;
+    int32 chatPrivateId=2;
+    bool isDeleted=3;
+}
+
+message ChatGroupDeleteRequest{
+    string userId=1;
+    int32 chatGroupId=2;
+}
+
+message ChatGroupDeleteResponse{
+    CommonResponse response=1;
+}
+
+message ChatPrivateDeleteRequest{
+    string userId=1;
+    int32 chatPrivateId=2;
+}
+
+message ChatPrivateDeleteResponse{
+    CommonResponse response=1;
+}
+
+// -- 撤回消息体 -- //
+
+message ChatPrivateRetractRequest{
+    string userId=1;
+    int32 chatPrivateId=2;
+}
+
+message ChatPrivateRetractMessage{
+    CommonResponse response=1;
+    string userId=2;
+    int32 chatPrivateId=3;
+}
+
+message ChatGroupRetractRequest{
+    string userId=1;
+    int32 chatGroupId=2;
+}
+
+message ChatGroupRetractMessage{
+    CommonResponse response=1;
+    string userId=2;
+    int32 chatGroupId=3;
+}
+
+// -- 分享/转发消息体 -- //
+message ChatShareMessageRequest{
+    string userId=1;
+    repeated TargetInfo targetIds=2;
+    ChatMessage messages=3;
+    string senderMessage=4;
+}
+
+message ChatShareMessageResponse {
+    CommonResponse response=1;
+}
+
+message TargetInfo{
+    bool isUser=1;
+    string id=2;
+}
+
+// 批量获取聊天消息请求
+message GetFriendChatListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+    string lastLoginTime=4; // 最后登录时间,用于获取最新的聊天消息
+}
+
+// 批量获取聊天消息响应
+message GetFriendChatListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated FriendChatMessage messages=3;
+    int32 pageIndex=5;
+    int32 pageCount=6;
+    bool hasNext=7; // 是否有下一页
+}
+
+// 批量获取群聊消息请求
+message GetGroupChatListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+    string lastLoginTime=4; // 最后登录时间,用于获取最新的聊天消息
+}
+
+// 批量获取群聊消息响应
+message GetGroupChatListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated GroupChatMessage messages=3;
+    int32 pageIndex=5;
+    int32 pageCount=6;
+    bool hasNext=7; // 是否有下一页
+}
+
+// 批量获取聊天消息请求
+message GetFriendChatDetailListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+    string lastLoginTime=4; // 最后登录时间,用于获取最新的聊天消息
+}
+
+// 批量获取聊天消息响应
+message GetFriendChatDetailListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated ChatPrivateDetailMessage messages=3;
+    int32 pageIndex=5;
+    int32 pageCount=6;
+    bool hasNext=7; // 是否有下一页
+}
+
+// 批量获取群聊消息请求
+message GetGroupChatDetailListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+    string lastLoginTime=4; // 最后登录时间,用于获取最新的聊天消息
+}
+
+// 批量获取群聊消息响应
+message GetGroupChatDetailListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated ChatGroupDetailMessage messages=3;
+    int32 pageIndex=5;
+    int32 pageCount=6;
+    bool hasNext=7; // 是否有下一页
+}
+
+

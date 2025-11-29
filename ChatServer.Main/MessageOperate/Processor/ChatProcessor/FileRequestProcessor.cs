@@ -28,7 +28,7 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
             FileInfo fileInfo = new FileInfo(path);
             if (!fileInfo.Exists)
             {
-                if(channel != null)
+                if (channel != null)
                 {
                     await channel.WriteAndFlushProtobufAsync(new FileHeader
                     {
@@ -40,13 +40,14 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
             }
             else
             {
-                if(channel != null)
+                if (channel != null)
                 {
                     await channel.WriteAndFlushProtobufAsync(new FileHeader
                     {
                         Exist = true,
                         FileName = message.FileName,
-                        Path = message.Path
+                        Path = message.Path,
+                        TotleSize = (int)fileInfo.Length
                     });
                 }
             }

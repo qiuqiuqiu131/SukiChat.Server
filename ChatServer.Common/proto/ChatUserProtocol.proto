@@ -1,0 +1,297 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatRelationProtocol.proto";
+import "Proto/ChatCommunicateProtocol.proto";
+import "Proto/ChatGroupProtocol.proto";
+import "Proto/ChatBaseProtocol.proto";
+
+// ------------ 客户基本信息 ------------ //
+// 客户信息
+message UserMessage{
+    string id=1;
+    string name=2;
+    bool isMale=3;
+    string birth=4;
+    string introduction=5;
+    int32 headIndex=6;
+    uint32 headCount=7;
+    string registerTime=8;
+    bool isOnline=9;
+}
+
+// 客户信息请求
+message GetUserRequest{
+    string id=1;
+}
+
+// 客户信息响应
+message GetUserResponse{
+    CommonResponse response=1;
+    UserMessage user=2;
+}
+
+
+// 客户端请求 客户列表
+message GetUserListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+}
+
+// 客户列表
+message GetUserListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated UserMessage users=3;
+    int32 pageIndex=4;
+    int32 pageCount=5;
+    bool hasNext=6;
+}
+
+// ------------ 客户具体信息 ------------ //
+
+// 客户具体信息
+message UserDetailMessage{
+    string id=1;
+    string name=2;
+    bool isMale=3;
+    string birth=4;
+    string introduction=5;
+    int32 headIndex=6;
+    uint32 headCount=7;
+    string lastReadFriendMessageTime=8;
+    string lastReadGroupMessageTime=9;
+    string lastDeleteFriendMessageTime=10;
+    string lastDeleteGroupMessageTime=11;
+    string registerTime=12;
+    string password=13;
+    string emailNumber=14;
+    string phoneNumber=15;
+    bool isFirstLogin=16;
+}
+
+// 客户具体信息请求
+message GetUserDetailMessageRequest{
+    string id=1;
+    string password=2;
+}
+
+// 客户具体信息响应
+message GetUserDetailMessageResponse{
+    CommonResponse response=1;
+    UserDetailMessage user=2;
+}
+
+// 客户具体信息更新
+message UpdateUserDataRequest{
+    string userId=1;
+    UserDetailMessage user=2;
+}
+
+// 客户具体信息更新响应
+message UpdateUserDataResponse {
+    CommonResponse response=1;
+    string userId=2;
+}
+
+// 更改电话号码请求
+message UpdatePhoneNumberRequest{
+    string userId=1;
+    string phoneNumber=2;
+    string password=3;
+}
+
+// 更改电话号码响应
+message UpdatePhoneNumberResponse{
+    CommonResponse response=1;
+    string userId=2;
+}
+
+// 更改邮箱请求
+message UpdateEmailNumberRequest{
+    string userId=1;
+    string emailNumber=2;
+    string password=3;
+}
+
+// 更改邮箱响应
+message UpdateEmailNumberResponse{
+    CommonResponse response=1;
+    string userId=2;
+}
+
+
+// ------------ 重置密码 ------------ //
+
+// 重置密码请求
+message ResetPasswordRequest{
+    string id=1;
+    string emailNumber=2;
+    string phoneNumber=3;
+    string origionalPassword=4;
+    string newPassword=5;
+}
+
+// 重置密码响应
+message ResetPasswordResponse{
+    CommonResponse response=1;
+}
+
+// ------------ 忘记密码 ------------ //
+message PasswordAuthenticateRequest{
+    string phone=1;
+    string email=2;
+}
+
+message PasswordAuthenticateResponse{
+    CommonResponse response=1;
+    string userId=2;
+    string passKey=3;  // 用于验证用户身份的密钥
+}
+
+
+// 忘记密码请求
+message ForgetPasswordRequest{
+    string userId=1;
+    string passKey=2;
+    string password=3;
+}
+
+// 忘记密码响应
+message ForgetPasswordResponse{
+    CommonResponse response=1;
+    string userId=2;
+}
+
+
+// ------------ 客户分组信息 ------------ //
+
+message UserGroupMessage{
+    string userId=1;
+    string groupName=2;
+    int32 groupType=3;
+}
+
+// 添加分组信息请求
+message AddUserGroupRequest{
+    UserGroupMessage userGroup=1;
+}
+
+// 添加分组信息响应
+message AddUserGroupResponse {
+    CommonResponse response=1;
+}
+
+// 删除分组信息请求
+message DeleteUserGroupRequest{
+    UserGroupMessage userGroup=1;
+}
+
+// 删除分组信息响应
+message DeleteUserGroupResponse {
+    CommonResponse response=1;
+}
+
+// 修改分组信息请求
+message RenameUserGroupRequest{
+    string userId=1;
+    UserGroupMessage userGroup=2;
+    string newGroupName=3;
+}
+
+// 修改分组信息响应
+message RenameUserGroupResponse {
+    CommonResponse response=1;
+}
+
+// ---------------  客户安全信息  --------------- //
+
+// 客户安全信息请求
+message GetUserSaftyRequest{
+    string id=1;
+}
+
+// 安全信息
+message Safty{
+    string question=1;
+    string answer=2;
+}
+
+// 客户安全信息
+message SaftyMessage{
+    string id=1;
+    repeated Safty saftys=2;
+}
+
+// 客户安全信息更新
+message UpdateUserSafty{
+    SaftyMessage saftys=1;
+}
+
+// -------------------------------------- //
+message OutlineMessageRequest{
+    string id=1;
+    string lastLogoutTime=2;
+}
+
+message FriendRequestMessage {
+    int32 requestId=1;
+    string userFromId=2;
+    string userTargetId=3;
+    string group=4;
+    string requestTime=5;
+    bool isAccept=6;
+    bool isSolved=7;
+    string solvedTime=8;
+    string message=9;
+    string remark=10;
+}
+
+message GroupRequestMessage {
+    int32 requestId=1;
+    string userFromId=2;
+    string groupId=3;
+    string requestTime=4;
+    bool isAccept=5;
+    bool isSolved=6;
+    string solvedTime=7;
+    string message=8;
+    string acceptByUserId=9;
+    string grouping=10;
+    string remark=11;
+    string nickName=12;
+}
+
+message OutlineMessageResponse{
+    string id=1;
+    repeated FriendRequestMessage friendRequests=2;
+    repeated NewFriendMessage newFriends=3;
+    repeated FriendDeleteMessage friendDeletes=4;
+    repeated EnterGroupMessage enterGroups=5;
+    repeated GroupRequestMessage groupRequests=6;
+    repeated GroupDeleteMessage groupDeletes=7;
+    repeated UserGroupMessage userGroups=8;
+    CommonResponse response=9;
+}
+
+//-------- 搜索 ---------//
+message SearchUserRequest{
+    string content = 1;
+    string userId = 2;
+}
+
+message SearchUserResponse {
+    CommonResponse response = 1;
+    repeated string ids = 2;
+}
+
+message SearchGroupRequest{
+    string content = 1;
+    string userId = 2;
+}
+
+message SearchGroupResponse {
+    CommonResponse response = 1;
+    repeated string ids = 2;
+}

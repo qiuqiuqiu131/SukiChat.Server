@@ -1,0 +1,286 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatBaseProtocol.proto";
+
+// -------------------- FRIEND -------------------- // 
+
+// 客户发送 好友请求
+message FriendRequestFromClient
+{
+    string userFromId=1;
+    string userTargetId=2;
+    string group=3;
+    string requestTime=4;
+    string message=5;
+    string remark=6;
+}
+
+message FriendRequestFromClientResponse
+{
+    CommonResponse response=1;
+    int32 requestId=2;
+    FriendRequestFromClient request=3;
+    string requestTime=4;
+}
+
+// 服务器发送 转发 好友请求
+message FriendRequestFromServer
+{
+    int32 requestId = 1;
+    string userFromId=2;
+    string userTargetId=3;
+    string requestTime=4;
+    string message=5;
+}
+
+// 客户发送 好友请求 结果
+message FriendResponseFromClient
+{
+    int32 requestId=1;
+    bool accept=2;
+    string group=3;
+    string responseTime=4;
+    string remark=5;
+}
+
+// 客户发送 好友请求 结果
+message FriendResponseFromClientResponse
+{
+    CommonResponse response=1;
+}
+
+// 服务器发送 好友请求 结果
+message FriendResponseFromServer{
+    int32 requestId=1;
+    bool accept=2;
+    string responseTime=3;
+}
+
+// 服务器发送 通知双方 好友添加成功
+message NewFriendMessage
+{
+    string userId=1;
+    string frinedId=2;
+    string grouping=3;
+    string relationTime=4;
+    string remark=5;
+    bool cantDisturb=6;
+    bool isTop=7;
+    int32 lastChatId=8;
+    bool isChatting=9;
+}
+
+// 更新好友关系信息请求 
+message UpdateFriendRelationRequest{
+    string userId=1;
+    string friendId=2;
+    string grouping=3;
+    string remark=4;
+    bool cantDisturb=5;
+    bool isTop=6;
+    bool isChatting=7;
+}
+
+// 更新好友关系信息通知
+message UpdateFriendRelation
+{
+    CommonResponse response=1;
+    string userId=2;
+    string friendId=3;
+}
+
+// 删除好友请求
+message DeleteFriendRequest {
+    string userId=1;
+    string friendId=2;
+}
+
+// 删除好友消息, 通知双方
+message DeleteFriendMessage{
+    CommonResponse response=1;
+    string userId=2;
+    string friendId=3;
+    int32 deleteId=4;
+    string time=5;
+}
+
+message FriendDeleteMessage {
+    int32 deleteId=1;
+    string userId=2;
+    string friendId=3;
+    string time=4;
+}
+
+// -------------------- GROUP -------------------- // 
+
+
+// 客户端发送 创建群请求
+message CreateGroupRequest
+{
+    string userId=1;
+    repeated string friendId=3;
+}
+
+// 服务端发送 创建群请求响应
+message CreateGroupResponse
+{
+    CommonResponse response=1;
+    string groupId=2;
+    string time=3;
+    string groupName=4;
+}
+
+// 被拉入群通知
+message PullGroupMessage {
+    string groupId=1;
+    string userIdFrom=2;
+    string userIdTarget=3;
+    int32 status=4;
+    string grouping=5;
+    string time=6;
+}
+
+// 客户端发送 加入群请求
+message JoinGroupRequestFromClient
+{
+    string userId=1;
+    string groupId=2;
+    string message=3;
+    string remark=4;
+    string nickName=5;
+    string grouping=6;
+}
+
+// 服务端发送 加入群请求响应
+message JoinGroupRequestResponseFromServer
+{
+    CommonResponse response=1;
+    string groupId=2;
+    int32 requestId=3;
+    string time=4;
+}
+
+// 服务器发送 通知群主 有人申请加入群
+message JoinGroupRequestFromServer {
+    int32 requestId=1;
+    string userId=2;
+    string groupId=3;
+    string time=4;
+    string message=5;
+}
+
+// 客户端发送 加入群请求 结果
+message JoinGroupResponseFromClient
+{
+    int32 requestId=1;
+    string userId=2;
+    bool accept=3;
+}
+
+message JoinGroupResponseResponseFromServer {
+    CommonResponse response=1;
+    int32 requestId=2;
+    string userId=3;
+    string time=4;
+    bool accept=5;
+}
+
+// 客户端发送 加入群请求 结果给请求者
+message JoinGroupResponseFromServer {
+    int32 requestId=1;
+    string userIdFrom=2;
+    string userIdTarget=3;
+    bool accept=4;
+    string time=5;
+}
+
+// 通知群成员有新成员加入
+message NewMemberJoinMessage {
+    string userId=1;
+    string groupId=2;
+    string time=3;
+}
+
+// 更新群关系信息请求
+message UpdateGroupRelationRequest{
+    string userId=1;
+    string groupId=2;
+    string grouping=3;
+    string nickName=4;
+    string remark=5;
+    bool cantDisturb=6;
+    bool isTop=7;
+    bool isChatting=8;
+}
+
+// 更新群关系信息通知
+message UpdateGroupRelation
+{
+    CommonResponse response=1;
+    string userId=2;   
+    string groupId=3;
+}
+
+// 退出群聊请求
+message QuitGroupRequest {
+    string userId=1;
+    string groupId=2;
+}
+
+// 退出群聊消息
+message QuitGroupMessage{
+    CommonResponse response=1;
+    string userId=2;
+    string groupId=3;
+    int32 quitId=4;
+    string time=5;
+}
+
+// 解散群聊请求
+message DisbandGroupRequest{
+    string userId=1;
+    string groupId=2;
+}
+
+// 解散群聊消息
+message DisbandGroupMessage{
+    CommonResponse response=1;
+    string userId=2;
+    string groupId=3;
+    string memberId=4;
+    int32 disBandId=5;
+    string time=6;
+}
+
+// 移除群成员请求
+message RemoveMemberRequest{
+    string userId=1;
+    string groupId=2;
+    string memberId=3;  
+}
+
+// 移除群成员消息
+message RemoveMemberMessage{
+    CommonResponse response=1;
+    string userId=2;
+    string groupId=3;
+    string memberId=4;
+    int32 removeId=5;
+    string time=6;
+}
+
+message GroupDeleteMessage {
+    int32 deleteId = 1;
+    string groupId = 2;
+    string operateId = 3;
+    string memberId = 4;
+    string time = 5;
+    int32 method = 6;
+}
+
+message GroupMemeberRemovedMessage{
+    string groupId=1;
+    string memberId=2;
+    string time=3;
+}

@@ -1,0 +1,138 @@
+syntax = "proto3";
+package ChatServer.Common.Protobuf;
+
+import "Proto/ChatBaseProtocol.proto";
+
+// 客户端请求 群聊信息
+message GroupMessageRequest
+{
+    string userId=1;
+    string groupId=2;
+}
+
+// 群聊信息
+message GroupMessage 
+{   
+    CommonResponse response=1;
+    string groupId=2;
+    string name=3;
+    string description=4;
+    int32 headIndex=5;
+    bool isCustomHead=6;
+    string createTime=7;
+    bool isDisband=8;
+}
+
+
+// 客户端请求 群聊列表
+message GroupMessageListRequest{
+    string userId=1;
+    int32 pageIndex=2;
+    int32 pageCount=3;
+}
+
+// 群聊列表
+message GroupMessageListResponse{
+    CommonResponse response=1;
+    string userId=2;
+    repeated GroupMessage groups=3;
+    int32 pageIndex=4;
+    int32 pageCount=5;
+    bool hasNext=6;
+}
+
+
+// 客户端请求 群聊成员信息
+message GroupMemberRequest {
+    string groupId=1;
+    string memberId=2;
+}
+
+// 群聊成员信息
+message GroupMemberMessage{
+    string userId=1;
+    string groupId=2;
+    string joinTime=3;
+    string lastSpeakTime=4;
+    int32 status=5;
+    string nickname=6;
+    int32 headIndex=7;
+}
+
+
+// 客户端请求 群聊成员列表
+message GroupMemberListRequest
+{
+    string userId=1;
+    string groupId=2;
+    int32 pageIndex=3;
+    int32 pageCount=4;
+}
+
+// 群聊成员列表
+message GroupMemberListResponse 
+{
+    CommonResponse response=1;
+    string userId=2;
+    string groupId=3;
+    repeated GroupMemberMessage members=4;
+    int32 pageIndex=5;
+    int32 pageCount=6;
+    bool hasNext=7;
+}
+
+
+// 客户端请求 所有群聊成员的id
+message GroupMemberIdsRequest
+{
+    string userId=1;
+    string groupId=2;
+}
+
+// 所有群聊成员的id
+message GroupMemberIds{
+    string groupId=1;
+    repeated string memberIds=2;
+}
+
+
+// Entity 群聊关系信息->GroupRelation
+message EnterGroupMessage {
+    string groupId=1;
+    string userId=2;
+    string status=3;
+    string grouping=4;
+    string joinTime=5;
+    string NickName=6;
+    string Remark=7;
+    bool cantDisturb=8;
+    bool isTop=9;
+    int32 lastChatId=10;
+    bool isChatting=11;
+}
+
+
+
+// 客户端请求 更新群聊信息
+message UpdateGroupMessageRequest {
+    string userId=1;
+    string groupId=2;
+    string name=3;
+    string description=4;
+}
+
+// 重置群头像请求
+message ResetHeadImageRequest{
+    string userId=1;
+    string groupId=2;
+}
+
+message ResetHeadImageResponse{
+    CommonResponse response=1;
+}
+
+// 群聊信息发生改变通知
+message UpdateGroupMessage {
+    CommonResponse response=1;
+    string groupId=2;
+}

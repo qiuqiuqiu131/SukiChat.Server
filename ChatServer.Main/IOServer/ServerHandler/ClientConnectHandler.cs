@@ -38,7 +38,7 @@ namespace ChatServer.Main.IOServer.ServerHandler
         public override void ChannelActive(IChannelHandlerContext context)
         {
             base.ChannelActive(context);
-            // logger.Information("New Client connected: " + context.Channel.RemoteAddress);
+            logger.Information("New Client connected: " + context.Channel.RemoteAddress);
             userManager.AddClient(context.Channel);
         }
 
@@ -59,6 +59,7 @@ namespace ChatServer.Main.IOServer.ServerHandler
             if (mess is HeartBeat)
             {
                 readIdleTimes = 0;
+                logger.Debug("Received heartbeat from: " + context.Channel.RemoteAddress);
                 return;
             }
             base.ChannelRead(context, mess);
@@ -72,7 +73,7 @@ namespace ChatServer.Main.IOServer.ServerHandler
 
         public override void ChannelInactive(IChannelHandlerContext context)
         {
-            // logger.Information("Client disconnected: " + context.Channel?.RemoteAddress);
+            logger.Information("Client disconnected: " + context.Channel?.RemoteAddress);
             userManager.RemoveClient(context.Channel);
             
             context.Channel?.Pipeline.Remove(this);

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToolGood.Words.Pinyin;
 
 namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
 {
@@ -18,7 +19,7 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
         private readonly IUserService userService;
         private readonly IUnitOfWork unitOfWork;
 
-        public SearchUserRequestProcessor(IUserService userService,IUnitOfWork unitOfWork)
+        public SearchUserRequestProcessor(IUserService userService, IUnitOfWork unitOfWork)
         {
             this.userService = userService;
             this.unitOfWork = unitOfWork;
@@ -38,14 +39,38 @@ namespace ChatServer.Main.MessageOperate.Processor.SearchProcessor
             }
 
             var userRepository = unitOfWork.GetRepository<User>();
-            var ids = await userRepository.GetAll()
-                .Where(d => d.Introduction != null && (d.Introduction.Contains(message.Content) && message.Content.Length >= 2 || d.Introduction.Equals(message.Content))
-                    || d.Name.ToLower().Equals(message.Content.ToLower())
-                    || d.Name.ToLower().Contains(message.Content.ToLower()) && message.Content.Length >= 2
-                    || d.Id.Equals(message.Content))
-                .Select(d => d.Id).ToListAsync();
+            var searchContentLower = message.Content.ToLower();
 
-            var response = new SearchUserResponse{ Response = new CommonResponse { State = true }};
+            // 获取所有用户进行内存过滤(包含拼音匹配)
+            var allUsers = await userRepository.GetAll()
+                .Select(d => new { d.Id, d.Name, d.Introduction })
+                .ToListAsync();
+
+            var ids = allUsers.Where(d =>
+            {
+                // 原有的直接匹配逻辑
+                if (d.Id.Equals(message.Content)) return true;
+                if (d.Name.ToLower().Equals(searchContentLower)) return true;
+                if (d.Name.ToLower().Contains(searchContentLower) && message.Content.Length >= 2) return true;
+                if (d.Introduction != null && d.Introduction.Contains(message.Content) && message.Content.Length >= 2) return true;
+                if (d.Introduction != null && d.Introduction.Equals(message.Content)) return true;
+
+                // 拼音匹配逻辑
+                if (message.Content.Length >= 2)
+                {
+                    var namePinyin = WordsHelper.GetPinyin(d.Name).ToLower().Replace(" ", "");
+                    var nameFirstPinyin = WordsHelper.GetFirstPinyin(d.Name).ToLower();
+
+                    // 全拼匹配
+                    if (namePinyin.Contains(searchContentLower)) return true;
+                    // 首字母匹配
+                    if (nameFirstPinyin.Contains(searchContentLower)) return true;
+                }
+
+                return false;
+            }).Select(d => d.Id).ToList();
+
+            var response = new SearchUserResponse { Response = new CommonResponse { State = true } };
             response.Ids.AddRange(ids);
 
             if (channel != null)
