@@ -32,7 +32,7 @@ namespace ChatServer.Main.IOServer.ServerHandler
             if (message != null)
             {
                 // 通过ProtobufDispatcher分发消息
-                logger.Information("Received message type: " + message.GetType().ToString());
+                // logger.Information("Received message type: " + message.GetType().ToString());
                 dispatcher.SendMessage(context.Channel, message);
             }
 

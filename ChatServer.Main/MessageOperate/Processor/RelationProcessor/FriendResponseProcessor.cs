@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -159,7 +160,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                 {
                     NewFriendMessage newFriendSource = new NewFriendMessage
                     {
-                        RelationTime = request.SolveTime.ToString(),
+                        RelationTime = request.SolveTime.ToInvariantString(),
                         Grouping = request.Group,
                         Remark = request.Remark,
                         FrinedId = request.UserTargetId,
@@ -179,7 +180,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
                 {
                     NewFriendMessage newFriendTarget = new NewFriendMessage
                     {
-                        RelationTime = request.SolveTime.ToString(),
+                        RelationTime = request.SolveTime.ToInvariantString(),
                         Grouping = unit.Message.Group,
                         Remark = unit.Message.Remark,
                         FrinedId = request.UserFromId,
@@ -219,7 +220,7 @@ public class FriendResponseProcessor : IProcessor<FriendResponseFromClient>
             {
                 Accept = unit.Message.Accept,
                 RequestId = request.Id,
-                ResponseTime = request.SolveTime.ToString()
+                ResponseTime = request.SolveTime.ToInvariantString()
             };
             await source.WriteAndFlushProtobufAsync(responseFromServer);
         }

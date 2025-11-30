@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Execution;
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -63,8 +64,8 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
             var memberMessage = new GroupMemberMessage
             {
                 GroupId = groupRelation.GroupId,
-                JoinTime = groupRelation.JoinTime.ToString(),
-                LastSpeakTime = lastSpeakTime.ToString(),
+                JoinTime = groupRelation.JoinTime.ToInvariantString(),
+                LastSpeakTime = lastSpeakTime.ToInvariantString(),
                 Nickname = groupRelation.NickName ?? user.Name,
                 UserId = groupRelation.UserId,
                 Status = groupRelation.Status,

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.Main.Services.Helper;
@@ -17,7 +18,7 @@ namespace ChatServer.Main.MessageOperate
             #region User + UserMessage
 
             CreateMap<User, UserMessage>()
-                .ForMember(um => um.RegisterTime, opt => opt.MapFrom(u => u.RegisteTime.ToString()))
+                .ForMember(um => um.RegisterTime, opt => opt.MapFrom(u => u.RegisteTime.ToInvariantString()))
                 .ForMember(um => um.Introduction, opt => opt.MapFrom(u => u.Introduction ?? string.Empty))
                 .ForMember(um => um.Birth, opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()));
 
@@ -30,13 +31,13 @@ namespace ChatServer.Main.MessageOperate
 
             #region User + UserDetailMessage
             CreateMap<User, UserDetailMessage>()
-                .ForMember(um => um.RegisterTime, opt => opt.MapFrom(u => u.RegisteTime.ToString()))
+                .ForMember(um => um.RegisterTime, opt => opt.MapFrom(u => u.RegisteTime.ToInvariantString()))
                 .ForMember(um => um.Introduction, opt => opt.MapFrom(u => u.Introduction ?? string.Empty))
                 .ForMember(um => um.Birth, opt => opt.MapFrom(u => u.Birth == null ? string.Empty : u.Birth.ToString()))
-                .ForMember(um => um.LastDeleteFriendMessageTime, opt => opt.MapFrom(um => um.LastDeleteFriendMessageTime.ToString()))
-                .ForMember(um => um.LastDeleteGroupMessageTime, opt => opt.MapFrom(um => um.LastDeleteGroupMessageTime.ToString()))
-                .ForMember(um => um.LastReadFriendMessageTime, opt => opt.MapFrom(um => um.LastReadFriendMessageTime.ToString()))
-                .ForMember(um => um.LastReadGroupMessageTime, opt => opt.MapFrom(um => um.LastReadGroupMessageTime.ToString()))
+                .ForMember(um => um.LastDeleteFriendMessageTime, opt => opt.MapFrom(um => um.LastDeleteFriendMessageTime.ToInvariantString()))
+                .ForMember(um => um.LastDeleteGroupMessageTime, opt => opt.MapFrom(um => um.LastDeleteGroupMessageTime.ToInvariantString()))
+                .ForMember(um => um.LastReadFriendMessageTime, opt => opt.MapFrom(um => um.LastReadFriendMessageTime.ToInvariantString()))
+                .ForMember(um => um.LastReadGroupMessageTime, opt => opt.MapFrom(um => um.LastReadGroupMessageTime.ToInvariantString()))
                 .ForMember(um => um.EmailNumber, opt => opt.MapFrom(u => u.EmailNumber ?? string.Empty))
                 .ForMember(um => um.PhoneNumber, opt => opt.MapFrom(u => u.PhoneNumber ?? string.Empty));
 
@@ -58,26 +59,26 @@ namespace ChatServer.Main.MessageOperate
 
             CreateMap<FriendRequest, FriendRequestFromServer>()
                 .ForMember(fr => fr.RequestId, opt => opt.MapFrom(u => u.Id))
-                .ForMember(fr => fr.RequestTime, opt => opt.MapFrom(u => u.RequestTime.ToString()));
+                .ForMember(fr => fr.RequestTime, opt => opt.MapFrom(u => u.RequestTime.ToInvariantString()));
 
             CreateMap<FriendRequest,FriendRequestMessage>()
-                .ForMember(frm => frm.RequestTime,opt => opt.MapFrom(fr => fr.RequestTime.ToString()))
-                .ForMember(frm => frm.SolvedTime,opt => opt.MapFrom(fr => fr.SolveTime == null ? string.Empty : fr.SolveTime.ToString()))
+                .ForMember(frm => frm.RequestTime,opt => opt.MapFrom(fr => fr.RequestTime.ToInvariantString()))
+                .ForMember(frm => frm.SolvedTime,opt => opt.MapFrom(fr => fr.SolveTime == null ? string.Empty : fr.SolveTime.ToInvariantString()))
                 .ForMember(frm => frm.RequestId,opt => opt.MapFrom(fr => fr.Id));
             #endregion
 
             #region GroupRequest
             CreateMap<GroupRequest, GroupRequestMessage>()
-                .ForMember(grm => grm.RequestTime, opt => opt.MapFrom(gr => gr.RequestTime.ToString()))
+                .ForMember(grm => grm.RequestTime, opt => opt.MapFrom(gr => gr.RequestTime.ToInvariantString()))
                 .ForMember(grm => grm.RequestId, opt => opt.MapFrom(gr => gr.Id))
                 .ForMember(grm => grm.AcceptByUserId, opt => opt.MapFrom(gm => gm.AcceptByUserId == null ? string.Empty : gm.AcceptByUserId))
-                .ForMember(grm => grm.SolvedTime, opt => opt.MapFrom(gr => gr.SolveTime == null ? string.Empty: gr.SolveTime.ToString()));
+                .ForMember(grm => grm.SolvedTime, opt => opt.MapFrom(gr => gr.SolveTime == null ? string.Empty: gr.SolveTime.ToInvariantString()));
             #endregion
 
             #region Group + GroupMessage
 
             CreateMap<Group, GroupMessage>()
-                .ForMember(gm => gm.CreateTime, opt => opt.MapFrom(g => g.CreateTime.ToString()))
+                .ForMember(gm => gm.CreateTime, opt => opt.MapFrom(g => g.CreateTime.ToInvariantString()))
                 .ForMember(gm => gm.Description, opt => opt.MapFrom(g => g.Description ?? string.Empty))
                 .ForMember(gm => gm.GroupId, opt => opt.MapFrom(g => g.Id));
 
@@ -85,7 +86,7 @@ namespace ChatServer.Main.MessageOperate
 
             #region FriendDelete + FriendDeleteMessage
             CreateMap<FriendDelete, FriendDeleteMessage>()
-                .ForMember(fdm => fdm.Time, opt => opt.MapFrom(fd => fd.Time.ToString()))
+                .ForMember(fdm => fdm.Time, opt => opt.MapFrom(fd => fd.Time.ToInvariantString()))
                 .ForMember(fdm => fdm.DeleteId, opt => opt.MapFrom(fd => fd.Id))
                 .ForMember(fdm => fdm.UserId, opt => opt.MapFrom(fd => fd.UserId1))
                 .ForMember(fdm => fdm.FriendId, opt => opt.MapFrom(fd => fd.UserId2));
@@ -94,7 +95,7 @@ namespace ChatServer.Main.MessageOperate
             #region GroupDelete + GroupDeleteMessage
             CreateMap<GroupDelete, GroupDeleteMessage>()
                 .ForMember(gdm => gdm.DeleteId, opt => opt.MapFrom(gd => gd.Id))
-                .ForMember(gdm => gdm.Time, opt => opt.MapFrom(gd => gd.Time.ToString()))
+                .ForMember(gdm => gdm.Time, opt => opt.MapFrom(gd => gd.Time.ToInvariantString()))
                 .ForMember(gdm => gdm.Method, opt => opt.MapFrom(gd => gd.DeleteMethod))
                 .ForMember(gdm => gdm.OperateId, opt => opt.MapFrom(gd => gd.OperateUserId));
             #endregion
@@ -103,15 +104,15 @@ namespace ChatServer.Main.MessageOperate
             CreateMap<FriendRelation, NewFriendMessage>()
                 .ForMember(cp => cp.UserId, opt => opt.MapFrom(nfm => nfm.User1Id))
                 .ForMember(cp => cp.FrinedId, opt => opt.MapFrom(nfm => nfm.User2Id))
-                .ForMember(cp => cp.RelationTime, opt => opt.MapFrom(nfm => nfm.GroupTime.ToString()))
+                .ForMember(cp => cp.RelationTime, opt => opt.MapFrom(nfm => nfm.GroupTime.ToInvariantString()))
                 .ForMember(cp => cp.Remark, opt => opt.MapFrom(nfm => nfm.Remark ?? string.Empty));
             #endregion
 
             #region ChatPrivate + FriendChatMessage
             CreateMap<ChatPrivate, FriendChatMessage>()
                 .ForMember(fcm => fcm.Messages, opt => opt.MapFrom(cp => ChatMessageHelper.DecruptChatMessage(cp.Message)))
-                .ForMember(fcm => fcm.Time, opt => opt.MapFrom(cp => cp.Time.ToString()))
-                .ForMember(fcm => fcm.RetractTime, opt => opt.MapFrom(cp => cp.RetractTime.ToString()));
+                .ForMember(fcm => fcm.Time, opt => opt.MapFrom(cp => cp.Time.ToInvariantString()))
+                .ForMember(fcm => fcm.RetractTime, opt => opt.MapFrom(cp => cp.RetractTime.ToInvariantString()));
             CreateMap<FriendChatMessage, ChatPrivate>()
                 .ForMember(cp => cp.Message, opt => opt.MapFrom(fcm => ChatMessageHelper.EncruptChatMessage(fcm.Messages)))
                 .ForMember(cp => cp.Time, opt => opt.MapFrom(fcm => DateTime.Parse(fcm.Time)))
@@ -125,8 +126,8 @@ namespace ChatServer.Main.MessageOperate
                 .ForMember(cg => cg.RetractTime, opt => opt.MapFrom(gcm => DateTime.Parse(gcm.RetractTime)));
             CreateMap<ChatGroup, GroupChatMessage>()
                 .ForMember(gcm => gcm.Messages, opt => opt.MapFrom(cg => ChatMessageHelper.DecruptChatMessage(cg.Message)))
-                .ForMember(gcm => gcm.Time, opt => opt.MapFrom(cg => cg.Time.ToString()))
-                .ForMember(gcm => gcm.RetractTime, opt => opt.MapFrom(cg => cg.RetractTime.ToString()));
+                .ForMember(gcm => gcm.Time, opt => opt.MapFrom(cg => cg.Time.ToInvariantString()))
+                .ForMember(gcm => gcm.RetractTime, opt => opt.MapFrom(cg => cg.RetractTime.ToInvariantString()));
             #endregion
 
             #region ChatPrivateDetailMessage + ChatPrivateDetail
@@ -139,7 +140,7 @@ namespace ChatServer.Main.MessageOperate
 
             #region GroupRelation + EnterGroupMessage
             CreateMap<GroupRelation, EnterGroupMessage>()
-                .ForMember(egm => egm.JoinTime, opt => opt.MapFrom(gr => gr.JoinTime.ToString()))
+                .ForMember(egm => egm.JoinTime, opt => opt.MapFrom(gr => gr.JoinTime.ToInvariantString()))
                 .ForMember(egm => egm.Remark, opt => opt.MapFrom(gr => gr.Remark ?? string.Empty))
                 .ForMember(egm => egm.Status, opt => opt.MapFrom(gr => gr.Status.ToString()))
                 .ForMember(egm => egm.NickName, opt => opt.MapFrom(gr => gr.NickName ?? string.Empty));

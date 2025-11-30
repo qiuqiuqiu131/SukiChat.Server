@@ -5,6 +5,7 @@ using ChatServer.DataBase.DataBase.UnitOfWork;
 using ChatServer.Main.Entity;
 using ChatServer.Main.IOServer.Manager;
 using ChatServer.Main.Services;
+using ChatServer.Common.Helper;
 using ChatServer.Main.Services.Helper;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.DependencyInjection;
@@ -150,7 +151,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             await sender.WriteAndFlushProtobufAsync(new JoinGroupResponseFromServer
             {
                 Accept = groupRequest.IsAccept,
-                Time = groupRequest.SolveTime.ToString(),
+                Time = groupRequest.SolveTime.ToInvariantString(),
                 UserIdFrom = groupRequest.AcceptByUserId,
                 UserIdTarget = groupRequest.UserFromId,
                 RequestId = groupRequest.Id
@@ -165,7 +166,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
             Response = new CommonResponse { State = true },
             RequestId = groupRequest.Id,
             UserId = groupRequest.AcceptByUserId,
-            Time = groupRequest.SolveTime.ToString(),
+            Time = groupRequest.SolveTime.ToInvariantString(),
             Accept = groupRequest.IsAccept
         };
 
@@ -194,7 +195,7 @@ public class JoinGroupResponseFromClientProcessor : IProcessor<JoinGroupResponse
         {
             UserId = groupRequest.UserFromId,
             GroupId = groupRequest.GroupId,
-            Time = groupRequest.SolveTime.ToString()
+            Time = groupRequest.SolveTime.ToInvariantString()
         };
 
         List<string> memberIds = await groupService.GetGroupMembers(groupRequest.GroupId);

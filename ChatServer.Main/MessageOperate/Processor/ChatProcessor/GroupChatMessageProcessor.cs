@@ -1,4 +1,5 @@
 ﻿using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -114,7 +115,7 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
                 return;
             }
 
-            message.Time = time.ToString();
+            message.Time = time.ToInvariantString();
             message.Id = chatGroup.Id;
 
             //-- 操作：成功保存消息，返回发送成功 --//
@@ -123,7 +124,7 @@ namespace ChatServer.Main.MessageOperate.Processor.ChatProcessor
                 await channel.WriteAndFlushProtobufAsync(new GroupChatMessageResponse
                 {
                     Response = new CommonResponse { State = true, Message = "发送成功" },
-                    Time = time.ToString(),
+                    Time = time.ToInvariantString(),
                     Id = chatGroup.Id
                 });
             }

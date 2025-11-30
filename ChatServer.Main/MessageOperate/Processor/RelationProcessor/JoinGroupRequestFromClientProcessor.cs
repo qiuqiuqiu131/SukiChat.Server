@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -123,7 +124,7 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
                 Response = new CommonResponse { State = true, Message = "请求成功" },
                 GroupId = message.GroupId,
                 RequestId = groupRequest.Id,
-                Time = groupRequest.RequestTime.ToString()
+                Time = groupRequest.RequestTime.ToInvariantString()
             });
         }
 
@@ -132,7 +133,7 @@ public class JoinGroupRequestFromClientProcessor : IProcessor<JoinGroupRequestFr
             RequestId = groupRequest.Id,
             UserId = message.UserId,
             GroupId = message.GroupId,
-            Time = groupRequest.RequestTime.ToString(),
+            Time = groupRequest.RequestTime.ToInvariantString(),
             Message = message.Message,
         };
 

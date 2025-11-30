@@ -1,4 +1,5 @@
 ﻿using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -105,7 +106,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     UserId = message.UserId,
                     GroupId = message.GroupId,
                     QuitId = deleteId,
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
 
             var memberRemoveRequest = new GroupMemeberRemovedMessage

@@ -1,4 +1,5 @@
 ﻿using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -111,7 +112,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     UserId = message.UserId,
                     FriendId = message.FriendId,
                     DeleteId = id,
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
 
             var targetChannel = clientChannelManager.GetClient(message.FriendId);
@@ -123,7 +124,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     UserId = message.UserId,
                     FriendId = message.FriendId,
                     DeleteId = id,
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
             }
         }

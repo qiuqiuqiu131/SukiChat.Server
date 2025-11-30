@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -69,7 +70,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 var memberMessage = new GroupMemberMessage
                 {
                     GroupId = d.GroupId,
-                    JoinTime = d.JoinTime.ToString(),
+                    JoinTime = d.JoinTime.ToInvariantString(),
                     LastSpeakTime = "",
                     Nickname = d.NickName ?? d.User.Name,
                     UserId = d.UserId,
@@ -82,7 +83,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
             foreach (var item in lists)
             {
                 var lastSpeakTime = await groupService.MemberLastSpeakTime(item.UserId, item.GroupId);
-                item.LastSpeakTime = lastSpeakTime.ToString();
+                item.LastSpeakTime = lastSpeakTime.ToInvariantString();
             }
 
             var response = new GroupMemberListResponse

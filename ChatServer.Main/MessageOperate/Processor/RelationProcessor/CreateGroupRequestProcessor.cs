@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -155,7 +156,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     Response = new CommonResponse { State = true },
                     GroupName = groupName,
                     GroupId = groupId,
-                    Time = group.CreateTime.ToString()
+                    Time = group.CreateTime.ToInvariantString()
                 });
             }
 
@@ -170,7 +171,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     UserIdFrom = message.UserId,
                     UserIdTarget = friendRelation.UserId,
                     Grouping = "默认分组",
-                    Time = group.CreateTime.ToString(),
+                    Time = group.CreateTime.ToInvariantString(),
                     Status = 2
                 });
             }
@@ -186,7 +187,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                 {
                     GroupId = groupId,
                     UserFromId = "System",
-                    Time = group.CreateTime.ToString(),
+                    Time = group.CreateTime.ToInvariantString(),
                 };
 
                 chatMessage.Messages.Add(new ChatMessage

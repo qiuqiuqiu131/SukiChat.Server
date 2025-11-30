@@ -1,4 +1,5 @@
 ﻿using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -143,7 +144,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     GroupId = message.GroupId,
                     MemberId = message.MemberId,
                     RemoveId = deleteId,
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
 
             // 向被移除的成员发送通知
@@ -157,7 +158,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     GroupId = message.GroupId,
                     MemberId = message.MemberId,
                     RemoveId = deleteId,
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
             }
 
@@ -166,7 +167,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
             {
                 GroupId = message.GroupId,
                 MemberId = message.MemberId,
-                Time = time.ToString()
+                Time = time.ToInvariantString()
             };
 
             var memberIds = await groupService.GetGroupMembers(message.GroupId);

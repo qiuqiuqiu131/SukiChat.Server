@@ -7,6 +7,7 @@ using ChatServer.Main.IOServer.Manager;
 using AutoMapper;
 using DotNetty.Transport.Channels;
 using ChatServer.Main.Services;
+using ChatServer.Common.Helper;
 
 namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor;
 
@@ -118,7 +119,7 @@ public class FriendRequestProcessor : IProcessor<FriendRequestFromClient>
             {
                 Response = new CommonResponse { State = true, Message = "添加好友请求发送成功" },
                 RequestId = request.Id,
-                RequestTime = request.RequestTime.ToString(),
+                RequestTime = request.RequestTime.ToInvariantString(),
                 Request = message
             });
 

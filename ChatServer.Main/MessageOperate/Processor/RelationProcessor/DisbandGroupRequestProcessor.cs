@@ -1,5 +1,6 @@
 ﻿
 using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -119,7 +120,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                     GroupId = message.GroupId,
                     MemberId = message.UserId,
                     DisBandId = memberDeleteIds[message.UserId],
-                    Time = time.ToString()
+                    Time = time.ToInvariantString()
                 });
             }
 
@@ -140,7 +141,7 @@ namespace ChatServer.Main.MessageOperate.Processor.RelationProcessor
                                 GroupId = message.GroupId,
                                 MemberId = memberId,
                                 DisBandId = memberDeleteIds[memberId], // 使用该成员对应的删除记录ID
-                                Time = time.ToString()
+                                Time = time.ToInvariantString()
                             });
                         }
                     }

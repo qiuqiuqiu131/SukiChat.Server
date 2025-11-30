@@ -1,4 +1,5 @@
 ﻿using ChatServer.Common;
+using ChatServer.Common.Helper;
 using ChatServer.Common.Protobuf;
 using ChatServer.DataBase.DataBase.DataEntity;
 using ChatServer.DataBase.DataBase.UnitOfWork;
@@ -57,7 +58,7 @@ namespace ChatServer.Main.MessageOperate.Processor.GroupProcessor
                 Response = new CommonResponse { State = true },
                 GroupId = message.GroupId,
                 Description = group.Description ?? string.Empty,
-                CreateTime = group.CreateTime.ToString(),
+                CreateTime = group.CreateTime.ToInvariantString(),
                 IsDisband = group.IsDisband,
                 IsCustomHead = group.IsCustomHead,
                 HeadIndex = group.HeadIndex,
